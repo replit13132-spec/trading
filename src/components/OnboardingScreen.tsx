@@ -6,14 +6,17 @@ export const OnboardingScreen: React.FC = () => {
   const { setIsOnboarded, setAuthScreen } = useApp();
   const [currentSlide, setCurrentSlide] = useState<0 | 1>(0);
 
+  // Auto-switch slide every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Auto-cycle or touch swipe support
   const handleNext = () => setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
   const handlePrev = () => setCurrentSlide((prev) => (prev === 1 ? 0 : 1));
-
-  const handleExplore = () => {
-    setIsOnboarded(true);
-    setAuthScreen('none');
-  };
 
   const handleRegister = () => {
     setAuthScreen('register');
@@ -25,7 +28,7 @@ export const OnboardingScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between max-w-md mx-auto px-6 py-6 select-none font-sans relative overflow-hidden">
-      {/* 1. Top Header with "Jelajahi Dulu" */}
+      {/* 1. Top Header */}
       <div className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-2">
           {/* Subtle Pintu Brand Icon */}
@@ -36,14 +39,6 @@ export const OnboardingScreen: React.FC = () => {
           </div>
           <span className="font-extrabold text-xl text-gray-900 tracking-tight">pintu</span>
         </div>
-
-        <button
-          id="onboarding-explore-btn"
-          onClick={handleExplore}
-          className="text-sm font-bold text-[#0052FF] hover:text-blue-700 transition-colors py-1.5 px-2 rounded-lg"
-        >
-          Jelajahi Dulu
-        </button>
       </div>
 
       {/* 2. Interactive Slide Content */}
@@ -184,7 +179,7 @@ export const OnboardingScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Bottom Action Buttons (Daftar, Masuk & Admin Portal) */}
+      {/* 3. Bottom Action Buttons (Daftar & Masuk) */}
       <div className="space-y-2.5 pb-2 w-full">
         <button
           id="btn-onboarding-daftar"
@@ -200,17 +195,6 @@ export const OnboardingScreen: React.FC = () => {
           className="w-full bg-white hover:bg-blue-50/50 active:scale-[0.99] border-2 border-[#0052FF] text-[#0052FF] font-bold py-3 px-4 rounded-2xl text-sm transition-all flex items-center justify-center"
         >
           Masuk
-        </button>
-
-        <button
-          id="btn-onboarding-admin-direct"
-          onClick={() => {
-            setIsOnboarded(true);
-            setAuthScreen('login');
-          }}
-          className="w-full text-center text-xs font-semibold text-slate-500 hover:text-slate-800 py-1.5 transition-colors"
-        >
-          Masuk ke Portal Demo (Admin & User) →
         </button>
       </div>
     </div>

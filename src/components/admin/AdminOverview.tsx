@@ -62,11 +62,11 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
     {
       label: 'Total Volume Transaksi (24h)',
       value: formatIdr(stats?.totalVolumeIdr || 1450000000),
-      subtext: 'Spot & Derivatif terkombinasi',
+      subtext: 'Trading spot & derivatif 24 jam',
       icon: Activity,
       color: 'text-blue-600',
       bg: 'bg-blue-50 border-blue-100',
-      action: () => setActiveTab('spot'),
+      action: () => setActiveTab('markets'),
     },
     {
       label: 'Total Akun Pengguna',
@@ -87,13 +87,13 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
       action: () => setActiveTab('markets'),
     },
     {
-      label: 'Posisi Futures Terbuka',
-      value: `${futuresPositions.length} Kontrak`,
-      subtext: 'Margin perpetual aktif',
-      icon: TrendingUp,
-      color: 'text-purple-600',
-      bg: 'bg-purple-50 border-purple-100',
-      action: () => setActiveTab('futures'),
+      label: 'Verifikasi Deposit & WD',
+      value: `${stats?.pendingDeposits || 0} Pending`,
+      subtext: 'Permintaan verifikasi transaksi',
+      icon: CreditCard,
+      color: 'text-rose-600',
+      bg: 'bg-rose-50 border-rose-100',
+      action: () => setActiveTab('finance'),
     },
   ];
 
@@ -111,7 +111,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
             Pusat Pengendali Ekosistem Trading Pintu
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
-            Akses kontrol penuh CRUD untuk seluruh modul aplikasi: manipulasi harga pasar live, manipulasi saldo pengguna, injeksi order spot/futures, audit transaksi, dan publikasi konten.
+            Akses kontrol penuh CRUD untuk seluruh modul aplikasi: manipulasi harga pasar live, manipulasi saldo pengguna, upload gambar koin, audit transaksi, dan publikasi konten.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -120,7 +120,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center gap-1.5"
             >
               <Coins className="w-4 h-4" />
-              <span>Kelola Koin & Harga</span>
+              <span>Kelola Koin & Gambar</span>
             </button>
             <button
               onClick={() => setActiveTab('users')}
@@ -130,11 +130,11 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               <span>Kelola Pengguna & Saldo</span>
             </button>
             <button
-              onClick={() => setActiveTab('settings')}
+              onClick={() => setActiveTab('finance')}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-all border border-slate-700 flex items-center gap-1.5"
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Pengaturan Sistem</span>
+              <CreditCard className="w-4 h-4 text-emerald-400" />
+              <span>Audit Keuangan</span>
             </button>
           </div>
         </div>

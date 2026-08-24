@@ -34,15 +34,15 @@ interface AppContextType {
   setIsKYCModalOpen: (open: boolean) => void;
   refreshData: () => Promise<void>;
   switchUser: (userId: string) => Promise<void>;
-  loginUser: (identifier: string, password?: string) => Promise<{ success: boolean; message?: string }>;
-  registerUser: (name: string, email: string, phone?: string, referralCode?: string) => Promise<{ success: boolean; message?: string }>;
+  loginUser: (email: string, password?: string) => Promise<{ success: boolean; message?: string; user?: any }>;
+  registerUser: (name: string, nik: string, email: string, password?: string, referralCode?: string) => Promise<{ success: boolean; message?: string }>;
   loginWithSocial: (provider: 'google' | 'apple') => Promise<{ success: boolean; message?: string }>;
   resetBalance: () => Promise<void>;
   createDummyUser: (name: string, email: string, role: 'user' | 'admin', idr: number, usdt: number) => Promise<void>;
   executeSpotTrade: (symbol: string, side: 'BUY' | 'SELL', type: 'MARKET' | 'LIMIT', amount: number, price?: number) => Promise<{ success: boolean; message?: string }>;
   openFuturesPosition: (params: { symbol: string; side: 'LONG' | 'SHORT'; leverage: number; marginMode: 'CROSS' | 'ISOLATED'; amountUsdt: number; tpPrice?: number; slPrice?: number }) => Promise<{ success: boolean; message?: string }>;
   closeFuturesPosition: (id: string) => Promise<{ success: boolean; message?: string }>;
-  depositFunds: (amount: number, currency: 'IDR' | 'USDT', method: string) => Promise<boolean>;
+  depositFunds: (amount: number, currency: 'IDR' | 'USDT', method: string, proofImage?: string, note?: string) => Promise<{ success: boolean; message?: string; transaction?: any }>;
   withdrawFunds: (amount: number, currency: 'IDR' | 'USDT', destination: string) => Promise<{ success: boolean; message?: string }>;
   transferFunds: (from: string, to: string, amount: number, currency: string) => Promise<{ success: boolean; message?: string }>;
   updateMarketPrice: (symbol: string, newPriceUsdt: number, change24h?: number) => Promise<boolean>;
@@ -161,12 +161,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const loginUser = async (identifier: string, password?: string) => {
+  const loginUser = async (email: string, password?: string) => {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, password }),
+        body: JSON.stringify({ email, identifier: email, password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -185,12 +185,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const registerUser = async (name: string, email: string, phone?: string, referralCode?: string) => {
+  const registerUser = async (name: string, nik: string, email: string, password?: string, referralCode?: string) => {
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, referralCode }),
+        body: JSON.stringify({ name, nik, email, password, referralCode }),
       });
       const data = await res.json();
       if (data.success) {
@@ -301,22 +301,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const depositFunds = async (amount: number, currency: 'IDR' | 'USDT', method: string) => {
+  const depositFunds = async (
+    amount: number,
+    currency: 'IDR' | 'USDT',
+    method: string,
+    proofImage?: string,
+    note?: string
+  ) => {
     try {
       const res = await fetch('/api/user/deposit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, currency, method }),
+        body: JSON.stringify({ amount, currency, method, proofImage, note }),
       });
       const data = await res.json();
       if (data.success) {
         await refreshData();
-        return true;
+        return { success: true, message: data.message, transaction: data.data };
       }
-      return false;
-    } catch (e) {
+      return { success: false, message: data.message || 'Gagal mengajukan deposit' };
+    } catch (e: any) {
       console.error(e);
-      return false;
+      return { success: false, message: e.message || 'Gangguan koneksi' };
     }
   };
 

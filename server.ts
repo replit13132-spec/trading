@@ -13,6 +13,7 @@ let users: any[] = [
   {
     id: 'user_dummy_1',
     name: 'Budi Santoso (Demo User)',
+    nik: '3171012304950001',
     email: 'budi.demo@pintu.co.id',
     role: 'user',
     isDummy: true,
@@ -26,6 +27,14 @@ let users: any[] = [
         SOL: 4.2,
         PTU: 1500,
         MODE: 2000,
+      },
+    },
+    compoundingBalances: {
+      idr: 25000000,
+      usdt: 1500,
+      tokens: {
+        BTC: 0.035,
+        ETH: 0.45,
       },
     },
     proBalances: {
@@ -43,6 +52,7 @@ let users: any[] = [
   {
     id: 'user_admin',
     name: 'Pintu Administrator (Demo Admin)',
+    nik: '3171099999990000',
     email: 'admin@pintu.co.id',
     role: 'admin',
     isDummy: true,
@@ -55,6 +65,11 @@ let users: any[] = [
         ETH: 50.0,
         SOL: 500.0,
       },
+    },
+    compoundingBalances: {
+      idr: 500000000,
+      usdt: 50000,
+      tokens: {},
     },
     proBalances: {
       idr: 500000000,
@@ -340,8 +355,80 @@ let markets: any[] = [
 ];
 
 let futuresPositions: any[] = [];
+let bankAccounts: any[] = [
+  {
+    id: 'bank_1',
+    bankName: 'Bank Central Asia (BCA)',
+    bankCode: 'BCA',
+    accountNumber: '8820 1948 2109 0012',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    category: 'Virtual Account',
+    isActive: true,
+    notes: 'Transfer via BCA Mobile / ATM / Internet Banking 24 jam.',
+    createdAt: '2026-08-01 00:00:00',
+  },
+  {
+    id: 'bank_2',
+    bankName: 'Bank Mandiri',
+    bankCode: 'MANDIRI',
+    accountNumber: '1370 0098 7654 3',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    category: 'Transfer Bank',
+    isActive: true,
+    notes: 'Transfer via Livin by Mandiri atau ATM Mandiri.',
+    createdAt: '2026-08-01 00:00:00',
+  },
+  {
+    id: 'bank_3',
+    bankName: 'Bank Rakyat Indonesia (BRI)',
+    bankCode: 'BRI',
+    accountNumber: '0123 0100 9876 501',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    category: 'Transfer Bank',
+    isActive: true,
+    notes: 'Transfer via BRImo / ATM BRI.',
+    createdAt: '2026-08-01 00:00:00',
+  },
+  {
+    id: 'bank_4',
+    bankName: 'Bank Negara Indonesia (BNI)',
+    bankCode: 'BNI',
+    accountNumber: '0987 6543 210',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    category: 'Virtual Account',
+    isActive: true,
+    notes: 'Transfer via BNI Mobile Banking / ATM BNI.',
+    createdAt: '2026-08-01 00:00:00',
+  },
+  {
+    id: 'bank_5',
+    bankName: 'QRIS Standar Nasional',
+    bankCode: 'QRIS',
+    accountNumber: 'ID1029384756102',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    category: 'QRIS',
+    isActive: true,
+    notes: 'Pindai kode QR menggunakan GoPay, OVO, ShopeePay, Dana, LinkAja, atau m-Banking.',
+    createdAt: '2026-08-01 00:00:00',
+  },
+];
+const DEFAULT_RECEIPT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="580" viewBox="0 0 400 580" fill="none"><rect width="400" height="580" fill="%23f8fafc" rx="20"/><rect x="16" y="16" width="368" height="548" fill="%23ffffff" rx="16" stroke="%23cbd5e1" stroke-width="2"/><rect x="16" y="16" width="368" height="75" fill="%230052FF" rx="16"/><text x="36" y="58" fill="%23ffffff" font-family="sans-serif" font-size="18" font-weight="bold">BCA Mobile - M-Transfer</text><circle cx="345" cy="53" r="14" fill="%23ffffff" opacity="0.25"/><text x="36" y="125" fill="%231e293b" font-family="sans-serif" font-size="14" font-weight="bold">TRANSFER BANK BERHASIL</text><text x="36" y="145" fill="%2364748b" font-family="sans-serif" font-size="11">24 AGU 2026 14:22:18 WIB</text><line x1="36" y1="165" x2="364" y2="165" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="195" fill="%2364748b" font-family="sans-serif" font-size="11">Bank Tujuan</text><text x="36" y="215" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BCA VIRTUAL ACCOUNT</text><text x="36" y="245" fill="%2364748b" font-family="sans-serif" font-size="11">No. VA / Rekening Tujuan</text><text x="36" y="265" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">8820 1948 2109 0012</text><text x="36" y="295" fill="%2364748b" font-family="sans-serif" font-size="11">Nama Penerima</text><text x="36" y="315" fill="%230052FF" font-family="sans-serif" font-size="13" font-weight="bold">PT PINTU PRO INDONESIA</text><text x="36" y="345" fill="%2364748b" font-family="sans-serif" font-size="11">Pengirim / Remitter</text><text x="36" y="365" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BUDI SANTOSO</text><line x1="36" y1="385" x2="364" y2="385" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="415" fill="%2364748b" font-family="sans-serif" font-size="11">Jumlah Transfer Deposit</text><text x="36" y="440" fill="%2316a34a" font-family="sans-serif" font-size="22" font-weight="bold">Rp 10.000.000</text><text x="36" y="470" fill="%2364748b" font-family="sans-serif" font-size="11">No. Referensi Transaksi</text><text x="36" y="490" fill="%23334155" font-family="sans-serif" font-size="12" font-weight="bold">REF-20260824-99812</text><rect x="36" y="510" width="328" height="36" fill="%23ecfdf5" rx="8" stroke="%23a7f3d0"/><text x="200" y="533" text-anchor="middle" fill="%23047857" font-family="sans-serif" font-size="11" font-weight="bold">✓ RESI SAH & TERKIRIM KE SISTEM PINTU</text></svg>`;
+
 let spotOrders: any[] = [];
 let transactions: any[] = [
+  {
+    id: 'tx_103',
+    userId: 'user_dummy_1',
+    type: 'DEPOSIT',
+    amount: 10000000,
+    currency: 'IDR',
+    method: 'BCA Virtual Account',
+    status: 'PENDING',
+    proofImage: DEFAULT_RECEIPT_SVG,
+    note: 'Transfer via m-BCA a/n Budi Santoso',
+    timestamp: '2026-08-24 14:22:18',
+    description: 'Deposit IDR Rp 10.000.000 (Menunggu Verifikasi Bukti TF)',
+  },
   {
     id: 'tx_101',
     userId: 'user_dummy_1',
@@ -350,6 +437,8 @@ let transactions: any[] = [
     currency: 'IDR',
     method: 'BCA Virtual Account',
     status: 'COMPLETED',
+    proofImage: DEFAULT_RECEIPT_SVG,
+    note: 'Deposit awal akun demo',
     timestamp: '2026-08-22 14:32:10',
     description: 'Deposit Rupiah via VA BCA',
   },
@@ -374,6 +463,34 @@ let announcements = [
     content: 'Fitur deposit & withdrawal jaringan BSC (BEP-20) sedang dalam pemeliharaan berkala untuk peningkatan stabilitas node.',
     active: true,
   }
+];
+
+// Compounding / Yield Configuration State
+let compoundingSettings = {
+  enabled: true,
+  dailyRate: 1.0, // Default 1.0% per day
+  payoutFrequency: 'DAILY', // 'DAILY', 'HOURLY', 'WEEKLY'
+  targetBalanceType: 'ALL', // 'ALL', 'IDR', 'USDT'
+  minBalanceRequirement: 100000, // Minimal Rp 100.000 untuk dapat compounding
+  applyToRole: 'ALL_USERS', // 'ALL_USERS', 'USER_ONLY'
+  autoDistributionCron: true,
+  lastDistributedAt: new Date(Date.now() - 24 * 3600 * 1000).toLocaleString('id-ID'),
+  totalProfitDistributedIdr: 12500000,
+  totalProfitDistributedUsdt: 850,
+};
+
+let compoundingLogs: any[] = [
+  {
+    id: 'cmp_log_1',
+    timestamp: new Date(Date.now() - 24 * 3600 * 1000).toLocaleString('id-ID'),
+    rateApplied: 1.0,
+    recipientsCount: 2,
+    totalIdrDistributed: 500000,
+    totalUsdtDistributed: 25,
+    status: 'SUCCESS',
+    triggeredBy: 'SYSTEM_CRON',
+    note: 'Pembagian compounding otomatis 1.0% harian ke seluruh akun pengguna',
+  },
 ];
 
 let newsArticles = [
@@ -618,14 +735,37 @@ app.post('/api/users/create', (req, res) => {
 
 // Dedicated Auth Endpoints
 app.post('/api/auth/register', (req, res) => {
-  const { name, email, phone, referralCode } = req.body;
-  if (!name || (!email && !phone)) {
-    return res.status(400).json({ success: false, message: 'Nama dan Email atau Nomor HP wajib diisi.' });
+  const { name, nik, email, password, referralCode } = req.body;
+  
+  if (!name || !name.trim()) {
+    return res.status(400).json({ success: false, message: 'Nama Lengkap wajib diisi.' });
   }
 
-  const existing = users.find((u) => u.email?.toLowerCase() === email?.toLowerCase());
-  if (existing) {
+  if (!nik || !String(nik).trim()) {
+    return res.status(400).json({ success: false, message: 'NIK (Nomor Induk Kependudukan) wajib diisi.' });
+  }
+
+  const cleanNik = String(nik).trim();
+  if (cleanNik.length !== 16 || !/^\d+$/.test(cleanNik)) {
+    return res.status(400).json({ success: false, message: 'NIK harus terdiri dari 16 digit angka.' });
+  }
+
+  if (!email || !email.trim()) {
+    return res.status(400).json({ success: false, message: 'Alamat Email wajib diisi.' });
+  }
+
+  if (!password || !password.trim()) {
+    return res.status(400).json({ success: false, message: 'Password wajib diisi.' });
+  }
+
+  const existingEmail = users.find((u) => u.email?.toLowerCase() === email.trim().toLowerCase());
+  if (existingEmail) {
     return res.status(400).json({ success: false, message: 'Email sudah terdaftar. Silakan masuk.' });
+  }
+
+  const existingNik = users.find((u) => u.nik === cleanNik);
+  if (existingNik) {
+    return res.status(400).json({ success: false, message: 'NIK ini sudah terdaftar dalam sistem.' });
   }
 
   const bonusIdr = referralCode ? 10000000 : 5000000;
@@ -634,8 +774,9 @@ app.post('/api/auth/register', (req, res) => {
   const newUser = {
     id: 'user_' + Date.now(),
     name: name.trim(),
-    email: email ? email.trim() : `${(phone || '').replace(/\D/g, '')}@pintu.co.id`,
-    phone: phone || '',
+    nik: cleanNik,
+    email: email.trim().toLowerCase(),
+    password: password.trim(),
     role: 'user',
     isDummy: false,
     isVerified: true,
@@ -661,20 +802,25 @@ app.post('/api/auth/register', (req, res) => {
 
   users.push(newUser);
   currentUserId = newUser.id;
-  res.json({ success: true, currentUser: newUser, message: 'Pendaftaran berhasil!' });
+  res.json({ success: true, currentUser: newUser, message: 'Pendaftaran akun baru berhasil!' });
 });
 
 app.post('/api/auth/login', (req, res) => {
-  const { identifier } = req.body;
-  if (!identifier) {
-    return res.status(400).json({ success: false, message: 'Masukkan Email, No HP, atau pilih akun Demo.' });
+  const { email, identifier, password } = req.body;
+  const loginEmail = (email || identifier || '').trim().toLowerCase();
+
+  if (!loginEmail) {
+    return res.status(400).json({ success: false, message: 'Alamat Email wajib diisi.' });
+  }
+
+  if (!password) {
+    return res.status(400).json({ success: false, message: 'Password wajib diisi.' });
   }
 
   const target = users.find(
     (u) =>
-      u.email?.toLowerCase() === identifier.toLowerCase() ||
-      u.id === identifier ||
-      (u.phone && u.phone === identifier)
+      u.email?.toLowerCase() === loginEmail ||
+      u.id === identifier
   );
 
   if (target) {
@@ -682,10 +828,7 @@ app.post('/api/auth/login', (req, res) => {
     return res.json({ success: true, currentUser: target, message: `Selamat datang kembali, ${target.name}!` });
   }
 
-  // Fallback demo account if unrecognized
-  const fallback = users[0];
-  currentUserId = fallback.id;
-  return res.json({ success: true, currentUser: fallback, message: `Berhasil masuk sebagai ${fallback.name}!` });
+  return res.status(400).json({ success: false, message: 'Akun dengan email tersebut tidak ditemukan. Silakan mendaftar terlebih dahulu.' });
 });
 
 app.post('/api/auth/social', (req, res) => {
@@ -743,6 +886,10 @@ app.post('/api/users/reset-balance', (req, res) => {
 app.get('/api/user/wallet', (req, res) => {
   const user = users.find((u) => u.id === currentUserId) || users[0];
   
+  if (!user.compoundingBalances) {
+    user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
+  }
+
   // Calculate total portfolio value in IDR
   let totalIdr = user.balances.idr + user.balances.usdt * 17584;
   for (const [symbol, amount] of Object.entries(user.balances.tokens)) {
@@ -751,6 +898,9 @@ app.get('/api/user/wallet', (req, res) => {
       totalIdr += (amount as number) * market.priceIdr;
     }
   }
+
+  // Calculate total compounding balance value in IDR
+  let totalCompoundingIdr = (user.compoundingBalances?.idr || 0) + (user.compoundingBalances?.usdt || 0) * 17584;
 
   let proTotalIdr = user.proBalances.idr + user.proBalances.usdt * 17584;
   for (const [symbol, amount] of Object.entries(user.proBalances.tokens)) {
@@ -766,9 +916,11 @@ app.get('/api/user/wallet', (req, res) => {
     success: true,
     data: {
       balances: user.balances,
+      compoundingBalances: user.compoundingBalances,
       proBalances: user.proBalances,
       futuresBalances: user.futuresBalances,
       totalIdr: Math.round(totalIdr),
+      totalCompoundingIdr: Math.round(totalCompoundingIdr),
       proTotalIdr: Math.round(proTotalIdr),
       futuresTotalUsdt,
     },
@@ -776,7 +928,7 @@ app.get('/api/user/wallet', (req, res) => {
 });
 
 app.post('/api/user/deposit', (req, res) => {
-  const { amount, currency, method } = req.body;
+  const { amount, currency, method, proofImage, note } = req.body;
   const user = users.find((u) => u.id === currentUserId);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
@@ -785,26 +937,29 @@ app.post('/api/user/deposit', (req, res) => {
     return res.status(400).json({ success: false, message: 'Jumlah deposit tidak valid' });
   }
 
-  if (currency === 'IDR') {
-    user.balances.idr += depositAmount;
-  } else if (currency === 'USDT') {
-    user.balances.usdt += depositAmount;
-  }
+  const imageToUse = proofImage || DEFAULT_RECEIPT_SVG;
 
   const newTx = {
     id: 'tx_' + Date.now(),
     userId: user.id,
     type: 'DEPOSIT',
     amount: depositAmount,
-    currency,
-    method: method || 'Bank Transfer',
-    status: 'COMPLETED',
+    currency: currency || 'IDR',
+    method: method || 'BCA Virtual Account',
+    status: 'PENDING',
+    proofImage: imageToUse,
+    note: note || 'Transfer deposit diajukan pengguna',
     timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    description: `Deposit ${currency} berhasil via ${method || 'VA Bank'}`,
+    description: `Deposit ${currency} ${depositAmount.toLocaleString('id-ID')} via ${method || 'VA Bank'} (Menunggu Verifikasi Admin)`,
   };
   transactions.unshift(newTx);
 
-  res.json({ success: true, data: newTx, user });
+  res.json({
+    success: true,
+    data: newTx,
+    user,
+    message: 'Bukti transfer berhasil diunggah! Deposit Anda sedang ditinjau oleh Admin.',
+  });
 });
 
 app.post('/api/user/withdraw', (req, res) => {
@@ -905,15 +1060,21 @@ app.post('/api/trade/spot', (req, res) => {
   const tradeAmount = Number(amount);
   const totalCost = tradePrice * tradeAmount;
 
+  if (!user.compoundingBalances) {
+    user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+  }
+
   if (side === 'BUY') {
     if (user.balances.idr < totalCost) {
       return res.status(400).json({
         success: false,
-        message: `Saldo Rupiah tidak mencukupi (Dibutuhkan: Rp ${totalCost.toLocaleString('id-ID')})`,
+        message: `Saldo Rupiah Biasa (Top-Up) tidak mencukupi (Dibutuhkan: Rp ${totalCost.toLocaleString('id-ID')})`,
       });
     }
     user.balances.idr -= totalCost;
     user.balances.tokens[market.symbol] = (user.balances.tokens[market.symbol] || 0) + tradeAmount;
+    // Pindahkan nilai pembelian ke Saldo Compounding (Aset Dibelikan)
+    user.compoundingBalances.idr = (user.compoundingBalances.idr || 0) + totalCost;
   } else {
     // SELL
     const currentTokenBalance = user.balances.tokens[market.symbol] || 0;
@@ -925,6 +1086,11 @@ app.post('/api/trade/spot', (req, res) => {
     }
     user.balances.tokens[market.symbol] -= tradeAmount;
     user.balances.idr += totalCost;
+    if ((user.compoundingBalances.idr || 0) >= totalCost) {
+      user.compoundingBalances.idr -= totalCost;
+    } else {
+      user.compoundingBalances.idr = 0;
+    }
   }
 
   const order = {
@@ -1080,7 +1246,70 @@ app.get('/api/admin/stats', (req, res) => {
   });
 });
 
-// 2. System Settings CRUD
+// 2. System Settings & Bank Accounts CRUD
+app.get('/api/bank-accounts', (req, res) => {
+  res.json({ success: true, data: bankAccounts.filter((b) => b.isActive) });
+});
+
+app.get('/api/admin/bank-accounts', (req, res) => {
+  res.json({ success: true, data: bankAccounts });
+});
+
+app.post('/api/admin/bank-accounts/create', (req, res) => {
+  const { bankName, bankCode, accountNumber, accountHolder, category, isActive, notes } = req.body;
+  if (!bankName || !accountNumber || !accountHolder) {
+    return res.status(400).json({ success: false, message: 'Nama bank, nomor rekening, dan nama pemilik wajib diisi' });
+  }
+
+  const newAccount = {
+    id: `bank_${Date.now()}`,
+    bankName,
+    bankCode: bankCode || bankName.substring(0, 6).toUpperCase(),
+    accountNumber,
+    accountHolder,
+    category: category || 'Transfer Bank',
+    isActive: isActive !== undefined ? Boolean(isActive) : true,
+    notes: notes || '',
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+  };
+
+  bankAccounts.unshift(newAccount);
+  res.json({ success: true, data: newAccount, message: 'Rekening bank berhasil ditambahkan!' });
+});
+
+app.put('/api/admin/bank-accounts/:id', (req, res) => {
+  const { id } = req.params;
+  const idx = bankAccounts.findIndex((b) => b.id === id);
+  if (idx === -1) {
+    return res.status(404).json({ success: false, message: 'Rekening bank tidak ditemukan' });
+  }
+
+  bankAccounts[idx] = { ...bankAccounts[idx], ...req.body };
+  res.json({ success: true, data: bankAccounts[idx], message: 'Rekening bank berhasil diperbarui!' });
+});
+
+app.post('/api/admin/bank-accounts/:id/toggle', (req, res) => {
+  const { id } = req.params;
+  const acc = bankAccounts.find((b) => b.id === id);
+  if (!acc) {
+    return res.status(404).json({ success: false, message: 'Rekening bank tidak ditemukan' });
+  }
+
+  acc.isActive = !acc.isActive;
+  res.json({ success: true, data: acc, message: `Status rekening diubah menjadi ${acc.isActive ? 'Aktif' : 'Non-Aktif'}` });
+});
+
+app.delete('/api/admin/bank-accounts/:id', (req, res) => {
+  const { id } = req.params;
+  const initialLen = bankAccounts.length;
+  bankAccounts = bankAccounts.filter((b) => b.id !== id);
+  if (bankAccounts.length === initialLen) {
+    return res.status(404).json({ success: false, message: 'Rekening bank tidak ditemukan' });
+  }
+
+  res.json({ success: true, message: 'Rekening bank berhasil dihapus!' });
+});
+
 app.get('/api/admin/config', (req, res) => {
   res.json({ success: true, data: systemConfig });
 });
@@ -1251,13 +1480,17 @@ app.post('/api/admin/users/:id/toggle-kyc', (req, res) => {
 });
 
 app.post('/api/admin/users/update-balance', (req, res) => {
-  const { userId, idr, usdt, futuresUsdt } = req.body;
+  const { userId, idr, usdt, futuresUsdt, compoundingIdr, compoundingUsdt } = req.body;
   const user = users.find((u) => u.id === userId);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   if (idr !== undefined) user.balances.idr = Number(idr);
   if (usdt !== undefined) user.balances.usdt = Number(usdt);
   if (futuresUsdt !== undefined) user.futuresBalances.usdt = Number(futuresUsdt);
+
+  if (!user.compoundingBalances) user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+  if (compoundingIdr !== undefined) user.compoundingBalances.idr = Number(compoundingIdr);
+  if (compoundingUsdt !== undefined) user.compoundingBalances.usdt = Number(compoundingUsdt);
 
   res.json({ success: true, user });
 });
@@ -1426,7 +1659,22 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
   if (!tx) return res.status(404).json({ success: false, message: 'Transaksi tidak ditemukan' });
 
   const { status } = req.body;
+  const previousStatus = tx.status;
   if (status) tx.status = status;
+
+  // Credit user balance when approving pending deposit
+  if (tx.type === 'DEPOSIT' && previousStatus === 'PENDING' && status === 'COMPLETED') {
+    const user = users.find((u) => u.id === tx.userId);
+    if (user) {
+      if (tx.currency === 'IDR') {
+        user.balances.idr += Number(tx.amount);
+      } else if (tx.currency === 'USDT') {
+        user.balances.usdt += Number(tx.amount);
+      }
+      tx.description = `Deposit ${tx.currency} disetujui Admin pada ${new Date().toLocaleTimeString('id-ID')}`;
+    }
+  }
+
   res.json({ success: true, data: tx, message: `Status transaksi berhasil diubah ke ${status}` });
 });
 
@@ -1682,6 +1930,159 @@ app.delete('/api/cms/announcements/:id', (req, res) => {
 
   const deleted = announcements.splice(idx, 1)[0];
   res.json({ success: true, data: deleted, message: 'Pengumuman berhasil dihapus' });
+});
+
+// 11. Compounding Management & Trigger Endpoints
+app.get('/api/admin/compounding', (req, res) => {
+  res.json({
+    success: true,
+    settings: compoundingSettings,
+    logs: compoundingLogs,
+  });
+});
+
+app.put('/api/admin/compounding/settings', (req, res) => {
+  const {
+    enabled,
+    payoutFrequency,
+    targetBalanceType,
+    minBalanceRequirement,
+    applyToRole,
+    autoDistributionCron,
+  } = req.body;
+
+  if (enabled !== undefined) compoundingSettings.enabled = Boolean(enabled);
+  compoundingSettings.dailyRate = 1.0; // System Fixed 1.0%
+  if (payoutFrequency) compoundingSettings.payoutFrequency = payoutFrequency;
+  if (targetBalanceType) compoundingSettings.targetBalanceType = targetBalanceType;
+  if (minBalanceRequirement !== undefined && !isNaN(Number(minBalanceRequirement))) {
+    compoundingSettings.minBalanceRequirement = Number(minBalanceRequirement);
+  }
+  if (applyToRole) compoundingSettings.applyToRole = applyToRole;
+  if (autoDistributionCron !== undefined) compoundingSettings.autoDistributionCron = Boolean(autoDistributionCron);
+
+  res.json({
+    success: true,
+    data: compoundingSettings,
+    message: `Pengaturan Compounding (Fixed 1.0% / hari) berhasil diperbarui!`,
+  });
+});
+
+app.post('/api/admin/compounding/trigger', (req, res) => {
+  const rate = 1.0; // System Fixed 1.0% per hari
+  compoundingSettings.dailyRate = 1.0;
+  let totalIdrDistributed = 0;
+  let totalUsdtDistributed = 0;
+  let recipientsCount = 0;
+
+  users.forEach((user) => {
+    // Check role filter
+    if (compoundingSettings.applyToRole === 'USER_ONLY' && user.role === 'admin') {
+      return;
+    }
+
+    if (!user.compoundingBalances) {
+      user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
+    }
+
+    let idrYield = 0;
+    let usdtYield = 0;
+
+    const cmpIdr = user.compoundingBalances.idr || 0;
+    const cmpUsdt = user.compoundingBalances.usdt || 0;
+
+    // Check IDR Compounding Balance (Saldo Dibelikan)
+    if (
+      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'IDR') &&
+      cmpIdr >= compoundingSettings.minBalanceRequirement
+    ) {
+      idrYield = Math.round(cmpIdr * (rate / 100));
+      user.compoundingBalances.idr += idrYield;
+      totalIdrDistributed += idrYield;
+    }
+
+    // Check USDT Compounding Balance
+    const minUsdt = compoundingSettings.minBalanceRequirement > 0 ? compoundingSettings.minBalanceRequirement / 15000 : 1;
+    if (
+      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'USDT') &&
+      cmpUsdt >= minUsdt
+    ) {
+      usdtYield = Number((cmpUsdt * (rate / 100)).toFixed(2));
+      user.compoundingBalances.usdt += usdtYield;
+      totalUsdtDistributed += usdtYield;
+    }
+
+    if (idrYield > 0 || usdtYield > 0) {
+      recipientsCount++;
+
+      // Create transaction record for audit log
+      if (idrYield > 0) {
+        transactions.unshift({
+          id: 'tx_cmp_idr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          type: 'REWARD',
+          amount: idrYield,
+          currency: 'IDR',
+          status: 'COMPLETED',
+          timestamp: new Date().toLocaleString('id-ID'),
+          method: 'Compounding Yield Auto',
+          description: `Bunga Compounding Harian ${rate}% (+Rp ${idrYield.toLocaleString('id-ID')})`,
+        });
+      }
+
+      if (usdtYield > 0) {
+        transactions.unshift({
+          id: 'tx_cmp_usdt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          type: 'REWARD',
+          amount: usdtYield,
+          currency: 'USDT',
+          status: 'COMPLETED',
+          timestamp: new Date().toLocaleString('id-ID'),
+          method: 'Compounding Yield Auto',
+          description: `Bunga Compounding Harian ${rate}% (+${usdtYield} USDT)`,
+        });
+      }
+    }
+  });
+
+  const nowStr = new Date().toLocaleString('id-ID');
+  compoundingSettings.lastDistributedAt = nowStr;
+  compoundingSettings.totalProfitDistributedIdr += totalIdrDistributed;
+  compoundingSettings.totalProfitDistributedUsdt += totalUsdtDistributed;
+
+  const logEntry = {
+    id: 'cmp_log_' + Date.now(),
+    timestamp: nowStr,
+    rateApplied: rate,
+    recipientsCount,
+    totalIdrDistributed,
+    totalUsdtDistributed,
+    status: 'SUCCESS',
+    triggeredBy: req.body?.triggeredBy || 'ADMIN_MANUAL',
+    note: `Pembagian compounding ${rate}%/hari berhasil dikreditkan ke ${recipientsCount} akun pengguna.`,
+  };
+
+  compoundingLogs.unshift(logEntry);
+
+  res.json({
+    success: true,
+    data: logEntry,
+    settings: compoundingSettings,
+    message: `Eksekusi compounding ${rate}%/hari berhasil! Saldo telah dikreditkan ke ${recipientsCount} akun pengguna.`,
+  });
+});
+
+app.delete('/api/admin/compounding/logs/:id', (req, res) => {
+  const idx = compoundingLogs.findIndex((l) => l.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Log compounding tidak ditemukan' });
+
+  const deleted = compoundingLogs.splice(idx, 1)[0];
+  res.json({ success: true, data: deleted, message: 'Log compounding berhasil dihapus' });
 });
 
 // Fallback 404 for unhandled API endpoints

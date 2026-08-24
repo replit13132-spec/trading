@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { CryptoIcon } from './CryptoIcon';
+import { SAMPLE_RECEIPT_SVG } from '../data/sampleReceipt';
 import {
   X,
   CheckCircle2,
@@ -12,6 +13,16 @@ import {
   Coins,
   ChevronRight,
   ArrowRight,
+  Upload,
+  Image as ImageIcon,
+  FileCheck,
+  Copy,
+  Check,
+  FileText,
+  Sparkles,
+  RefreshCw,
+  Clock,
+  AlertCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -40,38 +51,83 @@ export const Modals: React.FC = () => {
   // Deposit state
   const [depositAmount, setDepositAmount] = useState('10000000');
   const [depositCurrency, setDepositCurrency] = useState<'IDR' | 'USDT'>('IDR');
-  const [depositMethod, setDepositMethod] = useState('BCA Virtual Account');
+  const [depositMethod, setDepositMethod] = useState('Bank Central Asia (BCA)');
+  const [bankAccountsList, setBankAccountsList] = useState<any[]>([]);
+  const [depositProof, setDepositProof] = useState<string>('');
+  const [depositNote, setDepositNote] = useState('');
   const [depositSuccess, setDepositSuccess] = useState(false);
+  const [copiedVa, setCopiedVa] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch('/api/bank-accounts')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setBankAccountsList(data.data);
+          setDepositMethod(data.data[0].bankName);
+        }
+      })
+      .catch((e) => console.error('Failed to load bank accounts for deposit:', e));
+  }, []);
+
+  const activeSelectedAccount = bankAccountsList.find(
+    (b) => b.bankName === depositMethod || b.bankCode === depositMethod
+  ) || bankAccountsList[0] || {
+    bankName: depositMethod,
+    accountNumber: '8820 1948 2109 0012',
+    accountHolder: 'PT PINTU PRO INDONESIA',
+    notes: 'Transfer 24 jam.',
+  };
 
   // Withdraw state
-  const [withdrawAmount, setWithdrawAmount] = useState('5000000');
+  const [withdrawAmount, setWithdrawAmount] = useState('500000');
   const [withdrawCurrency, setWithdrawCurrency] = useState<'IDR' | 'USDT'>('IDR');
-  const [withdrawDest, setWithdrawDest] = useState('BCA - 8820194821');
-  const [withdrawMsg, setWithdrawMsg] = useState('');
+  const [withdrawDest, setWithdrawDest] = useState('BCA - 1234567890 (A.N USER)');
+  const [withdrawMsg, setWithdrawMsg] = useState<string | null>(null);
 
   // Transfer state
-  const [transferFrom, setTransferFrom] = useState('spot');
-  const [transferTo, setTransferTo] = useState('futures');
-  const [transferAmount, setTransferAmount] = useState('500');
-  const [transferCurrency, setTransferCurrency] = useState('USDT');
-  const [transferMsg, setTransferMsg] = useState('');
+  const [transferFrom, setTransferFrom] = useState<'SPOT' | 'FUTURES'>('SPOT');
+  const [transferTo, setTransferTo] = useState<'SPOT' | 'FUTURES'>('FUTURES');
+  const [transferAmount, setTransferAmount] = useState('100');
+  const [transferCurrency, setTransferCurrency] = useState<'IDR' | 'USDT'>('USDT');
+  const [transferMsg, setTransferMsg] = useState<string | null>(null);
 
-  // KYC state
-  const [kycStep, setKycStep] = useState(1);
-  const [kycName, setKycName] = useState('Budi Santoso');
-  const [kycNik, setKycNik] = useState('3171048291040001');
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setDepositProof(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCopyVa = () => {
+    navigator.clipboard.writeText(activeSelectedAccount?.accountNumber || '8820194821090012');
+    setCopiedVa(true);
+    setTimeout(() => setCopiedVa(false), 2000);
+  };
 
   // Handle Deposit
   const handleDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await depositFunds(Number(depositAmount), depositCurrency, depositMethod);
-    if (ok) {
-      confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+    const proofToSubmit = depositProof || SAMPLE_RECEIPT_SVG;
+    const res = await depositFunds(
+      Number(depositAmount),
+      depositCurrency,
+      depositMethod,
+      proofToSubmit,
+      depositNote || `Transfer deposit ${depositCurrency} via ${depositMethod}`
+    );
+    if (res.success) {
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
       setDepositSuccess(true);
-      setTimeout(() => {
-        setDepositSuccess(false);
-        setIsDepositModalOpen(false);
-      }, 2000);
+    } else {
+      alert(res.message || 'Gagal mengajukan deposit');
     }
   };
 
@@ -104,28 +160,78 @@ export const Modals: React.FC = () => {
     <>
       {/* 1. Deposit Modal */}
       {isDepositModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
             <button
-              onClick={() => setIsDepositModalOpen(false)}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1"
+              onClick={() => {
+                setDepositSuccess(false);
+                setIsDepositModalOpen(false);
+              }}
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-100 transition-all z-10"
             >
               <X className="w-5 h-5" />
             </button>
 
             {depositSuccess ? (
-              <div className="py-8 text-center space-y-3">
-                <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto animate-bounce" />
-                <h3 className="text-lg font-bold text-gray-900">Deposit Berhasil!</h3>
-                <p className="text-xs text-gray-500">
-                  Saldo telah ditambahkan ke portofolio akun Anda.
-                </p>
+              <div className="py-6 text-center space-y-4">
+                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 animate-pulse">
+                  <Clock className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-gray-900">Bukti Transfer Berhasil Diunggah!</h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Permintaan deposit sebesar{' '}
+                    <span className="font-bold text-gray-900">
+                      {depositCurrency === 'IDR' ? formatIdr(Number(depositAmount)) : depositAmount + ' USDT'}
+                    </span>{' '}
+                    sedang diverifikasi oleh Admin.
+                  </p>
+                </div>
+
+                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 text-left text-xs space-y-2">
+                  <div className="flex items-center justify-between text-amber-900 font-bold">
+                    <span>Status Verifikasi:</span>
+                    <span className="bg-amber-200 text-amber-800 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">
+                      Menunggu Admin
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-amber-700 space-y-1">
+                    <p>• Estimasi proses verifikasi: 1 - 5 menit</p>
+                    <p>• Tim Admin akan mengecek kesesuaian gambar bukti transfer Anda di Dashboard Admin.</p>
+                  </div>
+                </div>
+
+                {depositProof && (
+                  <div className="border border-gray-200 rounded-2xl p-2.5 bg-gray-50 text-left">
+                    <p className="text-[11px] font-bold text-gray-600 mb-1.5 flex items-center gap-1">
+                      <ImageIcon className="w-3.5 h-3.5 text-blue-600" /> Pratinjau Bukti Transfer yang Terkirim:
+                    </p>
+                    <div className="rounded-xl overflow-hidden border border-gray-200 bg-white max-h-48 flex items-center justify-center">
+                      <img src={depositProof} alt="Bukti Transfer" className="max-h-48 object-contain w-full" />
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    setDepositSuccess(false);
+                    setIsDepositModalOpen(false);
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs transition-colors shadow-md shadow-blue-500/20"
+                >
+                  Selesai & Kembali ke Portofolio
+                </button>
               </div>
             ) : (
               <form onSubmit={handleDepositSubmit} className="space-y-4">
                 <div>
-                  <h3 className="text-base font-bold text-gray-900">Deposit Saldo</h3>
-                  <p className="text-xs text-gray-500">Tambah saldo IDR atau USDT secara instan</p>
+                  <h3 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
+                    <span>Deposit Saldo & Upload Bukti</span>
+                    <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">
+                      Instan & Aman
+                    </span>
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">Transfer dana lalu sertakan tangkapan layar / foto resi</p>
                 </div>
 
                 {/* Currency Switcher */}
@@ -162,14 +268,16 @@ export const Modals: React.FC = () => {
 
                 {/* Amount input */}
                 <div>
-                  <label className="text-xs font-bold text-gray-700 block mb-1">Jumlah Deposit</label>
+                  <label className="text-xs font-bold text-gray-700 block mb-1">Jumlah Nominal Deposit</label>
                   <input
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-gray-100 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-blue-500"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    placeholder="Masukkan nominal deposit..."
+                    required
                   />
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1">
                     {(depositCurrency === 'IDR'
                       ? [1000000, 5000000, 10000000, 50000000]
                       : [100, 500, 1000, 5000]
@@ -178,9 +286,9 @@ export const Modals: React.FC = () => {
                         key={preset}
                         type="button"
                         onClick={() => setDepositAmount(preset.toString())}
-                        className="flex-1 bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 text-[10px] font-bold py-1 rounded-lg text-gray-700"
+                        className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
                       >
-                        {preset.toLocaleString('id-ID')}
+                        {depositCurrency === 'IDR' ? `Rp ${(preset / 1000000).toFixed(0)}Jt` : `$${preset}`}
                       </button>
                     ))}
                   </div>
@@ -188,25 +296,135 @@ export const Modals: React.FC = () => {
 
                 {/* Method */}
                 <div>
-                  <label className="text-xs font-bold text-gray-700 block mb-1">Metode Pembayaran</label>
+                  <label className="text-xs font-bold text-gray-700 block mb-1">Metode Pembayaran Transfer</label>
                   <select
                     value={depositMethod}
                     onChange={(e) => setDepositMethod(e.target.value)}
-                    className="w-full bg-gray-100 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-blue-500"
                   >
-                    <option value="BCA Virtual Account">BCA Virtual Account</option>
-                    <option value="Mandiri Virtual Account">Mandiri Virtual Account</option>
-                    <option value="BRI Virtual Account">BRI Virtual Account</option>
-                    <option value="QRIS Instant (GoPay / OVO / DANA)">QRIS Instant (GoPay / OVO / DANA)</option>
-                    <option value="Crypto USDT (TRC-20 / BEP-20)">Crypto USDT (TRC-20 / BEP-20)</option>
+                    {bankAccountsList.length > 0 ? (
+                      bankAccountsList.map((acc) => (
+                        <option key={acc.id} value={acc.bankName}>
+                          {acc.bankName} ({acc.category})
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="BCA Virtual Account">BCA Virtual Account</option>
+                        <option value="Mandiri Virtual Account">Mandiri Virtual Account</option>
+                        <option value="BRI Virtual Account">BRI Virtual Account</option>
+                        <option value="QRIS Instant (GoPay / OVO / DANA)">QRIS Instant (GoPay / OVO / DANA)</option>
+                        <option value="Crypto USDT (TRC-20 / BEP-20)">Crypto USDT (TRC-20 / BEP-20)</option>
+                      </>
+                    )}
                   </select>
+                </div>
+
+                {/* Bank / VA Info Card */}
+                <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-blue-900">
+                    <span className="font-medium text-[11px]">Rekening Tujuan ({activeSelectedAccount?.bankName}):</span>
+                    <span className="text-[10px] font-extrabold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                      a/n {activeSelectedAccount?.accountHolder || 'PT PINTU PRO INDONESIA'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between bg-white border border-blue-100 p-2 rounded-xl">
+                    <span className="font-mono font-extrabold text-sm text-gray-900">
+                      {activeSelectedAccount?.accountNumber || '8820 1948 2109 0012'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopyVa}
+                      className="text-[11px] font-bold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
+                    >
+                      {copiedVa ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedVa ? 'Tersalin' : 'Salin Nomor'}</span>
+                    </button>
+                  </div>
+                  {activeSelectedAccount?.notes && (
+                    <p className="text-[10px] text-gray-500 italic">
+                      💡 {activeSelectedAccount.notes}
+                    </p>
+                  )}
+                </div>
+
+                {/* Upload Bukti Transfer Section */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
+                      <Upload className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Upload Bukti Transfer (Foto / Resi)</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setDepositProof(SAMPLE_RECEIPT_SVG)}
+                      className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1"
+                    >
+                      <Sparkles className="w-3 h-3 text-amber-500" />
+                      <span>Pakai Resi Contoh (Demo)</span>
+                    </button>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+
+                  {depositProof ? (
+                    <div className="relative border-2 border-emerald-300 bg-emerald-50/40 rounded-2xl p-2.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          <span>Bukti Transfer Siap Diunggah</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setDepositProof('')}
+                          className="text-[10px] font-bold text-rose-600 hover:underline"
+                        >
+                          Hapus Foto
+                        </button>
+                      </div>
+
+                      <div className="rounded-xl overflow-hidden border border-emerald-200 bg-white max-h-40 flex items-center justify-center p-1">
+                        <img src={depositProof} alt="Bukti Upload" className="max-h-36 object-contain" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50/40 transition-all rounded-2xl p-4 text-center cursor-pointer space-y-1.5 group"
+                    >
+                      <div className="w-10 h-10 bg-blue-50 group-hover:bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 transition-all">
+                        <Upload className="w-5 h-5" />
+                      </div>
+                      <p className="text-xs font-bold text-gray-800">Klik di sini untuk memilih foto bukti transfer</p>
+                      <p className="text-[10px] text-gray-400">Format JPG, PNG, atau tangkapan layar m-Banking</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Catatan Tambahan */}
+                <div>
+                  <label className="text-[11px] font-bold text-gray-600 block mb-1">Catatan Tambahan (Opsional)</label>
+                  <input
+                    type="text"
+                    value={depositNote}
+                    onChange={(e) => setDepositNote(e.target.value)}
+                    placeholder="Contoh: Transfer via BCA m-Banking a/n Budi Santoso"
+                    className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-blue-500"
+                  />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md text-xs transition-colors"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl shadow-lg shadow-blue-500/25 text-xs transition-all flex items-center justify-center gap-2"
                 >
-                  Konfirmasi Deposit
+                  <FileCheck className="w-4 h-4" />
+                  <span>Kirim Bukti Transfer & Ajukan Top Up</span>
                 </button>
               </form>
             )}
@@ -480,13 +698,6 @@ export const Modals: React.FC = () => {
                     className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-2xl text-xs transition-colors"
                   >
                     Masuk
-                  </button>
-
-                  <button
-                    onClick={() => setIsAuthModalOpen(false)}
-                    className="text-xs font-bold text-gray-400 hover:text-gray-700 pt-2 block mx-auto"
-                  >
-                    Jelajahi Dulu
                   </button>
                 </div>
               </div>

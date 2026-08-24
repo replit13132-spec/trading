@@ -78,13 +78,17 @@ export interface Transaction {
   status: 'COMPLETED' | 'PENDING' | 'REJECTED';
   timestamp: string;
   txHash?: string;
+  proofImage?: string;
+  note?: string;
   description?: string;
 }
 
 export interface UserAccount {
   id: string;
   name: string;
+  nik?: string;
   email: string;
+  phone?: string;
   role: 'user' | 'admin';
   avatar?: string;
   isDummy?: boolean;
@@ -93,6 +97,11 @@ export interface UserAccount {
     idr: number;
     usdt: number;
     tokens: Record<string, number>;
+  };
+  compoundingBalances?: {
+    idr: number;
+    usdt: number;
+    tokens?: Record<string, number>;
   };
   proBalances: {
     idr: number;

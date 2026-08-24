@@ -5,11 +5,10 @@ import { AdminNavbar } from './admin/AdminNavbar';
 import { AdminOverview } from './admin/AdminOverview';
 import { AdminMarkets } from './admin/AdminMarkets';
 import { AdminUsers } from './admin/AdminUsers';
-import { AdminSpotOrders } from './admin/AdminSpotOrders';
-import { AdminFutures } from './admin/AdminFutures';
+import { AdminAccounts } from './admin/AdminAccounts';
 import { AdminFinance } from './admin/AdminFinance';
+import { AdminCompounding } from './admin/AdminCompounding';
 import { AdminCMS } from './admin/AdminCMS';
-import { AdminSettings } from './admin/AdminSettings';
 
 export const AdminDashboard: React.FC = () => {
   const { currentUser, setActiveTab: setMainTab } = useApp();
@@ -81,15 +80,13 @@ export const AdminDashboard: React.FC = () => {
 
           {activeTab === 'users' && <AdminUsers onRefresh={fetchStats} />}
 
-          {activeTab === 'spot' && <AdminSpotOrders onRefresh={fetchStats} />}
-
-          {activeTab === 'futures' && <AdminFutures onRefresh={fetchStats} />}
+          {activeTab === 'accounts' && <AdminAccounts onRefresh={fetchStats} />}
 
           {activeTab === 'finance' && <AdminFinance onRefresh={fetchStats} />}
 
-          {activeTab === 'cms' && <AdminCMS onRefresh={fetchStats} />}
+          {activeTab === 'compounding' && <AdminCompounding onRefresh={fetchStats} />}
 
-          {activeTab === 'settings' && <AdminSettings onRefresh={fetchStats} />}
+          {activeTab === 'cms' && <AdminCMS onRefresh={fetchStats} />}
         </main>
       </div>
     </div>

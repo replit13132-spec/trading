@@ -6,6 +6,8 @@ import {
   ArrowLeftRight,
   TrendingUp,
   CreditCard,
+  Building2,
+  FileCheck,
   FileText,
   Settings,
   ChevronLeft,
@@ -14,6 +16,7 @@ import {
   Sparkles,
   ArrowUpRight,
   X,
+  Percent,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -21,11 +24,10 @@ export type AdminTab =
   | 'overview'
   | 'markets'
   | 'users'
-  | 'spot'
-  | 'futures'
+  | 'accounts'
   | 'finance'
-  | 'cms'
-  | 'settings';
+  | 'compounding'
+  | 'cms';
 
 interface AdminSidebarProps {
   activeTab: AdminTab;
@@ -46,7 +48,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setIsMobileOpen,
   stats,
 }) => {
-  const { setActiveTab: setMainTab, markets, allUsers, futuresPositions } = useApp();
+  const { setActiveTab: setMainTab, markets, allUsers } = useApp();
 
   const navItems = [
     {
@@ -58,7 +60,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     },
     {
       id: 'markets' as AdminTab,
-      label: 'Pasar & Koin (CRUD)',
+      label: 'Pasar & Koin',
       shortLabel: 'Pasar',
       icon: Coins,
       badge: markets.length,
@@ -66,48 +68,41 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     },
     {
       id: 'users' as AdminTab,
-      label: 'Pengguna & Saldo (CRUD)',
+      label: 'Pengguna & Saldo',
       shortLabel: 'User',
       icon: Users,
       badge: allUsers.length,
       badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
     },
     {
-      id: 'spot' as AdminTab,
-      label: 'Spot Orderbook (CRUD)',
-      shortLabel: 'Spot',
-      icon: ArrowLeftRight,
-      badge: stats?.totalSpotOrders || null,
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
-    },
-    {
-      id: 'futures' as AdminTab,
-      label: 'Futures & Derivatif (CRUD)',
-      shortLabel: 'Futures',
-      icon: TrendingUp,
-      badge: futuresPositions.length,
-      badgeColor: 'bg-purple-500/20 text-purple-400 border border-purple-500/30',
+      id: 'accounts' as AdminTab,
+      label: 'Rekening Deposit',
+      shortLabel: 'Rekening',
+      icon: Building2,
+      badge: 'CRUD',
+      badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
     },
     {
       id: 'finance' as AdminTab,
-      label: 'Keuangan & Audit (CRUD)',
+      label: 'Keuangan & Bukti Transfer',
       shortLabel: 'Keuangan',
       icon: CreditCard,
-      badge: stats?.pendingDeposits ? `${stats.pendingDeposits} Pending` : null,
-      badgeColor: 'bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse',
+      badge: stats?.pendingDeposits ? `${stats.pendingDeposits} Verifikasi` : null,
+      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse',
+    },
+    {
+      id: 'compounding' as AdminTab,
+      label: 'Compounding & Bunga Harian',
+      shortLabel: 'Compounding',
+      icon: Percent,
+      badge: 'Auto Yield',
+      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
     },
     {
       id: 'cms' as AdminTab,
       label: 'CMS Berita & Edukasi',
       shortLabel: 'CMS',
       icon: FileText,
-      badge: null,
-    },
-    {
-      id: 'settings' as AdminTab,
-      label: 'Konfigurasi Sistem',
-      shortLabel: 'Sistem',
-      icon: Settings,
       badge: null,
     },
   ];
@@ -175,19 +170,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             )}
           </div>
         </div>
-
-        {/* System Status Pill Indicator */}
-        {(!isCollapsed || isMobileOpen) && (
-          <div className="px-4 py-2.5 bg-slate-900/60 border-b border-slate-800/60 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-[11px] font-semibold text-slate-300">Server Status: Normal</span>
-            </div>
-            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/50">
-              PORT 3000
-            </span>
-          </div>
-        )}
 
         {/* Navigation Items */}
         <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">

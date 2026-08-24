@@ -56,35 +56,35 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
   const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
     overview: {
       title: 'Ringkasan & Metrik Ekosistem',
-      subtitle: 'Pantau likuiditas, volume trading 24 jam, dan kesehatan server platform.',
+      subtitle: 'Pantau likuiditas, volume trading 24 jam, dan aktivitas pengguna.',
     },
     markets: {
-      title: 'Manajemen Pasar & Koin (CRUD)',
-      subtitle: 'Tambah aset baru, sesuaikan harga, volume, tag hot/gainer, atau hapus koin.',
+      title: 'Manajemen Pasar & Koin',
+      subtitle: 'Tambah aset baru, sesuaikan harga, upload ikon/gambar, atau hapus koin.',
     },
     users: {
-      title: 'Manajemen Pengguna & Saldo (CRUD)',
-      subtitle: 'Kelola akun trader, status KYC, ubah saldo IDR/USDT/Futures, dan hak akses admin.',
+      title: 'Manajemen Pengguna & Saldo',
+      subtitle: 'Kelola akun trader, status KYC, ubah saldo IDR/USDT, dan hak akses admin.',
     },
-    spot: {
-      title: 'Spot Orderbook & Transaksi (CRUD)',
-      subtitle: 'Suntikkan order manual, pantau order live, ubah status FILLED/OPEN/CANCELLED.',
-    },
-    futures: {
-      title: 'Posisi Futures & Derivatif (CRUD)',
-      subtitle: 'Kelola kontrak margin perpetual, ubah leverage, batas likuidasi, dan eksekusi tutup paksa.',
+    accounts: {
+      title: 'Manajemen Rekening Deposit & Pembayaran',
+      subtitle: 'Kelola daftar rekening bank tujuan transfer deposit, virtual account, dan QRIS.',
     },
     finance: {
-      title: 'Audit Keuangan & Transaksi (CRUD)',
+      title: 'Audit Keuangan & Transaksi',
       subtitle: 'Verifikasi deposit masuk, persetujuan penarikan rupiah/kripto, dan mutasi saldo.',
     },
-    cms: {
-      title: 'CMS Berita, Edukasi & Pengumuman (CRUD)',
-      subtitle: 'Publikasi wawasan pasar, silabus Akademi Pintu, dan siaran pengumuman darurat.',
+    proofs: {
+      title: 'Bukti Pembayaran & Transfer',
+      subtitle: 'Kelola dan verifikasi lampiran foto/struk bukti transfer dari pengguna.',
     },
-    settings: {
-      title: 'Konfigurasi Sistem & Manajemen Risiko',
-      subtitle: 'Atur mode pemeliharaan, fee trading maker/taker, batas leverage, dan pesan pengumuman.',
+    compounding: {
+      title: 'Compounding & Bunga Harian',
+      subtitle: 'Atur persentase bunga harian (Yield) dan eksekusi pembagian imbal hasil majemuk.',
+    },
+    cms: {
+      title: 'CMS Berita, Edukasi & Pengumuman',
+      subtitle: 'Publikasi wawasan pasar, silabus Akademi Pintu, dan siaran pengumuman darurat.',
     },
   };
 

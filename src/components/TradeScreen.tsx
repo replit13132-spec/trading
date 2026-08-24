@@ -184,150 +184,41 @@ export const TradeScreen: React.FC = () => {
         </div>
       )}
 
-      {/* 5. Trade Panel & Order Book */}
-      <div className="p-3 sm:p-4 grid grid-cols-12 gap-2 sm:gap-3">
-        {/* Left Column: Buy / Sell Form (7 cols) */}
-        <div className="col-span-7 space-y-2.5 sm:space-y-3">
-          {/* Buy / Sell Tabs */}
-          <div className="flex bg-gray-100 p-1 rounded-xl">
-            <button
-              id="spot-tab-buy"
-              onClick={() => setTradeSide('BUY')}
-              className={`flex-1 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
-                tradeSide === 'BUY'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Beli
-            </button>
-            <button
-              id="spot-tab-sell"
-              onClick={() => setTradeSide('SELL')}
-              className={`flex-1 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
-                tradeSide === 'SELL'
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Jual
-            </button>
-          </div>
-
-          {/* Order Type */}
-          <div className="relative">
-            <select
-              value={orderType}
-              onChange={(e) => setOrderType(e.target.value as any)}
-              className="w-full bg-gray-100 hover:bg-gray-200/70 text-gray-900 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl outline-none appearance-none cursor-pointer"
-            >
-              <option value="MARKET">Market Order</option>
-              <option value="LIMIT">Limit Order</option>
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-500 absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-          </div>
-
-          {/* Price Field */}
-          {orderType === 'LIMIT' ? (
-            <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1">Harga (IDR)</label>
-              <input
-                type="number"
-                placeholder="Harga Beli/Jual"
-                value={limitPriceIdr}
-                onChange={(e) => setLimitPriceIdr(e.target.value)}
-                className="w-full bg-gray-100 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl border border-gray-200 focus:border-blue-500 outline-none"
-              />
-            </div>
-          ) : (
-            <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1">Harga</label>
-              <div className="bg-gray-100 text-gray-500 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl">
-                Market Price
-              </div>
-            </div>
-          )}
-
-          {/* Amount Field */}
-          <div>
-            <label className="text-[10px] text-gray-400 font-medium block mb-1">
-              Jumlah ({currentAsset.symbol})
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={amountCoin}
-              onChange={(e) => setAmountCoin(e.target.value)}
-              className="w-full bg-gray-100 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl border border-transparent focus:border-blue-500 outline-none"
-            />
-          </div>
-
-          {/* Quick Balance Fill */}
-          <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-gray-500 pt-0.5">
-            <span>Tersedia:</span>
-            <span className="font-bold text-gray-900 truncate max-w-[100px] sm:max-w-none">
-              {tradeSide === 'BUY'
-                ? formatIdr(userRupiah)
-                : `${userTokenBalance} ${currentAsset.symbol}`}
-            </span>
-          </div>
-
-          {/* Total Cost Estimate */}
-          <div className="bg-gray-50 p-2 rounded-xl text-[10px] sm:text-[11px] space-y-0.5">
-            <div className="flex justify-between text-gray-500 text-[9px] sm:text-[10px]">
-              <span>Total Estimasi:</span>
-              <span className="font-bold text-gray-900">{formatIdr(totalCostIdr)}</span>
-            </div>
-          </div>
-
-          {/* Big Execute Button */}
-          <button
-            id="spot-execute-btn"
-            onClick={handleExecuteTrade}
-            className={`w-full font-bold py-2.5 sm:py-3 rounded-xl shadow-md text-white text-xs transition-all active:scale-[0.99] ${
-              tradeSide === 'BUY'
-                ? 'bg-emerald-600 hover:bg-emerald-700'
-                : 'bg-red-600 hover:bg-red-700'
-            }`}
-          >
-            {tradeSide === 'BUY' ? `Beli ${currentAsset.symbol}` : `Jual ${currentAsset.symbol}`}
-          </button>
-        </div>
-
-        {/* Right Column: Order Book Table (5 cols) */}
-        <div className="col-span-5 border-l border-gray-100 pl-1.5 sm:pl-2 text-[9px] sm:text-[10px]">
-          <div className="flex items-center justify-between text-gray-400 font-bold pb-1 sm:pb-1.5">
-            <span>Harga (IDR)</span>
-            <span>Jumlah</span>
+      {/* 5. Order Book */}
+      <div className="p-3 sm:p-4">
+        <div className="border border-gray-200 rounded-2xl p-3 sm:p-4 bg-gray-50/50 text-[10px] sm:text-xs shadow-sm">
+          <div className="flex items-center justify-between text-gray-400 font-bold pb-2 border-b border-gray-200 mb-2">
+            <span>Buku Order (Harga IDR)</span>
+            <span>Jumlah ({currentAsset.symbol})</span>
           </div>
 
           {/* Red Asks */}
-          <div className="space-y-0.5 sm:space-y-1">
+          <div className="space-y-1">
             {asks.map((ask, idx) => (
               <div key={idx} className="flex items-center justify-between font-mono">
-                <span className="text-red-500 font-semibold">
-                  {(ask.price / 1000).toFixed(0)}K
+                <span className="text-red-500 font-bold">
+                  {formatIdr(ask.price)}
                 </span>
-                <span className="text-gray-600">{ask.amount}</span>
+                <span className="text-gray-600 font-semibold">{ask.amount}</span>
               </div>
             ))}
           </div>
 
           {/* Center Current Price */}
-          <div className="py-1.5 sm:py-2 text-center my-1 bg-gray-50 rounded-lg">
-            <p className="text-[11px] sm:text-xs font-bold text-emerald-600 font-mono">
-              {(currentAsset.priceIdr / 1000).toFixed(0)}K
-            </p>
+          <div className="py-2.5 text-center my-2 bg-emerald-50 border border-emerald-100 rounded-xl">
+            <span className="text-xs sm:text-sm font-black text-emerald-600 font-mono">
+              Harga Terkini: {formatIdr(currentAsset.priceIdr)}
+            </span>
           </div>
 
           {/* Green Bids */}
-          <div className="space-y-0.5 sm:space-y-1">
+          <div className="space-y-1">
             {bids.map((bid, idx) => (
               <div key={idx} className="flex items-center justify-between font-mono">
-                <span className="text-emerald-600 font-semibold">
-                  {(bid.price / 1000).toFixed(0)}K
+                <span className="text-emerald-600 font-bold">
+                  {formatIdr(bid.price)}
                 </span>
-                <span className="text-gray-600">{bid.amount}</span>
+                <span className="text-gray-600 font-semibold">{bid.amount}</span>
               </div>
             ))}
           </div>

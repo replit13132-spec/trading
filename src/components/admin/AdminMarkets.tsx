@@ -16,6 +16,8 @@ import {
   Sliders,
   DollarSign,
   Layers,
+  Upload,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface AdminMarketsProps {
@@ -28,6 +30,25 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [statusMessage, setStatusMessage] = useState('');
+
+  // Image Upload helper
+  const handleImageFileUpload = (file: File, isEdit: boolean) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file maksimal 5MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      if (isEdit) {
+        setEditForm((prev) => ({ ...prev, icon: base64String }));
+      } else {
+        setCreateForm((prev) => ({ ...prev, icon: base64String }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Create Modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -395,10 +416,33 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">URL Ikon (Opsional)</label>
+                <label className="block font-bold text-gray-700 mb-1">Upload Gambar / Ikon Aset dari Device</label>
+                <div className="flex items-center gap-3 mb-2">
+                  {createForm.icon ? (
+                    <img
+                      src={createForm.icon}
+                      alt="Preview"
+                      className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center shrink-0">
+                      <ImageIcon className="w-5 h-5 text-gray-400" />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        handleImageFileUpload(e.target.files[0], false);
+                      }
+                    }}
+                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                  />
+                </div>
                 <input
-                  type="url"
-                  placeholder="https://assets.coingecko.com/..."
+                  type="text"
+                  placeholder="Atau masukkan URL gambar (https://...)"
                   value={createForm.icon}
                   onChange={(e) => setCreateForm({ ...createForm, icon: e.target.value })}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-blue-500"
@@ -521,9 +565,33 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">URL Ikon Aset</label>
+                <label className="block font-bold text-gray-700 mb-1">Upload Gambar / Ikon Aset dari Device</label>
+                <div className="flex items-center gap-3 mb-2">
+                  {editForm.icon ? (
+                    <img
+                      src={editForm.icon}
+                      alt="Preview"
+                      className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center shrink-0">
+                      <ImageIcon className="w-5 h-5 text-gray-400" />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        handleImageFileUpload(e.target.files[0], true);
+                      }
+                    }}
+                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                  />
+                </div>
                 <input
-                  type="url"
+                  type="text"
+                  placeholder="Atau masukkan URL gambar (https://...)"
                   value={editForm.icon}
                   onChange={(e) => setEditForm({ ...editForm, icon: e.target.value })}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-blue-500"

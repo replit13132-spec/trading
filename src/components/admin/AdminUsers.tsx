@@ -279,6 +279,9 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                             )}
                           </div>
                           <p className="text-[11px] text-gray-400">{user.email}</p>
+                          {user.nik && (
+                            <p className="text-[10px] text-slate-500 font-mono font-medium">NIK: {user.nik}</p>
+                          )}
                         </div>
                       </div>
                     </td>

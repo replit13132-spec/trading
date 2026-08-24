@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import {
   ArrowLeft,
   User,
   Mail,
-  Smartphone,
+  CreditCard,
   Lock,
   Eye,
   EyeOff,
@@ -14,6 +14,13 @@ import {
   AlertCircle,
   Gift,
   Check,
+  Camera,
+  ScanFace,
+  RefreshCw,
+  Sparkles,
+  Video,
+  UserCheck,
+  X,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -26,8 +33,8 @@ export const RegisterScreen: React.FC = () => {
   } = useApp();
 
   const [name, setName] = useState('');
+  const [nik, setNik] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +45,112 @@ export const RegisterScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Face Scan State (Formalitas Biometrik)
+  const [faceScanDone, setFaceScanDone] = useState(false);
+  const [faceScanImage, setFaceScanImage] = useState<string | null>(null);
+  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanStatusText, setScanStatusText] = useState('Posisikan wajah Anda di tengah lingkaran...');
+  const [isRealCamera, setIsRealCamera] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const activeStreamRef = useRef<MediaStream | null>(null);
+
+  const stopCameraStream = () => {
+    if (activeStreamRef.current) {
+      activeStreamRef.current.getTracks().forEach((track) => track.stop());
+      activeStreamRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCameraStream();
+    };
+  }, []);
+
+  const openFaceScanModal = async () => {
+    setIsFaceModalOpen(true);
+    setIsScanning(false);
+    setScanProgress(0);
+    setScanStatusText('Siap melakukan verifikasi wajah biometrik');
+
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+        });
+        activeStreamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        }
+        setIsRealCamera(true);
+      } else {
+        setIsRealCamera(false);
+      }
+    } catch (err) {
+      console.log('Real camera stream not available, falling back to simulated scan:', err);
+      setIsRealCamera(false);
+    }
+  };
+
+  const closeFaceScanModal = () => {
+    stopCameraStream();
+    setIsFaceModalOpen(false);
+    setIsScanning(false);
+  };
+
+  const startFaceScanProcess = () => {
+    setIsScanning(true);
+    setScanProgress(0);
+    setScanStatusText('Mendeteksi keberadaan wajah...');
+
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += 10;
+      setScanProgress(currentProgress);
+
+      if (currentProgress === 30) {
+        setScanStatusText('Menganalisis titik kontur biometrik...');
+      } else if (currentProgress === 60) {
+        setScanStatusText('Memverifikasi keselarasan wajah dengan NIK...');
+      } else if (currentProgress === 90) {
+        setScanStatusText('Menyelesaikan verifikasi keamanan...');
+      } else if (currentProgress >= 100) {
+        clearInterval(interval);
+        setScanStatusText('Verifikasi Wajah Berhasil! ✓');
+
+        if (isRealCamera && videoRef.current && canvasRef.current) {
+          try {
+            const canvas = canvasRef.current;
+            const video = videoRef.current;
+            canvas.width = video.videoWidth || 300;
+            canvas.height = video.videoHeight || 300;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              const dataUrl = canvas.toDataURL('image/jpeg');
+              setFaceScanImage(dataUrl);
+            }
+          } catch (e) {
+            console.error('Error snapshot canvas:', e);
+          }
+        }
+
+        setTimeout(() => {
+          setFaceScanDone(true);
+          stopCameraStream();
+          setIsFaceModalOpen(false);
+          setIsScanning(false);
+          confetti({ particleCount: 50, spread: 60 });
+        }, 800);
+      }
+    }, 250);
+  };
 
   // Password rules validation
   const hasMinLength = password.length >= 8;
@@ -58,23 +171,43 @@ export const RegisterScreen: React.FC = () => {
     e.preventDefault();
 
     if (!name.trim()) {
-      setErrorMsg('Nama lengkap wajib diisi');
+      setErrorMsg('Nama Lengkap (Sesuai KTP) wajib diisi');
       return;
     }
-    if (!email.trim() && !phone.trim()) {
-      setErrorMsg('Email atau Nomor HP wajib diisi');
+
+    const cleanNik = nik.trim();
+    if (!cleanNik) {
+      setErrorMsg('NIK (Nomor Induk Kependudukan) wajib diisi');
       return;
     }
+    if (cleanNik.length !== 16 || !/^\d+$/.test(cleanNik)) {
+      setErrorMsg('NIK harus terdiri dari 16 digit angka');
+      return;
+    }
+
+    if (!email.trim()) {
+      setErrorMsg('Alamat Email aktif wajib diisi');
+      return;
+    }
+
     if (!isPasswordValid) {
       setErrorMsg('Password harus minimal 8 karakter dengan kombinasi huruf dan angka');
       return;
     }
+
     if (!passwordsMatch) {
       setErrorMsg('Konfirmasi password tidak cocok');
       return;
     }
+
     if (!agreeTerms) {
       setErrorMsg('Anda harus menyetujui Syarat & Ketentuan Pintu');
+      return;
+    }
+
+    if (!faceScanDone) {
+      setErrorMsg('Harap lakukan Scan Muka (Verifikasi Wajah Biometrik) terlebih dahulu');
+      openFaceScanModal();
       return;
     }
 
@@ -83,9 +216,10 @@ export const RegisterScreen: React.FC = () => {
 
     try {
       const res = await registerUser(
-        name,
-        email,
-        phone,
+        name.trim(),
+        cleanNik,
+        email.trim(),
+        password,
         referralCode ? referralCode.trim() : undefined
       );
 
@@ -156,22 +290,7 @@ export const RegisterScreen: React.FC = () => {
         </button>
       </div>
 
-      {/* 2. Welcome Promo Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-5 py-3.5 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-          <Gift className="w-5 h-5 text-amber-300 animate-bounce" />
-        </div>
-        <div className="text-left">
-          <p className="text-[11px] font-extrabold tracking-wide text-amber-300 uppercase">
-            Promo Pendaftar Baru
-          </p>
-          <p className="text-xs font-semibold text-blue-50">
-            Dapatkan bonus saldo hingga <b>Rp 10.000.000</b> & <b>100 USDT</b> gratis!
-          </p>
-        </div>
-      </div>
-
-      {/* 3. Form Body */}
+      {/* 2. Form Body */}
       <div className="px-6 py-6 flex-1 flex flex-col justify-center">
         {/* Title */}
         <div className="mb-5 text-left">
@@ -199,7 +318,7 @@ export const RegisterScreen: React.FC = () => {
         )}
 
         <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-          {/* Nama Lengkap */}
+          {/* 1. Nama Lengkap */}
           <div>
             <label className="block text-xs font-bold text-gray-700 mb-1">
               Nama Lengkap (Sesuai KTP)
@@ -220,7 +339,98 @@ export const RegisterScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Email */}
+          {/* 2. NIK (Nomor Induk Kependudukan) */}
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-1">
+              NIK (Nomor Induk Kependudukan - 16 Digit)
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <CreditCard className="w-4 h-4" />
+              </div>
+              <input
+                id="register-nik"
+                type="text"
+                maxLength={16}
+                value={nik}
+                onChange={(e) => setNik(e.target.value.replace(/\D/g, ''))}
+                placeholder="Contoh: 3171012304950001"
+                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-mono font-bold text-gray-900 outline-none transition-all"
+                required
+              />
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1">Sesuai KTP resmi (16 digit angka)</p>
+          </div>
+
+          {/* 2b. Scan Wajah / Face Scan (KYC Formalitas) */}
+          <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200/80 rounded-2xl p-3.5 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                  <ScanFace className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-extrabold text-gray-900 flex items-center gap-1">
+                    <span>Scan Wajah Biometrik</span>
+                    <span className="text-[9px] bg-blue-100 text-blue-700 font-extrabold px-1.5 py-0.5 rounded">
+                      Formalitas KYC
+                    </span>
+                  </h4>
+                  <p className="text-[10px] text-gray-500">
+                    Verifikasi identitas pendaftar baru via kamera
+                  </p>
+                </div>
+              </div>
+
+              {faceScanDone && (
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Verified</span>
+                </span>
+              )}
+            </div>
+
+            {faceScanDone ? (
+              <div className="bg-white border border-emerald-200 rounded-xl p-2.5 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500 bg-gray-100 flex items-center justify-center shrink-0">
+                    {faceScanImage ? (
+                      <img src={faceScanImage} alt="Foto Scan Wajah" className="w-full h-full object-cover" />
+                    ) : (
+                      <UserCheck className="w-5 h-5 text-emerald-600" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-900 flex items-center gap-1">
+                      <span>Pindaian Wajah Berhasil</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    </p>
+                    <p className="text-[10px] text-gray-400">Telah tersimpan aman untuk verifikasi akun Pintu</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openFaceScanModal}
+                  className="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Ulangi</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={openFaceScanModal}
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+              >
+                <Camera className="w-4 h-4" />
+                <span>Buka Kamera & Scan Wajah</span>
+              </button>
+            )}
+          </div>
+
+          {/* 3. Alamat Email */}
           <div>
             <label className="block text-xs font-bold text-gray-700 mb-1">
               Alamat Email Aktif
@@ -237,26 +447,6 @@ export const RegisterScreen: React.FC = () => {
                 placeholder="nama@email.com"
                 className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
-              />
-            </div>
-          </div>
-
-          {/* Nomor HP */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Nomor Handphone (WhatsApp)
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                <Smartphone className="w-4 h-4" />
-              </div>
-              <input
-                id="register-phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="08123456789"
-                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
               />
             </div>
           </div>
@@ -333,38 +523,6 @@ export const RegisterScreen: React.FC = () => {
             )}
           </div>
 
-          {/* Referral Code Toggle */}
-          <div>
-            {!showReferralInput ? (
-              <button
-                type="button"
-                onClick={() => setShowReferralInput(true)}
-                className="text-xs font-bold text-[#0052FF] hover:underline flex items-center gap-1 pt-1"
-              >
-                <Tag className="w-3.5 h-3.5" />
-                <span>Punya Kode Referral? (Dapatkan Bonus Tambahan)</span>
-              </button>
-            ) : (
-              <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-100">
-                <label className="block text-xs font-bold text-blue-900 mb-1">
-                  Kode Referral
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={referralCode}
-                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    placeholder="Contoh: PINTU2026"
-                    className="flex-1 bg-white border border-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-900 tracking-wider uppercase outline-none"
-                  />
-                  <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg flex items-center">
-                    ✓ Aktif
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Terms Checkbox */}
           <div className="flex items-start gap-2 pt-2">
             <input
@@ -401,66 +559,10 @@ export const RegisterScreen: React.FC = () => {
             )}
           </button>
         </form>
-
-        {/* Divider */}
-        <div className="relative my-5">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
-          </div>
-          <div className="relative flex justify-center text-[11px] uppercase">
-            <span className="bg-slate-50 px-3 text-gray-400 font-semibold">
-              atau daftar dengan
-            </span>
-          </div>
-        </div>
-
-        {/* Social Register */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            id="btn-register-google"
-            onClick={() => handleSocialRegister('google')}
-            disabled={loading}
-            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 active:scale-[0.98] py-2.5 px-3 rounded-xl text-xs font-bold text-gray-700 shadow-sm transition-all"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path
-                fill="#4285F4"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-              />
-            </svg>
-            <span>Google</span>
-          </button>
-
-          <button
-            type="button"
-            id="btn-register-apple"
-            onClick={() => handleSocialRegister('apple')}
-            disabled={loading}
-            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 active:scale-[0.98] py-2.5 px-3 rounded-xl text-xs font-bold text-gray-700 shadow-sm transition-all"
-          >
-            <svg className="w-4 h-4 fill-current text-gray-900" viewBox="0 0 24 24">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.88c.64-.78 1.08-1.86.96-2.95-1 .04-2.13.67-2.79 1.45-.58.67-1.1 1.76-.96 2.82 1.11.09 2.16-.54 2.79-1.32z" />
-            </svg>
-            <span>Apple ID</span>
-          </button>
-        </div>
       </div>
 
       {/* 4. Footer */}
-      <div className="bg-white px-6 py-5 border-t border-gray-100 text-center space-y-4">
+      <div className="bg-white px-6 py-5 border-t border-gray-100 text-center">
         <p className="text-xs text-gray-600">
           Sudah punya akun Pintu?{' '}
           <button
@@ -471,18 +573,119 @@ export const RegisterScreen: React.FC = () => {
             Masuk di sini
           </button>
         </p>
-
-        <div className="pt-2 border-t border-gray-100 flex items-center justify-center gap-3 text-[10px] text-gray-400 font-medium">
-          <span className="flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            Terdaftar Bappebti
-          </span>
-          <span>•</span>
-          <span>Kominfo</span>
-          <span>•</span>
-          <span>ISO 27001</span>
-        </div>
       </div>
+
+      {/* Modal Camera Face Scanner (Formalitas KYC) */}
+      {isFaceModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl relative text-center space-y-4 animate-in fade-in zoom-in-95 duration-150 my-auto">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={closeFaceScanModal}
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-100 transition-all z-20"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div>
+              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-inner">
+                <ScanFace className="w-6 h-6 animate-pulse" />
+              </div>
+              <h3 className="text-base font-extrabold text-gray-900">Verifikasi Wajah Biometrik</h3>
+              <p className="text-xs text-gray-500 mt-0.5">Formalitas Pendaftaran Akun Pintu</p>
+            </div>
+
+            {/* Camera Frame Container */}
+            <div className="relative w-56 h-64 mx-auto rounded-3xl overflow-hidden border-4 border-blue-600 bg-slate-900 shadow-xl flex items-center justify-center">
+              {/* Real Video element */}
+              <video
+                ref={videoRef}
+                playsInline
+                muted
+                className={`w-full h-full object-cover ${isRealCamera ? 'block' : 'hidden'}`}
+              />
+
+              {/* Simulated Face Outline & Mesh if no real video stream */}
+              {!isRealCamera && (
+                <div className="flex flex-col items-center justify-center text-blue-400 space-y-2 p-4">
+                  <div className="relative w-32 h-40 border-2 border-dashed border-blue-400/80 rounded-[50%] flex items-center justify-center animate-pulse">
+                    <User className="w-20 h-20 text-blue-300 opacity-60" />
+                    {/* Face Mesh Points */}
+                    <div className="absolute top-10 left-8 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
+                    <div className="absolute top-10 right-8 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
+                    <div className="absolute bottom-12 w-3 h-1 bg-blue-400 rounded-full" />
+                  </div>
+                  <p className="text-[10px] text-blue-200 font-semibold">Simulasi Sensor Kamera Wajah</p>
+                </div>
+              )}
+
+              {/* Oval Face Guide Overlay */}
+              <div className="absolute inset-0 border-[24px] border-black/40 pointer-events-none rounded-3xl flex items-center justify-center">
+                <div className="w-40 h-52 border-2 border-blue-400/90 rounded-[50%] shadow-[0_0_20px_rgba(59,130,246,0.5)] relative overflow-hidden">
+                  {/* Scanning beam line */}
+                  {isScanning && (
+                    <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] animate-bounce" />
+                  )}
+                </div>
+              </div>
+
+              {/* HUD Target corners */}
+              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-blue-400" />
+              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-blue-400" />
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-blue-400" />
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-blue-400" />
+            </div>
+
+            {/* Hidden canvas for capturing frame */}
+            <canvas ref={canvasRef} className="hidden" />
+
+            {/* Scanning Progress & Status */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold text-gray-800">{scanStatusText}</p>
+
+              {isScanning ? (
+                <div className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden p-0.5">
+                  <div
+                    className="bg-gradient-to-r from-blue-600 to-emerald-500 h-full rounded-full transition-all duration-300"
+                    style={{ width: `${scanProgress}%` }}
+                  />
+                </div>
+              ) : (
+                <p className="text-[11px] text-gray-400">
+                  {isRealCamera
+                    ? 'Kamera terhubung. Tekan tombol untuk memindai wajah.'
+                    : 'Arahkan pandangan ke layar lalu tekan Mulai Scan.'}
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="pt-2">
+              {!isScanning ? (
+                <button
+                  type="button"
+                  onClick={startFaceScanProcess}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-blue-500/25 text-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>Mulai Scan Wajah Sekarang</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full bg-gray-100 text-gray-400 font-bold py-3 rounded-2xl text-xs flex items-center justify-center gap-2"
+                >
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Memindai... ({scanProgress}%)</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
