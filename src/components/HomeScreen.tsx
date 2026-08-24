@@ -18,6 +18,7 @@ import {
   AlertTriangle,
   BookOpen,
   Sparkles,
+  FileText,
 } from 'lucide-react';
 
 export const HomeScreen: React.FC = () => {
@@ -61,22 +62,18 @@ export const HomeScreen: React.FC = () => {
       {/* Quick Action Grid (2 rows x 4 icons) */}
       <div className="px-3 sm:px-4 py-2 sm:py-3">
         <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 shadow-sm grid grid-cols-4 gap-y-3 sm:gap-y-4 gap-x-1 sm:gap-x-2 text-center">
-          {/* Futures Lite */}
+          {/* Transaksi */}
           <button
-            id="quick-futures-lite"
+            id="quick-transaksi"
             onClick={() => {
-              setMode('pro');
-              setActiveTab('futures');
+              setActiveTab('transaksi');
             }}
             className="flex flex-col items-center group p-1"
           >
             <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
-              <span className="absolute -top-1.5 -right-1 bg-red-500 text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.2 rounded-full ring-2 ring-white">
-                Baru
-              </span>
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Futures Lite</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Transaksi</span>
           </button>
 
           {/* Earn */}
@@ -381,18 +378,17 @@ export const HomeScreen: React.FC = () => {
         <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-4 text-slate-950 shadow-md relative overflow-hidden">
           <div className="relative z-10">
             <span className="bg-slate-950/20 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-              Event Spesial
+              Program Utama
             </span>
-            <h3 className="text-base font-extrabold mt-2 text-slate-950">Trading Futures & Dapatkan Cashback hingga 100 USDT</h3>
-            <p className="text-xs text-amber-950/90 font-medium mt-1">Mulai trading BTC/USDT dengan leverage hingga 25x sekarang.</p>
+            <h3 className="text-base font-extrabold mt-2 text-slate-950">Compounding Modal & Keuntungan 1% Setiap Hari</h3>
+            <p className="text-xs text-amber-950/90 font-medium mt-1">Pantau riwayat modal, penyimpanan compounding, dan hasil profit harian Anda.</p>
             <button
               onClick={() => {
-                setMode('pro');
-                setActiveTab('futures');
+                setActiveTab('transaksi');
               }}
               className="mt-3 bg-slate-950 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow hover:bg-slate-800 transition-colors"
             >
-              Mulai Trading
+              Lihat Transaksi
             </button>
           </div>
           <Sparkles className="absolute -right-4 -bottom-4 w-28 h-28 text-slate-950/10" />

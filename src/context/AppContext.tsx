@@ -8,8 +8,8 @@ interface AppContextType {
   setIsOnboarded: (val: boolean) => void;
   authScreen: 'none' | 'login' | 'register';
   setAuthScreen: (screen: 'none' | 'login' | 'register') => void;
-  activeTab: 'beranda' | 'market' | 'trade' | 'futures' | 'wallet' | 'admin';
-  setActiveTab: (tab: 'beranda' | 'market' | 'trade' | 'futures' | 'wallet' | 'admin') => void;
+  activeTab: 'beranda' | 'market' | 'trade' | 'transaksi' | 'wallet' | 'admin';
+  setActiveTab: (tab: 'beranda' | 'market' | 'trade' | 'transaksi' | 'wallet' | 'admin') => void;
   currentUser: UserAccount | null;
   allUsers: UserAccount[];
   markets: Asset[];
@@ -62,7 +62,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [mode, setMode] = useState<'pintu' | 'pro'>('pintu');
   const [isOnboarded, setIsOnboarded] = useState<boolean>(false);
   const [authScreen, setAuthScreen] = useState<'none' | 'login' | 'register'>('none');
-  const [activeTab, setActiveTab] = useState<'beranda' | 'market' | 'trade' | 'futures' | 'wallet' | 'admin'>('beranda');
+  const [activeTab, setActiveTab] = useState<'beranda' | 'market' | 'trade' | 'transaksi' | 'wallet' | 'admin'>('beranda');
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
   const [allUsers, setAllUsers] = useState<UserAccount[]>([]);
   const [markets, setMarkets] = useState<Asset[]>([]);

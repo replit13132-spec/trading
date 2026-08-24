@@ -5,7 +5,7 @@ import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
 import { MarketScreen } from './components/MarketScreen';
 import { TradeScreen } from './components/TradeScreen';
-import { FuturesScreen } from './components/FuturesScreen';
+import { TransactionScreen } from './components/TransactionScreen';
 import { WalletScreen } from './components/WalletScreen';
 import { AdminDashboard } from './components/AdminDashboard';
 import { OnboardingScreen } from './components/OnboardingScreen';
@@ -54,8 +54,8 @@ const MainContent: React.FC = () => {
           <MarketScreen />
         ) : activeTab === 'trade' ? (
           <TradeScreen />
-        ) : activeTab === 'futures' ? (
-          <FuturesScreen />
+        ) : activeTab === 'transaksi' ? (
+          <TransactionScreen />
         ) : activeTab === 'wallet' ? (
           <WalletScreen />
         ) : (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Home, BarChart2, ArrowLeftRight, TrendingUp, Wallet, Shield } from 'lucide-react';
+import { Home, BarChart2, ArrowLeftRight, FileText, Wallet, Shield } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const { activeTab, setActiveTab, currentUser } = useApp();
@@ -22,9 +22,9 @@ export const BottomNav: React.FC = () => {
       icon: ArrowLeftRight,
     },
     {
-      id: 'futures',
-      label: 'Futures',
-      icon: TrendingUp,
+      id: 'transaksi',
+      label: 'Transaksi',
+      icon: FileText,
     },
     {
       id: 'wallet',
