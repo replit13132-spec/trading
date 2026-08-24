@@ -1,0 +1,6 @@
+{
+  "name": "Pintu Pro Trading & Investasi",
+  "description": "Aplikasi investasi dan trading crypto, saham tokenized, spot, dan futures dengan tampilan presisi mirip Pintu serta Admin Dashboard lengkap.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
