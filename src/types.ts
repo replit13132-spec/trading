@@ -68,10 +68,18 @@ export interface SpotOrder {
   timestamp: string;
 }
 
+export interface CapitalBatch {
+  id: string;
+  amount: number;
+  createdAt: string;
+  unlockDate: string;
+  isUnlocked?: boolean;
+}
+
 export interface Transaction {
   id: string;
   userId: string;
-  type: 'DEPOSIT' | 'WITHDRAW' | 'TRANSFER' | 'TRADE_SPOT' | 'FUTURES_PNL';
+  type: 'DEPOSIT' | 'WITHDRAW' | 'TRANSFER' | 'TRADE_SPOT' | 'FUTURES_PNL' | 'WITHDRAW_PROFIT' | 'WITHDRAW_CAPITAL' | 'RECOMPOUND' | 'REWARD';
   amount: number;
   currency: 'IDR' | 'USDT' | string;
   method?: string;
@@ -103,6 +111,8 @@ export interface UserAccount {
     usdt: number;
     tokens?: Record<string, number>;
   };
+  compoundingProfitIdr?: number;
+  capitalBatches?: CapitalBatch[];
   proBalances: {
     idr: number;
     usdt: number;

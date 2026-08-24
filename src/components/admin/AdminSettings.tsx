@@ -142,7 +142,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
           {/* Fees */}
           <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-              <DollarSign className="w-4 h-4 text-blue-600" />
+              <DollarSign className="w-4 h-4 text-amber-800" />
               <h3 className="font-bold text-sm text-gray-900">Biaya Transaksi & Maker/Taker</h3>
             </div>
 
@@ -154,7 +154,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   step="0.01"
                   value={config.makerFeePercent}
                   onChange={(e) => setConfig({ ...config, makerFeePercent: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
@@ -164,7 +164,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   step="0.01"
                   value={config.takerFeePercent}
                   onChange={(e) => setConfig({ ...config, takerFeePercent: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -176,7 +176,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   type="number"
                   value={config.withdrawalFeeIdr}
                   onChange={(e) => setConfig({ ...config, withdrawalFeeIdr: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
@@ -185,7 +185,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   type="number"
                   value={config.minDepositIdr}
                   onChange={(e) => setConfig({ ...config, minDepositIdr: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -205,7 +205,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   type="number"
                   value={config.maxFuturesLeverage}
                   onChange={(e) => setConfig({ ...config, maxFuturesLeverage: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
@@ -215,7 +215,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                   step="0.05"
                   value={config.liquidationMarginRate}
                   onChange={(e) => setConfig({ ...config, liquidationMarginRate: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -226,7 +226,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
                 type="text"
                 value={config.announcementBanner}
                 onChange={(e) => setConfig({ ...config, announcementBanner: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-extrabold shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-3 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-2xl text-xs font-extrabold shadow-lg shadow-amber-500/25 transition-all flex items-center gap-2 disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>Simpan Semua Perubahan Sistem</span>

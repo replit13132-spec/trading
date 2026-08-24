@@ -8,7 +8,7 @@ import { Asset } from '../types';
 export const MarketScreen: React.FC = () => {
   const { markets, setSelectedMarket, setActiveTab, setMode, formatIdr } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveMarketTab] = useState<'Watchlist' | 'Pro Spot' | 'Tokenized Assets' | 'Futures' | 'Stocks'>('Pro Spot');
+  const [marketTab, setMarketTab] = useState<'Watchlist' | 'Pro Spot' | 'Tokenized Assets' | 'Futures' | 'Stocks'>('Pro Spot');
   const [filterPill, setFilterPill] = useState<'Semua' | 'Trending' | 'Gainers' | 'Losers'>('Semua');
 
   // Filter top highlight cards (PTU, BTC, ETH)
@@ -18,9 +18,9 @@ export const MarketScreen: React.FC = () => {
   const filteredAssets = markets
     .filter((asset) => {
       // Tab filter
-      if (activeTab === 'Stocks' || activeTab === 'Tokenized Assets') {
+      if (marketTab === 'Stocks' || marketTab === 'Tokenized Assets') {
         if (asset.category !== 'stocks') return false;
-      } else if (activeTab === 'Watchlist') {
+      } else if (marketTab === 'Watchlist') {
         if (!asset.isFavorite) return false;
       }
 
@@ -37,7 +37,7 @@ export const MarketScreen: React.FC = () => {
     .sort((a, b) => {
       if (filterPill === 'Trending') return Math.abs(b.change24h) - Math.abs(a.change24h);
       if (filterPill === 'Gainers') return b.change24h - a.change24h;
-      if (filterPill === 'Losers') return a.change24h - b.change24h;
+      if (filterPill === 'Losers') return b.change24h - a.change24h;
       return 0;
     });
 
@@ -59,7 +59,7 @@ export const MarketScreen: React.FC = () => {
             placeholder="Cari aset..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white text-gray-900 placeholder-gray-400 text-xs pl-10 pr-4 py-2.5 rounded-xl border border-transparent focus:border-blue-500 outline-none transition-all"
+            className="w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white text-gray-900 placeholder-gray-400 text-xs pl-10 pr-4 py-2.5 rounded-xl border border-transparent focus:border-amber-500 outline-none transition-all"
           />
         </div>
       </div>
@@ -70,10 +70,10 @@ export const MarketScreen: React.FC = () => {
           <button
             key={tab}
             id={`market-tab-${tab.toLowerCase().replace(/\s+/g, '-')}`}
-            onClick={() => setActiveMarketTab(tab)}
+            onClick={() => setMarketTab(tab)}
             className={`pb-2.5 whitespace-nowrap transition-colors relative ${
-              activeTab === tab
-                ? 'text-gray-900 font-bold border-b-2 border-blue-600'
+              marketTab === tab
+                ? 'text-gray-900 font-bold border-b-2 border-amber-500'
                 : 'text-gray-400 hover:text-gray-700'
             }`}
           >
@@ -88,7 +88,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Semua')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Semua'
-              ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -98,7 +98,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Trending')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border flex items-center gap-1 whitespace-nowrap transition-all ${
             filterPill === 'Trending'
-              ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -108,7 +108,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Gainers')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Gainers'
-              ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -118,7 +118,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Losers')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Losers'
-              ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >

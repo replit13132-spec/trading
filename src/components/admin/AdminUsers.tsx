@@ -206,7 +206,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
               placeholder="Cari nama atau email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -214,7 +214,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
           <select
             value={roleFilter}
             onChange={(e: any) => setRoleFilter(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="all">Semua Role ({allUsers.length})</option>
             <option value="admin">Administrator</option>
@@ -225,7 +225,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
         {/* Add User Button */}
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
+          className="px-4 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
         >
           <Plus className="w-4 h-4" />
           <span>Buat Akun Baru</span>
@@ -261,7 +261,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                   <tr
                     key={user.id}
                     className={`transition-colors ${
-                      isCurrent ? 'bg-blue-50/40 hover:bg-blue-50/70' : 'hover:bg-gray-50'
+                      isCurrent ? 'bg-amber-50/40 hover:bg-amber-50/70' : 'hover:bg-gray-50'
                     }`}
                   >
                     <td className="px-4 py-3">
@@ -273,7 +273,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                           <div className="flex items-center gap-1.5">
                             <span className="font-bold text-gray-900">{user.name}</span>
                             {isCurrent && (
-                              <span className="text-[9px] font-extrabold bg-blue-600 text-white px-1.5 py-0.2 rounded-md">
+                              <span className="text-[9px] font-extrabold bg-amber-500 text-slate-950 font-extrabold text-white px-1.5 py-0.2 rounded-md">
                                 AKTIF
                               </span>
                             )}
@@ -322,7 +322,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     <td className="px-4 py-3 text-right font-mono font-bold text-gray-900">
                       {formatIdr(user.balances?.idr || 0)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono font-bold text-blue-600">
+                    <td className="px-4 py-3 text-right font-mono font-bold text-amber-800">
                       ${formatUsdt(user.balances?.usdt || 0)}
                     </td>
                     <td className="px-4 py-3 text-right font-mono font-bold text-purple-600">
@@ -341,7 +341,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                         )}
                         <button
                           onClick={() => handleOpenEdit(user)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg transition-colors"
                           title="Edit Akun & Saldo"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -387,7 +387,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                   placeholder="Contoh: Budi Santoso"
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     placeholder="budi@gmail.com"
                     value={createForm.email}
                     onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -407,7 +407,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.role}
                     onChange={(e: any) => setCreateForm({ ...createForm, role: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="user">User Biasa (Trader)</option>
                     <option value="admin">Administrator Master</option>
@@ -422,7 +422,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     type="number"
                     value={createForm.initialIdr}
                     onChange={(e) => setCreateForm({ ...createForm, initialIdr: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -431,7 +431,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     type="number"
                     value={createForm.initialUsdt}
                     onChange={(e) => setCreateForm({ ...createForm, initialUsdt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -446,7 +446,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Simpan Akun
                 </button>
@@ -481,7 +481,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     required
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -490,7 +490,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     type="email"
                     value={editForm.email}
                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -501,7 +501,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                   <select
                     value={editForm.role}
                     onChange={(e: any) => setEditForm({ ...editForm, role: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="user">User Biasa</option>
                     <option value="admin">Administrator</option>
@@ -512,7 +512,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                   <select
                     value={editForm.isVerified ? 'true' : 'false'}
                     onChange={(e) => setEditForm({ ...editForm, isVerified: e.target.value === 'true' })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="true">Terverifikasi (KYC Approved)</option>
                     <option value="false">Belum Verifikasi (Unverified)</option>
@@ -530,7 +530,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     type="number"
                     value={editForm.idr}
                     onChange={(e) => setEditForm({ ...editForm, idr: e.target.value })}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -541,7 +541,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                       step="any"
                       value={editForm.usdt}
                       onChange={(e) => setEditForm({ ...editForm, usdt: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
                   <div>
@@ -551,7 +551,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                       step="any"
                       value={editForm.futuresUsdt}
                       onChange={(e) => setEditForm({ ...editForm, futuresUsdt: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
                 </div>
@@ -567,7 +567,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Perbarui Akun
                 </button>

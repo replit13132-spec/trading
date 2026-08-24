@@ -167,14 +167,14 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
               placeholder="Cari simbol atau trader..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
           <select
             value={sideFilter}
             onChange={(e: any) => setSideFilter(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="all">Semua Sisi ({positions.length})</option>
             <option value="LONG">LONG (Beli Naik)</option>
@@ -184,7 +184,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
+          className="px-4 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
         >
           <Plus className="w-4 h-4" />
           <span>Suntikkan Kontrak Futures</span>
@@ -197,7 +197,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
           <h3 className="font-bold text-sm text-gray-900">
             Daftar Kontrak Futures Terbuka ({filteredPositions.length} Kontrak)
           </h3>
-          <button onClick={fetchPositions} className="text-xs font-bold text-blue-600 hover:underline">
+          <button onClick={fetchPositions} className="text-xs font-bold text-amber-800 hover:underline">
             Refresh Table
           </button>
         </div>
@@ -240,7 +240,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-center font-mono font-bold text-blue-600">
+                    <td className="px-4 py-3 text-center font-mono font-bold text-amber-800">
                       {pos.leverage}x
                     </td>
                     <td className="px-4 py-3 text-right font-mono">
@@ -268,7 +268,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => handleOpenEdit(pos)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                          className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg"
                           title="Sesuaikan Margin / Likuidasi"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -315,7 +315,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.userId}
                     onChange={(e) => setCreateForm({ ...createForm, userId: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     {allUsers.map((u) => (
                       <option key={u.id} value={u.id}>
@@ -329,7 +329,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.symbol}
                     onChange={(e) => setCreateForm({ ...createForm, symbol: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     {markets.map((m) => (
                       <option key={m.id} value={m.symbol}>
@@ -346,7 +346,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.side}
                     onChange={(e: any) => setCreateForm({ ...createForm, side: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="LONG">LONG (Beli Naik)</option>
                     <option value="SHORT">SHORT (Jual Turun)</option>
@@ -357,7 +357,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.leverage}
                     onChange={(e) => setCreateForm({ ...createForm, leverage: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="2">2x</option>
                     <option value="5">5x</option>
@@ -377,7 +377,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     required
                     value={createForm.margin}
                     onChange={(e) => setCreateForm({ ...createForm, margin: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -388,7 +388,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     placeholder="Auto mark price"
                     value={createForm.entryPrice}
                     onChange={(e) => setCreateForm({ ...createForm, entryPrice: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -403,7 +403,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Buka Posisi
                 </button>
@@ -434,7 +434,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     type="number"
                     value={editForm.leverage}
                     onChange={(e) => setEditForm({ ...editForm, leverage: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -444,7 +444,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     step="any"
                     value={editForm.margin}
                     onChange={(e) => setEditForm({ ...editForm, margin: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -457,7 +457,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     step="any"
                     value={editForm.liquidationPrice}
                     onChange={(e) => setEditForm({ ...editForm, liquidationPrice: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -467,7 +467,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                     step="any"
                     value={editForm.pnlUsdt}
                     onChange={(e) => setEditForm({ ...editForm, pnlUsdt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -482,7 +482,7 @@ export const AdminFutures: React.FC<AdminFuturesProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Perbarui Posisi
                 </button>

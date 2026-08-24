@@ -164,14 +164,14 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
               placeholder="Cari simbol atau trader..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e: any) => setStatusFilter(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="all">Semua Status ({orders.length})</option>
             <option value="FILLED">FILLED (Tereksekusi)</option>
@@ -182,7 +182,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
+          className="px-4 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
         >
           <Plus className="w-4 h-4" />
           <span>Suntikkan Order Manual</span>
@@ -197,7 +197,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
           </h3>
           <button
             onClick={fetchOrders}
-            className="text-xs font-bold text-blue-600 hover:underline"
+            className="text-xs font-bold text-amber-800 hover:underline"
           >
             Refresh Table
           </button>
@@ -267,7 +267,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                     <div className="flex items-center justify-center gap-1.5">
                       <button
                         onClick={() => handleOpenEdit(order)}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                        className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg"
                         title="Edit Order"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -316,7 +316,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                   <select
                     value={createForm.userId}
                     onChange={(e) => setCreateForm({ ...createForm, userId: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     {allUsers.map((u) => (
                       <option key={u.id} value={u.id}>
@@ -330,7 +330,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                   <select
                     value={createForm.symbol}
                     onChange={(e) => setCreateForm({ ...createForm, symbol: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     {markets.map((m) => (
                       <option key={m.id} value={m.symbol}>
@@ -347,7 +347,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                   <select
                     value={createForm.side}
                     onChange={(e: any) => setCreateForm({ ...createForm, side: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="BUY">BUY (Beli)</option>
                     <option value="SELL">SELL (Jual)</option>
@@ -358,7 +358,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                   <select
                     value={createForm.status}
                     onChange={(e: any) => setCreateForm({ ...createForm, status: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="FILLED">FILLED (Langsung Tereksekusi)</option>
                     <option value="OPEN">OPEN (Menunggu Antrian)</option>
@@ -375,7 +375,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                     required
                     value={createForm.amount}
                     onChange={(e) => setCreateForm({ ...createForm, amount: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -385,7 +385,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                     placeholder="Auto market price"
                     value={createForm.price}
                     onChange={(e) => setCreateForm({ ...createForm, price: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -400,7 +400,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Suntikkan Order
                 </button>
@@ -432,7 +432,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                 <select
                   value={editForm.status}
                   onChange={(e: any) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                 >
                   <option value="FILLED">FILLED (Tereksekusi)</option>
                   <option value="OPEN">OPEN (Menunggu Antrian)</option>
@@ -447,7 +447,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                     type="number"
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -457,7 +457,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                     step="any"
                     value={editForm.amount}
                     onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -472,7 +472,7 @@ export const AdminSpotOrders: React.FC<AdminSpotOrdersProps> = ({ onRefresh }) =
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Simpan Perubahan
                 </button>

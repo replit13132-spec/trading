@@ -32,7 +32,7 @@ export const OnboardingScreen: React.FC = () => {
       <div className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-2">
           {/* Subtle Pintu Brand Icon */}
-          <div className="w-8 h-8 rounded-full bg-[#0052FF] flex items-center justify-center text-white font-extrabold text-base shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-base shadow-sm">
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true">
               <path d="M6 4a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V4zm4 0v16h4V4h-4z" />
             </svg>
@@ -71,7 +71,7 @@ export const OnboardingScreen: React.FC = () => {
               </div>
 
               {/* Bottom: Pintu */}
-              <div className="absolute bottom-1 w-16 h-16 rounded-full bg-[#0052FF] text-white flex items-center justify-center shadow-lg font-bold text-2xl z-20 hover:scale-105 transition-transform">
+              <div className="absolute bottom-1 w-16 h-16 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-lg font-bold text-2xl z-20 hover:scale-105 transition-transform">
                 <span className="font-extrabold text-2xl lowercase tracking-tighter">∩</span>
               </div>
             </div>
@@ -134,7 +134,7 @@ export const OnboardingScreen: React.FC = () => {
               {/* Card 4: PTU/IDR (Bottom Right) */}
               <div className="absolute bottom-0 right-0 bg-[#16181C] text-white p-3 rounded-2xl shadow-xl border border-gray-800 w-32 text-left transform -rotate-2 hover:rotate-0 transition-transform">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <div className="w-4 h-4 rounded-full bg-[#0052FF] text-[9px] font-bold flex items-center justify-center text-white">
+                  <div className="w-4 h-4 rounded-full bg-amber-500 text-[9px] font-extrabold flex items-center justify-center text-slate-950">
                     ∩
                   </div>
                   <span className="text-[10px] font-bold text-gray-300">PTU/IDR</span>
@@ -162,7 +162,7 @@ export const OnboardingScreen: React.FC = () => {
             onClick={() => setCurrentSlide(0)}
             className={`transition-all duration-200 rounded-full ${
               currentSlide === 0
-                ? 'w-3 h-3 bg-[#0052FF]'
+                ? 'w-3 h-3 bg-amber-500'
                 : 'w-2.5 h-2.5 bg-gray-200 hover:bg-gray-300'
             }`}
             aria-label="Slide 1"
@@ -171,7 +171,7 @@ export const OnboardingScreen: React.FC = () => {
             onClick={() => setCurrentSlide(1)}
             className={`transition-all duration-200 rounded-full ${
               currentSlide === 1
-                ? 'w-3 h-3 bg-[#0052FF]'
+                ? 'w-3 h-3 bg-amber-500'
                 : 'w-2.5 h-2.5 bg-gray-200 hover:bg-gray-300'
             }`}
             aria-label="Slide 2"
@@ -184,7 +184,7 @@ export const OnboardingScreen: React.FC = () => {
         <button
           id="btn-onboarding-daftar"
           onClick={handleRegister}
-          className="w-full bg-[#0052FF] hover:bg-blue-600 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-2xl text-sm shadow-md transition-all flex items-center justify-center"
+          className="w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-sm shadow-md transition-all flex items-center justify-center"
         >
           Daftar
         </button>
@@ -192,7 +192,7 @@ export const OnboardingScreen: React.FC = () => {
         <button
           id="btn-onboarding-masuk"
           onClick={handleLogin}
-          className="w-full bg-white hover:bg-blue-50/50 active:scale-[0.99] border-2 border-[#0052FF] text-[#0052FF] font-bold py-3 px-4 rounded-2xl text-sm transition-all flex items-center justify-center"
+          className="w-full bg-white hover:bg-amber-50 active:scale-[0.99] border-2 border-amber-500 text-amber-900 font-extrabold py-3 px-4 rounded-2xl text-sm transition-all flex items-center justify-center"
         >
           Masuk
         </button>

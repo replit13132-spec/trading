@@ -213,7 +213,7 @@ export const FuturesScreen: React.FC = () => {
               }}
               className={`py-2 whitespace-nowrap transition-colors relative ${
                 topTab === tab
-                  ? 'text-gray-900 font-bold border-b-2 border-blue-600'
+                  ? 'text-gray-900 font-bold border-b-2 border-amber-500'
                   : 'text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -323,7 +323,7 @@ export const FuturesScreen: React.FC = () => {
                   }}
                   className={`py-2 rounded-xl text-xs font-bold transition-colors ${
                     leverage === lev
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-amber-500 text-slate-950 font-black'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -353,13 +353,13 @@ export const FuturesScreen: React.FC = () => {
                 }}
                 className={`w-full p-3 rounded-xl text-left border text-xs transition-colors ${
                   marginMode === 'CROSS'
-                    ? 'border-blue-600 bg-blue-50 text-blue-900 font-bold'
+                    ? 'border-amber-500 bg-amber-50 text-amber-950 font-bold'
                     : 'border-gray-200 hover:bg-gray-50 text-gray-700'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span>Cross Margin</span>
-                  {marginMode === 'CROSS' && <Check className="w-4 h-4 text-blue-600" />}
+                  {marginMode === 'CROSS' && <Check className="w-4 h-4 text-amber-600" />}
                 </div>
                 <p className="text-[10px] text-gray-500 font-normal mt-1">
                   Berbagi margin di seluruh akun untuk mencegah likuidasi.
@@ -373,13 +373,13 @@ export const FuturesScreen: React.FC = () => {
                 }}
                 className={`w-full p-3 rounded-xl text-left border text-xs transition-colors ${
                   marginMode === 'ISOLATED'
-                    ? 'border-blue-600 bg-blue-50 text-blue-900 font-bold'
+                    ? 'border-amber-500 bg-amber-50 text-amber-950 font-bold'
                     : 'border-gray-200 hover:bg-gray-50 text-gray-700'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span>Isolated Margin</span>
-                  {marginMode === 'ISOLATED' && <Check className="w-4 h-4 text-blue-600" />}
+                  {marginMode === 'ISOLATED' && <Check className="w-4 h-4 text-amber-600" />}
                 </div>
                 <p className="text-[10px] text-gray-500 font-normal mt-1">
                   Risiko dibatasi hanya pada margin yang dialokasikan untuk posisi ini.

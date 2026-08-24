@@ -64,8 +64,8 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
       value: formatIdr(stats?.totalVolumeIdr || 1450000000),
       subtext: 'Trading spot & derivatif 24 jam',
       icon: Activity,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50 border-blue-100',
+      color: 'text-amber-800',
+      bg: 'bg-amber-50 border-amber-200',
       action: () => setActiveTab('markets'),
     },
     {
@@ -101,9 +101,9 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
     <div className="space-y-6">
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-blue-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-amber-500/10 blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-3 border border-blue-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold mb-3 border border-amber-500/30">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Sistem Operasi Master Exchange</span>
           </div>
@@ -117,7 +117,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setActiveTab('markets')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center gap-1.5"
+              className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/30 flex items-center gap-1.5"
             >
               <Coins className="w-4 h-4" />
               <span>Kelola Koin & Gambar</span>
@@ -160,7 +160,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 <p className="text-xl font-extrabold text-gray-900 mb-1">{c.value}</p>
                 <p className="text-[11px] text-gray-500 flex items-center justify-between">
                   <span>{c.subtext}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600" />
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-amber-800" />
                 </p>
               </div>
             </div>
@@ -184,7 +184,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
             </p>
 
             {pumpMessage && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-800 text-xs font-bold rounded-xl animate-fade-in">
+              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold rounded-xl animate-fade-in">
                 {pumpMessage}
               </div>
             )}
@@ -195,7 +195,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 <select
                   value={pumpSymbol}
                   onChange={(e) => setPumpSymbol(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
                   {markets.map((m) => (
                     <option key={m.id} value={m.symbol}>
@@ -215,7 +215,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                       onClick={() => setPumpPercent(val)}
                       className={`py-1.5 rounded-lg text-xs font-bold border transition-all ${
                         pumpPercent === val
-                          ? 'bg-blue-600 text-white border-blue-600'
+                          ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-600'
                           : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
                       }`}
                     >
@@ -257,7 +257,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               </div>
               <button
                 onClick={() => setActiveTab('markets')}
-                className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                className="text-xs font-bold text-amber-800 hover:text-amber-900 hover:underline"
               >
                 Kelola Semua ({markets.length}) &rarr;
               </button>

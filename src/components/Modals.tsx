@@ -42,14 +42,18 @@ export const Modals: React.FC = () => {
     setAuthModalMode,
     depositFunds,
     withdrawFunds,
+    withdrawProfit,
+    withdrawCapital,
+    recompoundProfit,
     transferFunds,
     currentUser,
+    walletData,
     formatIdr,
     formatUsdt,
   } = useApp();
 
   // Deposit state
-  const [depositAmount, setDepositAmount] = useState('10000000');
+  const [depositAmount, setDepositAmount] = useState('500000');
   const [depositCurrency, setDepositCurrency] = useState<'IDR' | 'USDT'>('IDR');
   const [depositMethod, setDepositMethod] = useState('Bank Central Asia (BCA)');
   const [bankAccountsList, setBankAccountsList] = useState<any[]>([]);
@@ -81,7 +85,8 @@ export const Modals: React.FC = () => {
   };
 
   // Withdraw state
-  const [withdrawAmount, setWithdrawAmount] = useState('500000');
+  const [withdrawCategory, setWithdrawCategory] = useState<'PROFIT' | 'CAPITAL' | 'REGULAR'>('PROFIT');
+  const [withdrawAmount, setWithdrawAmount] = useState('100000');
   const [withdrawCurrency, setWithdrawCurrency] = useState<'IDR' | 'USDT'>('IDR');
   const [withdrawDest, setWithdrawDest] = useState('BCA - 1234567890 (A.N USER)');
   const [withdrawMsg, setWithdrawMsg] = useState<string | null>(null);
@@ -134,12 +139,35 @@ export const Modals: React.FC = () => {
   // Handle Withdraw
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await withdrawFunds(Number(withdrawAmount), withdrawCurrency, withdrawDest);
-    if (res.success) {
-      alert(`Penarikan dana sebesar ${withdrawCurrency === 'IDR' ? formatIdr(Number(withdrawAmount)) : withdrawAmount + ' USDT'} berhasil diproses!`);
-      setIsWithdrawModalOpen(false);
+    setWithdrawMsg(null);
+    const amountNum = Number(withdrawAmount);
+
+    if (withdrawCategory === 'PROFIT') {
+      const res = await withdrawProfit(amountNum, withdrawDest);
+      if (res.success) {
+        confetti({ particleCount: 50, spread: 60 });
+        alert(res.message || `Penarikan profit sebesar ${formatIdr(amountNum)} berhasil!`);
+        setIsWithdrawModalOpen(false);
+      } else {
+        setWithdrawMsg(res.message || 'Penarikan profit gagal');
+      }
+    } else if (withdrawCategory === 'CAPITAL') {
+      const res = await withdrawCapital(amountNum, withdrawDest);
+      if (res.success) {
+        confetti({ particleCount: 50, spread: 60 });
+        alert(res.message || `Penarikan modal pokok sebesar ${formatIdr(amountNum)} berhasil!`);
+        setIsWithdrawModalOpen(false);
+      } else {
+        setWithdrawMsg(res.message || 'Penarikan modal gagal');
+      }
     } else {
-      setWithdrawMsg(res.message || 'Penarikan gagal');
+      const res = await withdrawFunds(amountNum, withdrawCurrency, withdrawDest);
+      if (res.success) {
+        alert(`Penarikan dana sebesar ${withdrawCurrency === 'IDR' ? formatIdr(amountNum) : withdrawAmount + ' USDT'} berhasil diproses!`);
+        setIsWithdrawModalOpen(false);
+      } else {
+        setWithdrawMsg(res.message || 'Penarikan gagal');
+      }
     }
   };
 
@@ -204,7 +232,7 @@ export const Modals: React.FC = () => {
                 {depositProof && (
                   <div className="border border-gray-200 rounded-2xl p-2.5 bg-gray-50 text-left">
                     <p className="text-[11px] font-bold text-gray-600 mb-1.5 flex items-center gap-1">
-                      <ImageIcon className="w-3.5 h-3.5 text-blue-600" /> Pratinjau Bukti Transfer yang Terkirim:
+                      <ImageIcon className="w-3.5 h-3.5 text-amber-600" /> Pratinjau Bukti Transfer yang Terkirim:
                     </p>
                     <div className="rounded-xl overflow-hidden border border-gray-200 bg-white max-h-48 flex items-center justify-center">
                       <img src={depositProof} alt="Bukti Transfer" className="max-h-48 object-contain w-full" />
@@ -217,7 +245,7 @@ export const Modals: React.FC = () => {
                     setDepositSuccess(false);
                     setIsDepositModalOpen(false);
                   }}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs transition-colors shadow-md shadow-blue-500/20"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl text-xs transition-colors shadow-md shadow-amber-500/20"
                 >
                   Selesai & Kembali ke Portofolio
                 </button>
@@ -227,7 +255,7 @@ export const Modals: React.FC = () => {
                 <div>
                   <h3 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
                     <span>Deposit Saldo & Upload Bukti</span>
-                    <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
                       Instan & Aman
                     </span>
                   </h3>
@@ -240,11 +268,11 @@ export const Modals: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setDepositCurrency('IDR');
-                      setDepositAmount('10000000');
+                      setDepositAmount('500000');
                     }}
                     className={`flex-1 py-1.5 rounded-lg transition-all ${
                       depositCurrency === 'IDR'
-                        ? 'bg-blue-600 text-white shadow-sm'
+                        ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
@@ -254,16 +282,30 @@ export const Modals: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setDepositCurrency('USDT');
-                      setDepositAmount('500');
+                      setDepositAmount('100');
                     }}
                     className={`flex-1 py-1.5 rounded-lg transition-all ${
                       depositCurrency === 'USDT'
-                        ? 'bg-blue-600 text-white shadow-sm'
+                        ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     Tether (USDT)
                   </button>
+                </div>
+
+                {/* Info Card Rule Top Up */}
+                <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 text-[11px] text-amber-900 space-y-1">
+                  <div className="font-extrabold flex items-center gap-1.5 text-amber-950">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Ketentuan Setoran & Compounding:</span>
+                  </div>
+                  <ul className="space-y-0.5 text-amber-800 font-medium pl-1">
+                    <li>• <b>Setoran Awal:</b> Minimal Rp 500.000 (menunggu verifikasi Admin)</li>
+                    <li>• <b>Penempatan:</b> Modal masuk ke "ASET" & bertumbuh <b>1% per hari</b></li>
+                    <li>• <b>Penarikan Modal Pokok:</b> Terkunci <b>3 bulan</b> sejak tanggal setor</li>
+                    <li>• <b>Profit:</b> Ditarik kapan saja (min. Rp 100.000) atau digabung lagi ke modal</li>
+                  </ul>
                 </div>
 
                 {/* Amount input */}
@@ -273,22 +315,27 @@ export const Modals: React.FC = () => {
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-blue-500 focus:bg-white transition-all"
-                    placeholder="Masukkan nominal deposit..."
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                    placeholder="Masukkan nominal deposit (min Rp 500.000)..."
+                    min={depositCurrency === 'IDR' ? 500000 : 10}
                     required
                   />
                   <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1">
                     {(depositCurrency === 'IDR'
-                      ? [1000000, 5000000, 10000000, 50000000]
-                      : [100, 500, 1000, 5000]
+                      ? [500000, 1000000, 2000000, 5000000, 10000000]
+                      : [50, 100, 500, 1000, 5000]
                     ).map((preset) => (
                       <button
                         key={preset}
                         type="button"
                         onClick={() => setDepositAmount(preset.toString())}
-                        className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
+                        className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
                       >
-                        {depositCurrency === 'IDR' ? `Rp ${(preset / 1000000).toFixed(0)}Jt` : `$${preset}`}
+                        {depositCurrency === 'IDR' 
+                          ? preset >= 1000000 
+                            ? `Rp ${(preset / 1000000).toFixed(0)}Jt` 
+                            : `Rp ${(preset / 1000).toFixed(0)}Rb`
+                          : `$${preset}`}
                       </button>
                     ))}
                   </div>
@@ -300,7 +347,7 @@ export const Modals: React.FC = () => {
                   <select
                     value={depositMethod}
                     onChange={(e) => setDepositMethod(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-blue-500"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500"
                   >
                     {bankAccountsList.length > 0 ? (
                       bankAccountsList.map((acc) => (
@@ -321,21 +368,21 @@ export const Modals: React.FC = () => {
                 </div>
 
                 {/* Bank / VA Info Card */}
-                <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3 text-xs space-y-1.5">
-                  <div className="flex items-center justify-between text-blue-900">
+                <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-amber-950">
                     <span className="font-medium text-[11px]">Rekening Tujuan ({activeSelectedAccount?.bankName}):</span>
-                    <span className="text-[10px] font-extrabold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
                       a/n {activeSelectedAccount?.accountHolder || 'PT PINTU PRO INDONESIA'}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between bg-white border border-blue-100 p-2 rounded-xl">
+                  <div className="flex items-center justify-between bg-white border border-amber-100 p-2 rounded-xl">
                     <span className="font-mono font-extrabold text-sm text-gray-900">
                       {activeSelectedAccount?.accountNumber || '8820 1948 2109 0012'}
                     </span>
                     <button
                       type="button"
                       onClick={handleCopyVa}
-                      className="text-[11px] font-bold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
+                      className="text-[11px] font-bold text-amber-900 hover:bg-amber-100 px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
                     >
                       {copiedVa ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedVa ? 'Tersalin' : 'Salin Nomor'}</span>
@@ -352,13 +399,13 @@ export const Modals: React.FC = () => {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
-                      <Upload className="w-3.5 h-3.5 text-blue-600" />
+                      <Upload className="w-3.5 h-3.5 text-amber-600" />
                       <span>Upload Bukti Transfer (Foto / Resi)</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setDepositProof(SAMPLE_RECEIPT_SVG)}
-                      className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1"
+                      className="text-[10px] font-bold text-amber-900 hover:underline flex items-center gap-1"
                     >
                       <Sparkles className="w-3 h-3 text-amber-500" />
                       <span>Pakai Resi Contoh (Demo)</span>
@@ -396,9 +443,9 @@ export const Modals: React.FC = () => {
                   ) : (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50/40 transition-all rounded-2xl p-4 text-center cursor-pointer space-y-1.5 group"
+                      className="border-2 border-dashed border-gray-300 hover:border-amber-500 hover:bg-amber-50/40 transition-all rounded-2xl p-4 text-center cursor-pointer space-y-1.5 group"
                     >
-                      <div className="w-10 h-10 bg-blue-50 group-hover:bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600 transition-all">
+                      <div className="w-10 h-10 bg-amber-50 group-hover:bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 transition-all">
                         <Upload className="w-5 h-5" />
                       </div>
                       <p className="text-xs font-bold text-gray-800">Klik di sini untuk memilih foto bukti transfer</p>
@@ -415,13 +462,13 @@ export const Modals: React.FC = () => {
                     value={depositNote}
                     onChange={(e) => setDepositNote(e.target.value)}
                     placeholder="Contoh: Transfer via BCA m-Banking a/n Budi Santoso"
-                    className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-blue-500"
+                    className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-amber-500"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl shadow-lg shadow-blue-500/25 text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg shadow-amber-500/25 text-xs transition-all flex items-center justify-center gap-2"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Kirim Bukti Transfer & Ajukan Top Up</span>
@@ -434,83 +481,163 @@ export const Modals: React.FC = () => {
 
       {/* 2. Withdraw Modal */}
       {isWithdrawModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
-              onClick={() => setIsWithdrawModalOpen(false)}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1"
+              onClick={() => {
+                setWithdrawMsg(null);
+                setIsWithdrawModalOpen(false);
+              }}
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
             <form onSubmit={handleWithdrawSubmit} className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-gray-900">Penarikan Dana (Withdraw)</h3>
-                <p className="text-xs text-gray-500">Tarik saldo ke rekening bank atau alamat kripto</p>
+                <h3 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
+                  <span>Penarikan Dana (Withdraw)</span>
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">Pilih jenis dana yang ingin Anda tarik ke rekening bank</p>
               </div>
 
               {withdrawMsg && (
-                <div className="p-2.5 bg-red-50 text-red-700 text-xs rounded-xl font-medium">
-                  {withdrawMsg}
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-2xl font-bold space-y-1">
+                  <div className="flex items-center gap-1.5 text-rose-900 font-extrabold">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>Perhatian:</span>
+                  </div>
+                  <p className="leading-relaxed">{withdrawMsg}</p>
                 </div>
               )}
 
-              {/* Currency */}
-              <div className="flex bg-gray-100 p-1 rounded-xl text-xs font-bold">
+              {/* Withdraw Source Category Selector */}
+              <div className="bg-gray-100 p-1 rounded-2xl flex flex-col sm:flex-row gap-1 text-xs font-bold">
                 <button
                   type="button"
-                  onClick={() => setWithdrawCurrency('IDR')}
-                  className={`flex-1 py-1.5 rounded-lg ${
-                    withdrawCurrency === 'IDR' ? 'bg-blue-600 text-white' : 'text-gray-600'
+                  onClick={() => {
+                    setWithdrawCategory('PROFIT');
+                    setWithdrawAmount('100000');
+                    setWithdrawMsg(null);
+                  }}
+                  className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
+                    withdrawCategory === 'PROFIT'
+                      ? 'bg-emerald-600 text-white shadow'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  Rupiah (IDR)
+                  ✨ Profit Compounding
                 </button>
                 <button
                   type="button"
-                  onClick={() => setWithdrawCurrency('USDT')}
-                  className={`flex-1 py-1.5 rounded-lg ${
-                    withdrawCurrency === 'USDT' ? 'bg-blue-600 text-white' : 'text-gray-600'
+                  onClick={() => {
+                    setWithdrawCategory('CAPITAL');
+                    setWithdrawAmount('1000000');
+                    setWithdrawMsg(null);
+                  }}
+                  className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
+                    withdrawCategory === 'CAPITAL'
+                      ? 'bg-amber-600 text-white shadow'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  USDT
+                  📈 Modal Pokok (ASET)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWithdrawCategory('REGULAR');
+                    setWithdrawAmount('100000');
+                    setWithdrawMsg(null);
+                  }}
+                  className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
+                    withdrawCategory === 'REGULAR'
+                      ? 'bg-amber-500 text-slate-950 font-extrabold shadow'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  💳 Saldo Kas
                 </button>
               </div>
 
+              {/* Rule Card according to selected category */}
+              {withdrawCategory === 'PROFIT' && (
+                <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3 text-xs space-y-1">
+                  <div className="flex items-center justify-between font-bold text-emerald-900">
+                    <span>Opsi: Penarikan Profit Compounding</span>
+                    <span className="bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded text-[10px] font-extrabold">
+                      Bebas Kapan Saja
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-emerald-700">
+                    • Minimum penarikan profit: <b>Rp 100.000</b>
+                    <br />
+                    • Saldo profit dapat ditarik kapan saja tanpa penguncian.
+                  </p>
+                </div>
+              )}
+
+              {withdrawCategory === 'CAPITAL' && (
+                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1">
+                  <div className="flex items-center justify-between font-bold text-amber-900">
+                    <span>Opsi: Penarikan Modal Pokok (ASET)</span>
+                    <span className="bg-amber-200 text-amber-900 px-2 py-0.5 rounded text-[10px] font-extrabold flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> Lock 3 Bulan
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-800">
+                    • Penarikan Modal Pokok hanya dapat dilakukan <b>3 bulan</b> setelah tanggal penanaman modal/deposit.
+                  </p>
+                </div>
+              )}
+
+              {/* Amount Input */}
               <div>
-                <label className="text-xs font-bold text-gray-700 block mb-1">Jumlah Penarikan</label>
+                <label className="text-xs font-bold text-gray-700 block mb-1">Jumlah Nominal Penarikan (Rp)</label>
                 <input
                   type="number"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
-                  className="w-full bg-gray-100 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none"
+                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                  placeholder="Masukkan nominal penarikan..."
+                  required
                 />
-                <p className="text-[10px] text-gray-400 mt-1">
-                  Saldo Tersedia:{' '}
-                  <b className="text-gray-700">
-                    {withdrawCurrency === 'IDR'
-                      ? formatIdr(currentUser?.balances?.idr)
-                      : formatUsdt(currentUser?.balances?.usdt) + ' USDT'}
+                <div className="flex justify-between items-center text-[11px] text-gray-500 mt-1">
+                  <span>
+                    {withdrawCategory === 'PROFIT' && 'Saldo Profit Tersedia: '}
+                    {withdrawCategory === 'CAPITAL' && 'Total Modal Pokok (ASET): '}
+                    {withdrawCategory === 'REGULAR' && 'Saldo Kas Tersedia: '}
+                  </span>
+                  <b className="text-gray-900">
+                    {withdrawCategory === 'PROFIT' && formatIdr(walletData?.compoundingProfitIdr ?? currentUser?.compoundingProfitIdr ?? 0)}
+                    {withdrawCategory === 'CAPITAL' && formatIdr(walletData?.compoundingBalances?.idr ?? currentUser?.compoundingBalances?.idr ?? 0)}
+                    {withdrawCategory === 'REGULAR' && formatIdr(currentUser?.balances?.idr || 0)}
                   </b>
-                </p>
+                </div>
               </div>
 
+              {/* Destination Account */}
               <div>
-                <label className="text-xs font-bold text-gray-700 block mb-1">Tujuan Penarikan</label>
+                <label className="text-xs font-bold text-gray-700 block mb-1">Tujuan Rekening Bank / E-Wallet</label>
                 <input
                   type="text"
                   value={withdrawDest}
                   onChange={(e) => setWithdrawDest(e.target.value)}
-                  placeholder="Nomor Rekening / Alamat Wallet"
-                  className="w-full bg-gray-100 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none"
+                  placeholder="Contoh: BCA 1234567890 a/n Budi Santoso"
+                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                  required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md text-xs transition-colors"
+                className={`w-full font-extrabold py-3 rounded-xl shadow-lg text-xs transition-all flex items-center justify-center gap-2 ${
+                  withdrawCategory === 'PROFIT'
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+                    : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20'
+                }`}
               >
-                Proses Penarikan Dana
+                <span>Konfirmasi Penarikan</span>
               </button>
             </form>
           </div>
@@ -556,7 +683,7 @@ export const Modals: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center my-1">
-                  <ArrowRightLeft className="w-4 h-4 text-blue-600 rotate-90" />
+                  <ArrowRightLeft className="w-4 h-4 text-amber-600 rotate-90" />
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
@@ -596,7 +723,7 @@ export const Modals: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md text-xs transition-colors"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
               >
                 Konfirmasi Transfer
               </button>
@@ -617,8 +744,8 @@ export const Modals: React.FC = () => {
             </button>
 
             <div className="text-center space-y-3 py-2">
-              <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
-                <ShieldCheck className="w-8 h-8" />
+              <div className="w-14 h-14 bg-amber-100 text-amber-900 rounded-full flex items-center justify-center mx-auto font-bold">
+                <ShieldCheck className="w-8 h-8 text-amber-600" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Verifikasi Akun (KYC)</h3>
               <p className="text-xs text-gray-500">
@@ -644,7 +771,7 @@ export const Modals: React.FC = () => {
 
               <button
                 onClick={() => setIsKYCModalOpen(false)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md text-xs transition-colors"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
               >
                 Selesai & Lanjutkan
               </button>
@@ -687,7 +814,7 @@ export const Modals: React.FC = () => {
                   <button
                     id="onboarding-register-btn"
                     onClick={() => setAuthModalMode('register')}
-                    className="w-full bg-[#0052FF] hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-md text-xs transition-colors"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-2xl shadow-md text-xs transition-colors"
                   >
                     Daftar
                   </button>
@@ -735,7 +862,7 @@ export const Modals: React.FC = () => {
                     onClick={() => {
                       setIsAuthModalOpen(false);
                     }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-xl text-xs font-bold shadow transition-colors"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-2.5 px-4 rounded-xl text-xs font-extrabold shadow transition-colors"
                   >
                     Buat Akun Pintu
                   </button>
@@ -744,7 +871,7 @@ export const Modals: React.FC = () => {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setAuthModalMode('onboarding')}
-                    className="text-xs text-blue-600 font-bold hover:underline"
+                    className="text-xs text-amber-800 font-bold hover:underline"
                   >
                     ← Kembali
                   </button>
@@ -775,7 +902,7 @@ export const Modals: React.FC = () => {
                     onClick={() => {
                       setIsAuthModalOpen(false);
                     }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow text-xs transition-colors"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow text-xs transition-colors"
                   >
                     Masuk Sekarang
                   </button>
@@ -784,7 +911,7 @@ export const Modals: React.FC = () => {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setAuthModalMode('onboarding')}
-                    className="text-xs text-blue-600 font-bold hover:underline"
+                    className="text-xs text-amber-800 font-bold hover:underline"
                   >
                     ← Kembali
                   </button>

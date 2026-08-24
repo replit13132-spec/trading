@@ -76,27 +76,57 @@ export const RegisterScreen: React.FC = () => {
     setIsFaceModalOpen(true);
     setIsScanning(false);
     setScanProgress(0);
-    setScanStatusText('Siap melakukan verifikasi wajah biometrik');
+    setScanStatusText('Membuka kamera...');
+
+    stopCameraStream();
 
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-        });
-        activeStreamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
+        let stream: MediaStream | null = null;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          });
+        } catch (e1) {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: 'user' },
+            });
+          } catch (e2) {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          }
         }
-        setIsRealCamera(true);
+
+        if (stream) {
+          activeStreamRef.current = stream;
+          setIsRealCamera(true);
+          setScanStatusText('Kamera terhubung. Posisikan wajah Anda...');
+
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.play().catch((err) => console.log('Video play error:', err));
+          }
+        } else {
+          setIsRealCamera(false);
+          setScanStatusText('Gagal mendapatkan stream kamera');
+        }
       } else {
         setIsRealCamera(false);
+        setScanStatusText('Browser tidak mendukung akses kamera');
       }
     } catch (err) {
       console.log('Real camera stream not available, falling back to simulated scan:', err);
       setIsRealCamera(false);
+      setScanStatusText('Izin kamera belum diberikan. Menggunakan mode simulasi.');
     }
   };
+
+  useEffect(() => {
+    if (isFaceModalOpen && isRealCamera && activeStreamRef.current && videoRef.current) {
+      videoRef.current.srcObject = activeStreamRef.current;
+      videoRef.current.play().catch((err) => console.log('Video play error:', err));
+    }
+  }, [isFaceModalOpen, isRealCamera]);
 
   const closeFaceScanModal = () => {
     stopCameraStream();
@@ -275,7 +305,7 @@ export const RegisterScreen: React.FC = () => {
         </button>
 
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-[#0052FF] flex items-center justify-center text-white font-extrabold text-sm shadow-sm">
+          <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-sm shadow-sm">
             <span className="font-extrabold text-base lowercase tracking-tighter">∩</span>
           </div>
           <span className="font-extrabold text-lg text-gray-900 tracking-tight">pintu</span>
@@ -284,7 +314,7 @@ export const RegisterScreen: React.FC = () => {
         <button
           id="btn-register-to-login"
           onClick={handleGoToLogin}
-          className="text-xs font-bold text-[#0052FF] hover:text-blue-700 py-1.5 px-2.5 rounded-lg hover:bg-blue-50 transition-colors"
+          className="text-xs font-bold text-amber-900 hover:text-amber-800 py-1.5 px-2.5 rounded-lg hover:bg-amber-50 transition-colors"
         >
           Masuk
         </button>
@@ -333,7 +363,7 @@ export const RegisterScreen: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Contoh: Budi Santoso"
-                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
               />
             </div>
@@ -355,7 +385,7 @@ export const RegisterScreen: React.FC = () => {
                 value={nik}
                 onChange={(e) => setNik(e.target.value.replace(/\D/g, ''))}
                 placeholder="Contoh: 3171012304950001"
-                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-mono font-bold text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-mono font-bold text-gray-900 outline-none transition-all"
                 required
               />
             </div>
@@ -363,20 +393,20 @@ export const RegisterScreen: React.FC = () => {
           </div>
 
           {/* 2b. Scan Wajah / Face Scan (KYC Formalitas) */}
-          <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200/80 rounded-2xl p-3.5 space-y-2">
+          <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
                   <ScanFace className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className="text-xs font-extrabold text-gray-900 flex items-center gap-1">
                     <span>Scan Wajah Biometrik</span>
-                    <span className="text-[9px] bg-blue-100 text-blue-700 font-extrabold px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] bg-amber-200 text-amber-950 font-extrabold px-1.5 py-0.5 rounded">
                       Formalitas KYC
                     </span>
                   </h4>
-                  <p className="text-[10px] text-gray-500">
+                  <p className="text-[10px] text-gray-600">
                     Verifikasi identitas pendaftar baru via kamera
                   </p>
                 </div>
@@ -412,7 +442,7 @@ export const RegisterScreen: React.FC = () => {
                 <button
                   type="button"
                   onClick={openFaceScanModal}
-                  className="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1"
+                  className="text-[11px] font-bold text-amber-900 hover:underline flex items-center gap-1"
                 >
                   <RefreshCw className="w-3 h-3" />
                   <span>Ulangi</span>
@@ -422,7 +452,7 @@ export const RegisterScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={openFaceScanModal}
-                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
               >
                 <Camera className="w-4 h-4" />
                 <span>Buka Kamera & Scan Wajah</span>
@@ -445,7 +475,7 @@ export const RegisterScreen: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
               />
             </div>
@@ -466,7 +496,7 @@ export const RegisterScreen: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full bg-white border border-gray-200 focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-10 text-xs font-medium text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-2.5 pl-10 pr-10 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
               />
               <button
@@ -514,7 +544,7 @@ export const RegisterScreen: React.FC = () => {
                 placeholder="Ulangi kata sandi"
                 className={`w-full bg-white border ${
                   confirmPassword && !passwordsMatch ? 'border-red-300' : 'border-gray-200'
-                } focus:border-[#0052FF] focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all`}
+                } focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all`}
                 required
               />
             </div>
@@ -530,15 +560,15 @@ export const RegisterScreen: React.FC = () => {
               type="checkbox"
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
-              className="w-4 h-4 mt-0.5 rounded text-[#0052FF] focus:ring-blue-500"
+              className="w-4 h-4 mt-0.5 rounded text-amber-600 focus:ring-amber-500 accent-amber-500"
             />
             <label htmlFor="register-terms" className="text-[11px] text-gray-600 leading-snug">
               Saya berusia minimal 17 tahun dan menyetujui{' '}
-              <span className="text-[#0052FF] font-semibold hover:underline cursor-pointer">
+              <span className="text-amber-800 font-semibold hover:underline cursor-pointer">
                 Syarat & Ketentuan
               </span>{' '}
               serta{' '}
-              <span className="text-[#0052FF] font-semibold hover:underline cursor-pointer">
+              <span className="text-amber-800 font-semibold hover:underline cursor-pointer">
                 Kebijakan Privasi
               </span>{' '}
               Pintu.
@@ -550,10 +580,10 @@ export const RegisterScreen: React.FC = () => {
             id="btn-register-submit"
             type="submit"
             disabled={loading}
-            className="w-full bg-[#0052FF] hover:bg-blue-600 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-2xl text-xs shadow-md transition-all flex items-center justify-center gap-2 mt-3 disabled:opacity-50"
+            className="w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-xs shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-3 disabled:opacity-50"
           >
             {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
             ) : (
               <span>Daftar Sekarang</span>
             )}
@@ -568,7 +598,7 @@ export const RegisterScreen: React.FC = () => {
           <button
             type="button"
             onClick={handleGoToLogin}
-            className="font-bold text-[#0052FF] hover:underline"
+            className="font-bold text-amber-800 hover:underline"
           >
             Masuk di sini
           </button>
@@ -590,7 +620,7 @@ export const RegisterScreen: React.FC = () => {
 
             {/* Modal Header */}
             <div>
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-inner">
+              <div className="w-12 h-12 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-inner font-extrabold">
                 <ScanFace className="w-6 h-6 animate-pulse" />
               </div>
               <h3 className="text-base font-extrabold text-gray-900">Verifikasi Wajah Biometrik</h3>
@@ -598,32 +628,49 @@ export const RegisterScreen: React.FC = () => {
             </div>
 
             {/* Camera Frame Container */}
-            <div className="relative w-56 h-64 mx-auto rounded-3xl overflow-hidden border-4 border-blue-600 bg-slate-900 shadow-xl flex items-center justify-center">
+            <div className="relative w-56 h-64 mx-auto rounded-3xl overflow-hidden border-4 border-amber-500 bg-slate-900 shadow-xl flex items-center justify-center">
               {/* Real Video element */}
               <video
-                ref={videoRef}
+                ref={(node) => {
+                  videoRef.current = node;
+                  if (node && activeStreamRef.current) {
+                    node.srcObject = activeStreamRef.current;
+                    node.play().catch((e) => console.log('Video play error:', e));
+                  }
+                }}
                 playsInline
+                autoPlay
                 muted
                 className={`w-full h-full object-cover ${isRealCamera ? 'block' : 'hidden'}`}
               />
 
               {/* Simulated Face Outline & Mesh if no real video stream */}
               {!isRealCamera && (
-                <div className="flex flex-col items-center justify-center text-blue-400 space-y-2 p-4">
-                  <div className="relative w-32 h-40 border-2 border-dashed border-blue-400/80 rounded-[50%] flex items-center justify-center animate-pulse">
-                    <User className="w-20 h-20 text-blue-300 opacity-60" />
+                <div className="flex flex-col items-center justify-center text-amber-400 space-y-2 p-4">
+                  <div className="relative w-32 h-40 border-2 border-dashed border-amber-400/80 rounded-[50%] flex items-center justify-center animate-pulse">
+                    <User className="w-20 h-20 text-amber-300 opacity-60" />
                     {/* Face Mesh Points */}
-                    <div className="absolute top-10 left-8 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
-                    <div className="absolute top-10 right-8 w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
-                    <div className="absolute bottom-12 w-3 h-1 bg-blue-400 rounded-full" />
+                    <div className="absolute top-10 left-8 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping" />
+                    <div className="absolute top-10 right-8 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping" />
+                    <div className="absolute bottom-12 w-3 h-1 bg-amber-400 rounded-full" />
                   </div>
-                  <p className="text-[10px] text-blue-200 font-semibold">Simulasi Sensor Kamera Wajah</p>
+                  <p className="text-[10px] text-amber-200 font-semibold text-center">
+                    Kamera tidak terdeteksi / Izinkan Akses Kamera
+                  </p>
+                  <button
+                    type="button"
+                    onClick={openFaceScanModal}
+                    className="text-[10px] bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-3 py-1 rounded-full shadow transition-all flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Aktifkan Kamera</span>
+                  </button>
                 </div>
               )}
 
               {/* Oval Face Guide Overlay */}
               <div className="absolute inset-0 border-[24px] border-black/40 pointer-events-none rounded-3xl flex items-center justify-center">
-                <div className="w-40 h-52 border-2 border-blue-400/90 rounded-[50%] shadow-[0_0_20px_rgba(59,130,246,0.5)] relative overflow-hidden">
+                <div className="w-40 h-52 border-2 border-amber-400/90 rounded-[50%] shadow-[0_0_20px_rgba(245,158,11,0.5)] relative overflow-hidden">
                   {/* Scanning beam line */}
                   {isScanning && (
                     <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] animate-bounce" />
@@ -632,10 +679,10 @@ export const RegisterScreen: React.FC = () => {
               </div>
 
               {/* HUD Target corners */}
-              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-blue-400" />
-              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-blue-400" />
-              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-blue-400" />
-              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-blue-400" />
+              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-amber-400" />
+              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-amber-400" />
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-amber-400" />
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-amber-400" />
             </div>
 
             {/* Hidden canvas for capturing frame */}
@@ -648,7 +695,7 @@ export const RegisterScreen: React.FC = () => {
               {isScanning ? (
                 <div className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden p-0.5">
                   <div
-                    className="bg-gradient-to-r from-blue-600 to-emerald-500 h-full rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-300"
                     style={{ width: `${scanProgress}%` }}
                   />
                 </div>
@@ -667,7 +714,7 @@ export const RegisterScreen: React.FC = () => {
                 <button
                   type="button"
                   onClick={startFaceScanProcess}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-blue-500/25 text-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-2xl shadow-lg shadow-amber-500/25 text-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
                 >
                   <Camera className="w-4 h-4" />
                   <span>Mulai Scan Wajah Sekarang</span>

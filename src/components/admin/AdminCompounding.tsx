@@ -145,19 +145,19 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
       )}
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-400/20 via-transparent to-transparent pointer-events-none" />
+      <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1 rounded-full text-xs font-extrabold text-blue-300">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center gap-2 bg-white/20 border border-white/30 px-3 py-1 rounded-full text-xs font-extrabold text-slate-950">
+              <Sparkles className="w-3.5 h-3.5 text-slate-950" />
               <span>Modul Compounding Bunga Harian (Yield Engine)</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
               Sistem Compounding Bunga Harian (Fixed 1.0% / Hari)
             </h2>
-            <p className="text-xs text-blue-200 leading-relaxed">
+            <p className="text-xs text-slate-900 font-medium leading-relaxed">
               Sistem memberikan imbal hasil compounding harian sebesar 1.0% secara otomatis pada saldo hasil pembelian pengguna.
             </p>
           </div>
@@ -167,7 +167,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-          <div className="w-11 h-11 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-bold">
+          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center font-bold">
             <Percent className="w-6 h-6" />
           </div>
           <div>
@@ -190,12 +190,12 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
         </div>
 
         <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-          <div className="w-11 h-11 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center font-bold">
+          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center font-bold">
             <Coins className="w-6 h-6" />
           </div>
           <div>
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Profit IDR</p>
-            <p className="text-sm font-extrabold text-purple-700 font-mono">
+            <p className="text-sm font-extrabold text-amber-800 font-mono">
               {formatIdr(totalProfitDistributedIdr)}
             </p>
           </div>
@@ -224,7 +224,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
 
           <button
             onClick={fetchCompoundingData}
-            className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Segarkan Data</span>
@@ -255,7 +255,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
                         <p className="text-[10px] text-gray-400 font-normal">{u.email}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-extrabold text-blue-600 font-mono">
+                    <td className="px-4 py-3 font-extrabold text-amber-800 font-mono">
                       {dailyRate}%
                     </td>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800">

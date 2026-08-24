@@ -213,7 +213,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
               placeholder="Cari simbol atau koin..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
@@ -221,7 +221,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="all">Semua Kategori ({markets.length})</option>
             <option value="crypto">Kripto</option>
@@ -233,7 +233,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
         {/* Add Asset Button */}
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
+          className="px-4 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
         >
           <Plus className="w-4 h-4" />
           <span>Tambah Aset / Koin Baru</span>
@@ -326,7 +326,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     <div className="flex items-center justify-center gap-1.5">
                       <button
                         onClick={() => handleOpenEdit(asset)}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg transition-colors"
                         title="Edit Aset"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -371,7 +371,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     placeholder="Contoh: PEPE, NVDA"
                     value={createForm.symbol}
                     onChange={(e) => setCreateForm({ ...createForm, symbol: e.target.value.toUpperCase() })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold uppercase focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold uppercase focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -382,7 +382,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     placeholder="Contoh: Pepe Coin, NVIDIA Corp"
                     value={createForm.name}
                     onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -393,7 +393,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.category}
                     onChange={(e: any) => setCreateForm({ ...createForm, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="crypto">Kripto</option>
                     <option value="stocks">Saham AS (Tokenized)</option>
@@ -410,7 +410,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     placeholder="Contoh: 1.25"
                     value={createForm.priceUsdt}
                     onChange={(e) => setCreateForm({ ...createForm, priceUsdt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -437,7 +437,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                         handleImageFileUpload(e.target.files[0], false);
                       }
                     }}
-                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-900 hover:file:bg-amber-100 cursor-pointer"
                   />
                 </div>
                 <input
@@ -445,7 +445,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                   placeholder="Atau masukkan URL gambar (https://...)"
                   value={createForm.icon}
                   onChange={(e) => setCreateForm({ ...createForm, icon: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -455,7 +455,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     type="checkbox"
                     checked={createForm.isHot}
                     onChange={(e) => setCreateForm({ ...createForm, isHot: e.target.checked })}
-                    className="rounded text-blue-600 focus:ring-blue-500"
+                    className="rounded text-amber-800 focus:ring-amber-500"
                   />
                   <span className="font-bold text-gray-700">Tandai HOT 🔥</span>
                 </label>
@@ -464,7 +464,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     type="checkbox"
                     checked={createForm.isGainer}
                     onChange={(e) => setCreateForm({ ...createForm, isGainer: e.target.checked })}
-                    className="rounded text-blue-600 focus:ring-blue-500"
+                    className="rounded text-amber-800 focus:ring-amber-500"
                   />
                   <span className="font-bold text-gray-700">Tandai Top Gainer 🚀</span>
                 </label>
@@ -480,7 +480,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Simpan Aset Baru
                 </button>
@@ -523,7 +523,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     required
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -531,7 +531,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                   <select
                     value={editForm.category}
                     onChange={(e: any) => setEditForm({ ...editForm, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:ring-2 focus:ring-amber-500"
                   >
                     <option value="crypto">Kripto</option>
                     <option value="stocks">Saham AS (Tokenized)</option>
@@ -549,7 +549,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     required
                     value={editForm.priceUsdt}
                     onChange={(e) => setEditForm({ ...editForm, priceUsdt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -559,7 +559,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     step="any"
                     value={editForm.change24h}
                     onChange={(e) => setEditForm({ ...editForm, change24h: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -586,7 +586,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                         handleImageFileUpload(e.target.files[0], true);
                       }
                     }}
-                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                    className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-900 hover:file:bg-amber-100 cursor-pointer"
                   />
                 </div>
                 <input
@@ -594,7 +594,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                   placeholder="Atau masukkan URL gambar (https://...)"
                   value={editForm.icon}
                   onChange={(e) => setEditForm({ ...editForm, icon: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[11px] focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -604,7 +604,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     type="checkbox"
                     checked={editForm.isHot}
                     onChange={(e) => setEditForm({ ...editForm, isHot: e.target.checked })}
-                    className="rounded text-blue-600 focus:ring-blue-500"
+                    className="rounded text-amber-800 focus:ring-amber-500"
                   />
                   <span className="font-bold text-gray-700">Badge HOT</span>
                 </label>
@@ -613,7 +613,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     type="checkbox"
                     checked={editForm.isGainer}
                     onChange={(e) => setEditForm({ ...editForm, isGainer: e.target.checked })}
-                    className="rounded text-blue-600 focus:ring-blue-500"
+                    className="rounded text-amber-800 focus:ring-amber-500"
                   />
                   <span className="font-bold text-gray-700">Top Gainer</span>
                 </label>
@@ -622,7 +622,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                     type="checkbox"
                     checked={editForm.isLoser}
                     onChange={(e) => setEditForm({ ...editForm, isLoser: e.target.checked })}
-                    className="rounded text-blue-600 focus:ring-blue-500"
+                    className="rounded text-amber-800 focus:ring-amber-500"
                   />
                   <span className="font-bold text-gray-700">Top Loser</span>
                 </label>
@@ -638,7 +638,7 @@ export const AdminMarkets: React.FC<AdminMarketsProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20"
+                  className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white font-bold rounded-xl shadow-md shadow-amber-500/20"
                 >
                   Perbarui Aset
                 </button>

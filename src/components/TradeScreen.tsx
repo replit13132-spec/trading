@@ -149,7 +149,7 @@ export const TradeScreen: React.FC = () => {
               onClick={() => setTopTab(t)}
               className={`py-2 sm:py-2.5 transition-colors relative ${
                 topTab === t
-                  ? 'text-gray-900 font-bold border-b-2 border-blue-600'
+                  ? 'text-gray-900 font-bold border-b-2 border-amber-500'
                   : 'text-gray-400 hover:text-gray-700'
               }`}
             >

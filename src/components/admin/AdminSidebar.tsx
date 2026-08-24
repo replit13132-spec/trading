@@ -64,7 +64,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Pasar',
       icon: Coins,
       badge: markets.length,
-      badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
     },
     {
       id: 'users' as AdminTab,
@@ -80,7 +80,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Rekening',
       icon: Building2,
       badge: 'CRUD',
-      badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
     },
     {
       id: 'finance' as AdminTab,
@@ -130,16 +130,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/25 hover:scale-105 transition-transform"
+              className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/25 hover:scale-105 transition-transform"
               title={isCollapsed ? 'Perluas Sidebar' : 'PINTU Admin'}
             >
-              <ShieldAlert className="w-5 h-5 text-white" />
+              <ShieldAlert className="w-5 h-5 text-slate-950" />
             </button>
             {(!isCollapsed || isMobileOpen) && (
               <div className="overflow-hidden">
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-sm tracking-tight text-white">PINTU</span>
-                  <span className="text-[10px] uppercase font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.2 rounded-md">
+                  <span className="text-[10px] uppercase font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded-md">
                     Admin
                   </span>
                 </div>
@@ -185,14 +185,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   onClick={() => setActiveTab(item.id)}
                   className={`w-10 h-10 mx-auto flex items-center justify-center rounded-xl transition-all duration-150 relative group ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                      ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-lg shadow-amber-500/30'
                       : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/80'
                   }`}
                   title={item.label}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {item.badge !== null && item.badge !== undefined && (
-                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full ring-2 ring-slate-950" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full ring-2 ring-slate-950" />
                   )}
                 </button>
               );
@@ -207,14 +207,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 }}
                 className={`w-full group flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 relative ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                    ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-lg shadow-amber-500/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`}
                 title={item.label}
               >
                 <Icon
                   className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110 ${
-                    isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'
+                    isActive ? 'text-slate-950 font-extrabold' : 'text-slate-400 group-hover:text-amber-400'
                   }`}
                 />
 

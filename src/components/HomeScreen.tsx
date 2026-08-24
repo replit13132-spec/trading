@@ -70,7 +70,7 @@ export const HomeScreen: React.FC = () => {
             }}
             className="flex flex-col items-center group p-1"
           >
-            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <span className="absolute -top-1.5 -right-1 bg-red-500 text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.2 rounded-full ring-2 ring-white">
                 Baru
               </span>
@@ -85,7 +85,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setIsDepositModalOpen(true)}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <Vault className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Earn</span>
@@ -97,8 +97,8 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setActiveTab('wallet')}
             className="flex flex-col items-center group p-1"
           >
-            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
-              <span className="absolute -top-1.5 -right-2 bg-blue-100 text-blue-700 text-[7px] sm:text-[8px] font-bold px-1 py-0.2 rounded-full whitespace-nowrap">
+            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
+              <span className="absolute -top-1.5 -right-2 bg-amber-100 text-amber-800 text-[7px] sm:text-[8px] font-bold px-1 py-0.2 rounded-full whitespace-nowrap">
                 RM
               </span>
               <Diamond className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
@@ -114,7 +114,7 @@ export const HomeScreen: React.FC = () => {
             }}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">BTC Game</span>
@@ -130,7 +130,7 @@ export const HomeScreen: React.FC = () => {
             }}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">PTU Staking</span>
@@ -142,7 +142,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setIsDepositModalOpen(true)}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Investasi Rutin</span>
@@ -154,7 +154,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setActiveTab('market')}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Price Alert</span>
@@ -166,7 +166,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setActiveTab('market')}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-amber-50 transition-colors">
               <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Lainnya</span>
@@ -186,7 +186,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setTopMoversFilter('spot')}
             className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
               topMoversFilter === 'spot'
-                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
                 : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'
             }`}
           >
@@ -196,7 +196,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setTopMoversFilter('tokenized')}
             className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
               topMoversFilter === 'tokenized'
-                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
                 : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'
             }`}
           >
@@ -269,7 +269,7 @@ export const HomeScreen: React.FC = () => {
               onClick={() => setSpotlightTab(tab)}
               className={`pb-1 whitespace-nowrap transition-colors relative ${
                 spotlightTab === tab
-                  ? 'text-gray-900 font-bold border-b-2 border-blue-600'
+                  ? 'text-gray-900 font-bold border-b-2 border-amber-500'
                   : 'text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -284,7 +284,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setSpotlightFilter('top')}
             className={`px-3 py-1 text-xs font-semibold rounded-full border flex items-center gap-1 whitespace-nowrap transition-all ${
               spotlightFilter === 'top'
-                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
                 : 'border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
           >
@@ -294,7 +294,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setSpotlightFilter('gainers')}
             className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
               spotlightFilter === 'gainers'
-                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
                 : 'border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
           >
@@ -304,7 +304,7 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setSpotlightFilter('losers')}
             className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
               spotlightFilter === 'losers'
-                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
                 : 'border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
           >
@@ -368,7 +368,7 @@ export const HomeScreen: React.FC = () => {
         <div className="text-center pt-4">
           <button
             onClick={() => setActiveTab('market')}
-            className="text-blue-600 font-bold text-sm hover:underline"
+            className="text-amber-600 font-bold text-sm hover:underline"
           >
             Lihat Semua
           </button>
@@ -378,24 +378,24 @@ export const HomeScreen: React.FC = () => {
       {/* 6. Info dan Promo Spesial */}
       <div className="px-4 py-4 border-t border-gray-100">
         <h2 className="text-lg font-bold text-gray-900 mb-3">Info dan Promo Spesial</h2>
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
+        <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-4 text-slate-950 shadow-md relative overflow-hidden">
           <div className="relative z-10">
-            <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+            <span className="bg-slate-950/20 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
               Event Spesial
             </span>
-            <h3 className="text-base font-bold mt-2">Trading Futures & Dapatkan Cashback hingga 100 USDT</h3>
-            <p className="text-xs text-blue-100 mt-1">Mulai trading BTC/USDT dengan leverage hingga 25x sekarang.</p>
+            <h3 className="text-base font-extrabold mt-2 text-slate-950">Trading Futures & Dapatkan Cashback hingga 100 USDT</h3>
+            <p className="text-xs text-amber-950/90 font-medium mt-1">Mulai trading BTC/USDT dengan leverage hingga 25x sekarang.</p>
             <button
               onClick={() => {
                 setMode('pro');
                 setActiveTab('futures');
               }}
-              className="mt-3 bg-white text-blue-700 font-bold text-xs px-4 py-2 rounded-xl shadow hover:bg-blue-50 transition-colors"
+              className="mt-3 bg-slate-950 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow hover:bg-slate-800 transition-colors"
             >
               Mulai Trading
             </button>
           </div>
-          <Sparkles className="absolute -right-4 -bottom-4 w-28 h-28 text-white/10" />
+          <Sparkles className="absolute -right-4 -bottom-4 w-28 h-28 text-slate-950/10" />
         </div>
       </div>
 
@@ -405,7 +405,7 @@ export const HomeScreen: React.FC = () => {
           <h2 className="text-lg font-bold text-gray-900">Academy Minggu Ini</h2>
           <button
             onClick={() => setActiveTab('market')}
-            className="text-blue-600 font-bold text-xs hover:underline"
+            className="text-amber-600 font-bold text-xs hover:underline"
           >
             Pelajari Kripto
           </button>
@@ -418,7 +418,7 @@ export const HomeScreen: React.FC = () => {
               onClick={() => setActiveTab('market')}
               className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col"
             >
-              <div className="h-28 bg-gradient-to-br from-blue-100 to-indigo-100 relative overflow-hidden flex items-center justify-center">
+              <div className="h-28 bg-gradient-to-br from-amber-100 to-yellow-100 relative overflow-hidden flex items-center justify-center">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
@@ -427,7 +427,7 @@ export const HomeScreen: React.FC = () => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
-                <BookOpen className="w-8 h-8 text-blue-400/60 absolute" />
+                <BookOpen className="w-8 h-8 text-amber-500/60 absolute" />
               </div>
               <div className="p-3 flex-1 flex flex-col justify-between">
                 <h4 className="text-xs font-bold text-gray-900 leading-snug line-clamp-2">
@@ -446,7 +446,7 @@ export const HomeScreen: React.FC = () => {
           <h2 className="text-lg font-bold text-gray-900">Berita Terkini</h2>
           <button
             onClick={() => setActiveTab('market')}
-            className="text-blue-600 font-bold text-xs hover:underline"
+            className="text-amber-600 font-bold text-xs hover:underline"
           >
             Lihat Analisis Pasar
           </button>
@@ -459,7 +459,7 @@ export const HomeScreen: React.FC = () => {
               onClick={() => setActiveTab('market')}
               className="pt-3 flex gap-3 items-start cursor-pointer group"
             >
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden relative border border-gray-100">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-50 to-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden relative border border-gray-100">
                 <img
                   src={news.imageUrl}
                   alt={news.title}
@@ -468,10 +468,10 @@ export const HomeScreen: React.FC = () => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
-                <TrendingUp className="w-6 h-6 text-blue-300 absolute" />
+                <TrendingUp className="w-6 h-6 text-amber-300 absolute" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
+                <h4 className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-amber-600 transition-colors leading-snug">
                   {news.title}
                 </h4>
                 <p className="text-[10px] text-gray-400 mt-1">

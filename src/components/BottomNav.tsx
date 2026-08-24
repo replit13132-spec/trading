@@ -61,12 +61,12 @@ export const BottomNav: React.FC = () => {
             >
               <div
                 className={`p-1 rounded-full transition-colors ${
-                  isActive ? 'bg-gray-100' : 'bg-transparent'
+                  isActive ? 'bg-amber-50' : 'bg-transparent'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px] text-[#0052FF]' : 'stroke-2'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px] text-amber-500' : 'stroke-2'}`} />
               </div>
-              <span className={`text-[11px] mt-0.5 ${isActive ? 'font-bold text-[#0052FF]' : 'font-medium'}`}>
+              <span className={`text-[11px] mt-0.5 ${isActive ? 'font-bold text-amber-600' : 'font-medium'}`}>
                 {item.label}
               </span>
             </button>

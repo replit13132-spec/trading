@@ -36,7 +36,7 @@ const MainContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-between font-sans text-gray-900 antialiased selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between font-sans text-gray-900 antialiased selection:bg-amber-500 selection:text-amber-950">
       {/* Top Navbar (hidden on Admin screen to provide dedicated enterprise dashboard) */}
       {activeTab !== 'admin' && <Navbar />}
 

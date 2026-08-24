@@ -44,6 +44,9 @@ interface AppContextType {
   closeFuturesPosition: (id: string) => Promise<{ success: boolean; message?: string }>;
   depositFunds: (amount: number, currency: 'IDR' | 'USDT', method: string, proofImage?: string, note?: string) => Promise<{ success: boolean; message?: string; transaction?: any }>;
   withdrawFunds: (amount: number, currency: 'IDR' | 'USDT', destination: string) => Promise<{ success: boolean; message?: string }>;
+  withdrawProfit: (amount: number, destination: string) => Promise<{ success: boolean; message?: string }>;
+  recompoundProfit: (amount?: number) => Promise<{ success: boolean; message?: string }>;
+  withdrawCapital: (amount: number, destination: string) => Promise<{ success: boolean; message?: string }>;
   transferFunds: (from: string, to: string, amount: number, currency: string) => Promise<{ success: boolean; message?: string }>;
   updateMarketPrice: (symbol: string, newPriceUsdt: number, change24h?: number) => Promise<boolean>;
   createMarketAsset: (asset: any) => Promise<boolean>;
@@ -99,13 +102,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch('/api/announcements'),
       ]);
 
-      const mkJson = await mkRes.json();
-      const userJson = await userRes.json();
-      const walletJson = await walletRes.json();
-      const posJson = await posRes.json();
-      const newsJson = await newsRes.json();
-      const acadJson = await acadRes.json();
-      const annJson = await annRes.json();
+      const parseRes = async (res: Response) => {
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch {
+          return { success: false, raw: text };
+        }
+      };
+
+      const [mkJson, userJson, walletJson, posJson, newsJson, acadJson, annJson] = await Promise.all([
+        parseRes(mkRes),
+        parseRes(userRes),
+        parseRes(walletRes),
+        parseRes(posRes),
+        parseRes(newsRes),
+        parseRes(acadRes),
+        parseRes(annRes),
+      ]);
 
       if (mkJson.success) {
         setMarkets(mkJson.data);
@@ -135,7 +149,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     refreshData();
     const interval = setInterval(() => {
       refreshData();
-    }, 4000);
+    }, 15000);
     return () => clearInterval(interval);
   }, [refreshData]);
 
@@ -344,6 +358,60 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const withdrawProfit = async (amount: number, destination: string) => {
+    try {
+      const res = await fetch('/api/user/withdraw-profit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, destination }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await refreshData();
+        return { success: true, message: data.message };
+      }
+      return { success: false, message: data.message };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Gagal penarikan profit' };
+    }
+  };
+
+  const recompoundProfit = async (amount?: number) => {
+    try {
+      const res = await fetch('/api/user/recompound-profit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await refreshData();
+        return { success: true, message: data.message };
+      }
+      return { success: false, message: data.message };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Gagal menggabungkan profit ke modal' };
+    }
+  };
+
+  const withdrawCapital = async (amount: number, destination: string) => {
+    try {
+      const res = await fetch('/api/user/withdraw-capital', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, destination }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await refreshData();
+        return { success: true, message: data.message };
+      }
+      return { success: false, message: data.message };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Gagal penarikan modal pokok' };
+    }
+  };
+
   const transferFunds = async (from: string, to: string, amount: number, currency: string) => {
     try {
       const res = await fetch('/api/user/transfer', {
@@ -483,6 +551,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         closeFuturesPosition,
         depositFunds,
         withdrawFunds,
+        withdrawProfit,
+        recompoundProfit,
+        withdrawCapital,
         transferFunds,
         updateMarketPrice,
         createMarketAsset,

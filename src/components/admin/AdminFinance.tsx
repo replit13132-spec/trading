@@ -182,7 +182,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
           onClick={() => setActiveSubTab('audit')}
           className={`flex-1 min-w-[200px] py-3 px-4 rounded-2xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 ${
             activeSubTab === 'audit'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+              ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-md shadow-amber-500/20'
               : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
           }`}
         >
@@ -194,7 +194,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
           onClick={() => setActiveSubTab('proofs')}
           className={`flex-1 min-w-[200px] py-3 px-4 rounded-2xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 relative ${
             activeSubTab === 'proofs'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+              ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-md shadow-amber-500/20'
               : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
           }`}
         >
@@ -221,14 +221,14 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   placeholder="Cari trader atau metode..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <option value="all">Semua Tipe ({transactions.length})</option>
                 <option value="DEPOSIT">Deposit</option>
@@ -240,7 +240,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <option value="all">Semua Status</option>
                 <option value="COMPLETED">COMPLETED</option>
@@ -251,7 +251,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
 
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
+              className="px-4 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 self-stretch md:self-auto justify-center"
             >
               <Plus className="w-4 h-4" />
               <span>Suntik Transaksi Manual</span>
@@ -264,7 +264,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
               <h3 className="font-bold text-sm text-gray-900">
                 Log Audit Keuangan & Mutasi Saldo ({filteredTxs.length} Transaksi)
               </h3>
-              <button onClick={fetchTransactions} className="text-xs font-bold text-blue-600 hover:underline">
+              <button onClick={fetchTransactions} className="text-xs font-bold text-amber-800 hover:underline">
                 Refresh Table
               </button>
             </div>
@@ -298,7 +298,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                               ? 'bg-rose-100 text-rose-700'
                               : tx.type === 'REWARD'
                               ? 'bg-amber-100 text-amber-800'
-                              : 'bg-blue-100 text-blue-700'
+                              : 'bg-amber-100 text-amber-900'
                           }`}
                         >
                           {tx.type}
@@ -311,7 +311,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                               ? 'text-emerald-600'
                               : tx.type === 'WITHDRAW'
                               ? 'text-rose-600'
-                              : 'text-blue-600'
+                              : 'text-amber-800'
                           }
                         >
                           {tx.type === 'DEPOSIT' || tx.type === 'REWARD' ? '+' : tx.type === 'WITHDRAW' ? '-' : ''}
@@ -328,7 +328,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                         {tx.proofImage ? (
                           <button
                             onClick={() => setSelectedTx(tx)}
-                            className="px-2.5 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-[10px] font-extrabold transition-all inline-flex items-center gap-1 border border-blue-200"
+                            className="px-2.5 py-1 bg-amber-50 text-amber-800 hover:bg-amber-100 rounded-lg text-[10px] font-extrabold transition-all inline-flex items-center gap-1 border border-amber-200"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Lihat Resi</span>
@@ -402,7 +402,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
           {/* Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-bold">
+              <div className="w-10 h-10 bg-amber-50 text-amber-800 rounded-2xl flex items-center justify-center font-bold">
                 <FileCheck className="w-5 h-5" />
               </div>
               <div>
@@ -451,7 +451,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                 placeholder="Cari trader, bank, atau catatan..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -462,7 +462,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   onClick={() => setStatusFilter(st)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                     statusFilter === st
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-600'
                       : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
                   }`}
                 >
@@ -517,7 +517,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   {tx.proofImage ? (
                     <div
                       onClick={() => setSelectedTx(tx)}
-                      className="relative border border-gray-200 rounded-2xl overflow-hidden bg-gray-900/5 group cursor-pointer h-36 flex items-center justify-center transition-all hover:border-blue-400"
+                      className="relative border border-gray-200 rounded-2xl overflow-hidden bg-gray-900/5 group cursor-pointer h-36 flex items-center justify-center transition-all hover:border-amber-400"
                     >
                       <img
                         src={tx.proofImage}
@@ -600,7 +600,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
             {/* Header */}
             <div className="p-4 sm:p-5 bg-gray-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-blue-400" />
+                <ShieldCheck className="w-5 h-5 text-amber-400" />
                 <div>
                   <h3 className="font-extrabold text-sm text-white">Inspeksi & Verifikasi Bukti Transfer</h3>
                   <p className="text-[11px] text-gray-400">ID Transaksi: {selectedTx.id}</p>
@@ -750,7 +750,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                 <select
                   value={createForm.userId}
                   onChange={(e) => setCreateForm({ ...createForm, userId: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-bold text-gray-900 outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500"
                   required
                 >
                   {allUsers.map((u) => (
@@ -767,7 +767,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.type}
                     onChange={(e) => setCreateForm({ ...createForm, type: e.target.value as any })}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-blue-500"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500"
                   >
                     <option value="DEPOSIT">DEPOSIT</option>
                     <option value="WITHDRAW">WITHDRAW</option>
@@ -780,7 +780,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   <select
                     value={createForm.currency}
                     onChange={(e) => setCreateForm({ ...createForm, currency: e.target.value as any })}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-blue-500"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500"
                   >
                     <option value="IDR">IDR (Rupiah)</option>
                     <option value="USDT">USDT (Tether)</option>
@@ -794,7 +794,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   type="number"
                   value={createForm.amount}
                   onChange={(e) => setCreateForm({ ...createForm, amount: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-extrabold text-gray-900 outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-extrabold text-gray-900 outline-none focus:border-amber-500"
                   required
                 />
               </div>
@@ -805,7 +805,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   type="text"
                   value={createForm.method}
                   onChange={(e) => setCreateForm({ ...createForm, method: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-semibold text-gray-900 outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-semibold text-gray-900 outline-none focus:border-amber-500"
                   required
                 />
               </div>
@@ -816,7 +816,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   type="text"
                   value={createForm.description}
                   onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-semibold text-gray-900 outline-none focus:border-blue-500"
+                  className="w-full bg-gray-50 border border-gray-200 p-3 rounded-2xl text-xs font-semibold text-gray-900 outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -830,7 +830,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold shadow-md shadow-blue-500/20"
+                  className="px-5 py-2.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-extrabold shadow-md shadow-amber-500/20"
                 >
                   Simpan Transaksi
                 </button>

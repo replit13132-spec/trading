@@ -37,6 +37,16 @@ let users: any[] = [
         ETH: 0.45,
       },
     },
+    compoundingProfitIdr: 1250000,
+    capitalBatches: [
+      {
+        id: 'batch_demo_1',
+        amount: 25000000,
+        createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+        unlockDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+        isUnlocked: false,
+      },
+    ],
     proBalances: {
       idr: 15000000,
       usdt: 1200,
@@ -889,6 +899,20 @@ app.get('/api/user/wallet', (req, res) => {
   if (!user.compoundingBalances) {
     user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
   }
+  if (user.compoundingProfitIdr === undefined) {
+    user.compoundingProfitIdr = 1250000;
+  }
+  if (!user.capitalBatches) {
+    user.capitalBatches = [
+      {
+        id: 'batch_demo_1',
+        amount: 25000000,
+        createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+        unlockDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+        isUnlocked: false,
+      },
+    ];
+  }
 
   // Calculate total portfolio value in IDR
   let totalIdr = user.balances.idr + user.balances.usdt * 17584;
@@ -912,11 +936,22 @@ app.get('/api/user/wallet', (req, res) => {
 
   const futuresTotalUsdt = user.futuresBalances.usdt;
 
+  const now = new Date();
+  const batches = user.capitalBatches || [];
+  const unlockedCapital = batches
+    .filter((b: any) => b.isUnlocked || new Date(b.unlockDate) <= now)
+    .reduce((sum: number, b: any) => sum + b.amount, 0);
+  const lockedCapital = Math.max(0, (user.compoundingBalances?.idr || 0) - unlockedCapital);
+
   res.json({
     success: true,
     data: {
       balances: user.balances,
       compoundingBalances: user.compoundingBalances,
+      compoundingProfitIdr: user.compoundingProfitIdr || 0,
+      capitalBatches: user.capitalBatches || [],
+      unlockedCapital,
+      lockedCapital,
       proBalances: user.proBalances,
       futuresBalances: user.futuresBalances,
       totalIdr: Math.round(totalIdr),
@@ -933,8 +968,15 @@ app.post('/api/user/deposit', (req, res) => {
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const depositAmount = Number(amount);
-  if (depositAmount <= 0) {
+  if (isNaN(depositAmount) || depositAmount <= 0) {
     return res.status(400).json({ success: false, message: 'Jumlah deposit tidak valid' });
+  }
+
+  if ((currency === 'IDR' || !currency) && depositAmount < 500000) {
+    return res.status(400).json({
+      success: false,
+      message: 'Minimal setoran awal (Top Up) Rupiah adalah Rp 500.000',
+    });
   }
 
   const imageToUse = proofImage || DEFAULT_RECEIPT_SVG;
@@ -950,7 +992,7 @@ app.post('/api/user/deposit', (req, res) => {
     proofImage: imageToUse,
     note: note || 'Transfer deposit diajukan pengguna',
     timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    description: `Deposit ${currency} ${depositAmount.toLocaleString('id-ID')} via ${method || 'VA Bank'} (Menunggu Verifikasi Admin)`,
+    description: `Setoran Top Up ${currency || 'IDR'} Rp ${depositAmount.toLocaleString('id-ID')} via ${method || 'VA Bank'} (Menunggu Verifikasi Admin). Setelah disetujui, modal langsung masuk ke ASET (Compounding 1%/hari, terkunci 3 bulan).`,
   };
   transactions.unshift(newTx);
 
@@ -958,7 +1000,176 @@ app.post('/api/user/deposit', (req, res) => {
     success: true,
     data: newTx,
     user,
-    message: 'Bukti transfer berhasil diunggah! Deposit Anda sedang ditinjau oleh Admin.',
+    message: 'Bukti transfer berhasil diunggah! Top up Anda sedang diverifikasi oleh Admin.',
+  });
+});
+
+// Penarikan Profit Compounding (Min Rp 100.000, kapan saja)
+app.post('/api/user/withdraw-profit', (req, res) => {
+  const { amount, destination } = req.body;
+  const user = users.find((u) => u.id === currentUserId);
+  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+  const numAmount = Number(amount);
+  if (isNaN(numAmount) || numAmount < 100000) {
+    return res.status(400).json({
+      success: false,
+      message: 'Minimal penarikan profit compounding adalah Rp 100.000',
+    });
+  }
+
+  const currentProfit = user.compoundingProfitIdr || 0;
+  if (currentProfit < numAmount) {
+    return res.status(400).json({
+      success: false,
+      message: `Saldo Profit Compounding tidak mencukupi (Tersedia: Rp ${currentProfit.toLocaleString('id-ID')})`,
+    });
+  }
+
+  user.compoundingProfitIdr -= numAmount;
+
+  const newTx = {
+    id: 'tx_pft_' + Date.now(),
+    userId: user.id,
+    type: 'WITHDRAW_PROFIT',
+    amount: numAmount,
+    currency: 'IDR',
+    method: destination || 'Rekening Bank',
+    status: 'COMPLETED',
+    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    description: `Penarikan Profit Compounding Rp ${numAmount.toLocaleString('id-ID')} ke ${destination || 'Rekening Bank'}`,
+  };
+  transactions.unshift(newTx);
+
+  res.json({
+    success: true,
+    data: newTx,
+    user,
+    message: `Penarikan profit sebesar Rp ${numAmount.toLocaleString('id-ID')} berhasil diproses!`,
+  });
+});
+
+// Gabungkan Profit ke Modal Awal (Re-Compound)
+app.post('/api/user/recompound-profit', (req, res) => {
+  const { amount } = req.body;
+  const user = users.find((u) => u.id === currentUserId);
+  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+  const currentProfit = user.compoundingProfitIdr || 0;
+  const recompoundAmount = amount ? Number(amount) : currentProfit;
+
+  if (recompoundAmount <= 0) {
+    return res.status(400).json({ success: false, message: 'Tidak ada profit yang dapat digabungkan' });
+  }
+
+  if (currentProfit < recompoundAmount) {
+    return res.status(400).json({
+      success: false,
+      message: `Saldo profit tidak mencukupi (Tersedia: Rp ${currentProfit.toLocaleString('id-ID')})`,
+    });
+  }
+
+  user.compoundingProfitIdr -= recompoundAmount;
+  if (!user.compoundingBalances) user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+  user.compoundingBalances.idr = (user.compoundingBalances.idr || 0) + recompoundAmount;
+
+  if (!user.capitalBatches) user.capitalBatches = [];
+  const now = new Date();
+  const unlockDate = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+  user.capitalBatches.push({
+    id: 'batch_rec_' + Date.now(),
+    amount: recompoundAmount,
+    createdAt: now.toISOString(),
+    unlockDate: unlockDate.toISOString(),
+    isUnlocked: false,
+  });
+
+  const newTx = {
+    id: 'tx_rec_' + Date.now(),
+    userId: user.id,
+    type: 'RECOMPOUND',
+    amount: recompoundAmount,
+    currency: 'IDR',
+    method: 'Re-Compound Profit',
+    status: 'COMPLETED',
+    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    description: `Profit Rp ${recompoundAmount.toLocaleString('id-ID')} digabungkan kembali ke Modal Awal (ASET). Sekarang ikut compounding 1%/hari.`,
+  };
+  transactions.unshift(newTx);
+
+  res.json({
+    success: true,
+    data: newTx,
+    user,
+    message: `Profit Rp ${recompoundAmount.toLocaleString('id-ID')} berhasil digabungkan ke Modal Awal (ASET)! Total Aset kini ikut bertumbuh 1%/hari.`,
+  });
+});
+
+// Penarikan Modal Pokok (ASET) - Terkunci 3 Bulan sejak tanggal setor
+app.post('/api/user/withdraw-capital', (req, res) => {
+  const { amount, destination } = req.body;
+  const user = users.find((u) => u.id === currentUserId);
+  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+  const numAmount = Number(amount);
+  if (isNaN(numAmount) || numAmount <= 0) {
+    return res.status(400).json({ success: false, message: 'Jumlah penarikan modal tidak valid' });
+  }
+
+  const totalCapital = user.compoundingBalances?.idr || 0;
+  if (totalCapital < numAmount) {
+    return res.status(400).json({
+      success: false,
+      message: `Total Modal Awal (ASET) tidak mencukupi (Tersedia: Rp ${totalCapital.toLocaleString('id-ID')})`,
+    });
+  }
+
+  const now = new Date();
+  const batches = user.capitalBatches || [];
+  
+  let unlockedCapital = 0;
+  let lockedBatches: any[] = [];
+
+  for (const batch of batches) {
+    const isUnlocked = batch.isUnlocked || new Date(batch.unlockDate) <= now;
+    if (isUnlocked) {
+      unlockedCapital += batch.amount;
+    } else {
+      lockedBatches.push(batch);
+    }
+  }
+
+  if (unlockedCapital < numAmount) {
+    lockedBatches.sort((a, b) => new Date(a.unlockDate).getTime() - new Date(b.unlockDate).getTime());
+    const earliestUnlock = lockedBatches.length > 0 ? new Date(lockedBatches[0].unlockDate) : new Date(now.getTime() + 90*24*60*60*1000);
+    const dateFormatted = earliestUnlock.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    return res.status(400).json({
+      success: false,
+      message: `Penarikan modal pokok belum dapat dilakukan. Modal Pokok Anda terkunci selama 3 bulan sejak tanggal deposit. Paling cepat baru dapat ditarik pada ${dateFormatted}.`,
+    });
+  }
+
+  user.compoundingBalances.idr -= numAmount;
+
+  const newTx = {
+    id: 'tx_cap_' + Date.now(),
+    userId: user.id,
+    type: 'WITHDRAW_CAPITAL',
+    amount: numAmount,
+    currency: 'IDR',
+    method: destination || 'Rekening Bank',
+    status: 'COMPLETED',
+    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    description: `Penarikan Modal Pokok (ASET) Rp ${numAmount.toLocaleString('id-ID')} ke ${destination || 'Rekening Bank'}`,
+  };
+  transactions.unshift(newTx);
+
+  res.json({
+    success: true,
+    data: newTx,
+    user,
+    message: `Penarikan modal pokok Rp ${numAmount.toLocaleString('id-ID')} berhasil diproses!`,
   });
 });
 
@@ -1662,16 +1873,31 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
   const previousStatus = tx.status;
   if (status) tx.status = status;
 
-  // Credit user balance when approving pending deposit
+  // Credit user asset when approving pending deposit
   if (tx.type === 'DEPOSIT' && previousStatus === 'PENDING' && status === 'COMPLETED') {
     const user = users.find((u) => u.id === tx.userId);
     if (user) {
-      if (tx.currency === 'IDR') {
-        user.balances.idr += Number(tx.amount);
+      if (!user.compoundingBalances) user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+      if (!user.capitalBatches) user.capitalBatches = [];
+
+      const now = new Date();
+      const unlockDate = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000); // 3 bulan (90 hari)
+
+      if (tx.currency === 'IDR' || !tx.currency) {
+        user.compoundingBalances.idr = (user.compoundingBalances.idr || 0) + Number(tx.amount);
+        user.capitalBatches.push({
+          id: 'batch_' + Date.now(),
+          amount: Number(tx.amount),
+          createdAt: now.toISOString(),
+          unlockDate: unlockDate.toISOString(),
+          isUnlocked: false,
+        });
+        const dateStr = unlockDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        tx.description = `Modal Rp ${Number(tx.amount).toLocaleString('id-ID')} disetujui Admin. Langsung masuk ke ASET (Compounding 1%/hari, terkunci s/d ${dateStr})`;
       } else if (tx.currency === 'USDT') {
-        user.balances.usdt += Number(tx.amount);
+        user.compoundingBalances.usdt = (user.compoundingBalances.usdt || 0) + Number(tx.amount);
+        tx.description = `Deposit ${tx.currency} disetujui Admin pada ${new Date().toLocaleTimeString('id-ID')}`;
       }
-      tx.description = `Deposit ${tx.currency} disetujui Admin pada ${new Date().toLocaleTimeString('id-ID')}`;
     }
   }
 
@@ -1997,7 +2223,7 @@ app.post('/api/admin/compounding/trigger', (req, res) => {
       cmpIdr >= compoundingSettings.minBalanceRequirement
     ) {
       idrYield = Math.round(cmpIdr * (rate / 100));
-      user.compoundingBalances.idr += idrYield;
+      user.compoundingProfitIdr = (user.compoundingProfitIdr || 0) + idrYield;
       totalIdrDistributed += idrYield;
     }
 

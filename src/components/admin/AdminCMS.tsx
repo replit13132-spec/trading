@@ -215,7 +215,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
             onClick={() => setSubTab('news')}
             className={`flex-1 sm:flex-none flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === 'news'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-md shadow-amber-500/20'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -227,7 +227,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
             onClick={() => setSubTab('academy')}
             className={`flex-1 sm:flex-none flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === 'academy'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-md shadow-amber-500/20'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -239,7 +239,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
             onClick={() => setSubTab('announcements')}
             className={`flex-1 sm:flex-none flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === 'announcements'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-md shadow-amber-500/20'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -308,7 +308,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                       });
                       setShowModal(true);
                     }}
-                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
@@ -353,7 +353,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
               </div>
 
               <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
-                <span className="font-semibold text-blue-600">#{item.tag}</span>
+                <span className="font-semibold text-amber-800">#{item.tag}</span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => {
@@ -368,7 +368,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                       });
                       setShowModal(true);
                     }}
-                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
@@ -398,7 +398,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                         ? 'bg-amber-100 text-amber-700'
                         : item.type === 'MAINTENANCE'
                         ? 'bg-rose-100 text-rose-700'
-                        : 'bg-blue-100 text-blue-700'
+                        : 'bg-amber-100 text-amber-900'
                     }`}
                   >
                     <Bell className="w-4 h-4" />
@@ -431,7 +431,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                       });
                       setShowModal(true);
                     }}
-                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    className="p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -541,7 +541,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold text-white font-bold rounded-xl"
                   >
                     Simpan Artikel
                   </button>
@@ -613,7 +613,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold text-white font-bold rounded-xl"
                   >
                     Simpan Modul
                   </button>
@@ -679,7 +679,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold text-white font-bold rounded-xl"
                   >
                     Simpan Pengumuman
                   </button>
