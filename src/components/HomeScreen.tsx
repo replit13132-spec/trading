@@ -61,7 +61,7 @@ export const HomeScreen: React.FC = () => {
     <div className="pb-24 max-w-lg md:max-w-xl lg:max-w-2xl mx-auto bg-white min-h-screen w-full overflow-hidden pt-2">
       {/* Quick Action Grid (2 rows x 4 icons) */}
       <div className="px-3 sm:px-4 py-2 sm:py-3">
-        <div className="bg-white border-2 border-violet-500 rounded-none p-3 sm:p-4 shadow-sm grid grid-cols-4 gap-y-4 gap-x-2 text-center relative overflow-visible">
+        <div className="bg-white border border-violet-200/80 rounded-lg p-3 sm:p-4 shadow-sm grid grid-cols-4 gap-y-4 gap-x-2 text-center relative overflow-visible">
           {/* Futures Lite */}
           <button
             id="quick-futures"
@@ -193,7 +193,7 @@ export const HomeScreen: React.FC = () => {
                 setActiveTab('market');
               }
             }}
-            className="col-span-5 bg-white border-2 border-violet-500 rounded-none p-3 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[290px] relative overflow-hidden"
+            className="col-span-5 bg-white border border-violet-200/80 rounded-lg p-3 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[290px] relative overflow-hidden"
           >
             <div className="flex items-center gap-1.5">
               <div className="w-7 h-7 rounded-full bg-[#F7931A] flex items-center justify-center text-white font-black text-xs shadow-sm">
@@ -251,7 +251,7 @@ export const HomeScreen: React.FC = () => {
                   setActiveTab('market');
                 }
               }}
-              className="bg-white border-2 border-violet-500 rounded-none p-3 flex items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] h-[90px]"
+              className="bg-white border border-violet-200/80 rounded-lg p-3 flex items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] h-[90px]"
             >
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center text-white text-[10px] font-black shrink-0">
@@ -304,7 +304,7 @@ export const HomeScreen: React.FC = () => {
                     setActiveTab('market');
                   }
                 }}
-                className="bg-white border-2 border-violet-500 rounded-none p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
+                className="bg-white border border-violet-200/80 rounded-lg p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
               >
                 <div className="flex flex-col gap-1">
                   <div className="w-6 h-6 rounded-full bg-[#76B900] flex items-center justify-center text-white text-[9px] font-black shadow-sm shrink-0">
@@ -354,7 +354,7 @@ export const HomeScreen: React.FC = () => {
                     setActiveTab('market');
                   }
                 }}
-                className="bg-white border-2 border-violet-500 rounded-none p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
+                className="bg-white border border-violet-200/80 rounded-lg p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
               >
                 <div className="flex flex-col gap-1">
                   <div className="w-6 h-6 rounded-full bg-[#4285F4] flex items-center justify-center text-white text-[9px] font-black shadow-sm shrink-0">
