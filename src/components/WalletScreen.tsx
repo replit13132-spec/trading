@@ -283,117 +283,50 @@ export const WalletScreen: React.FC = () => {
           </button>
         </div>
 
-        {/* Search */}
-        <div className="py-3">
-          <div className="relative w-full">
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Cari aset"
-              value={searchAsset}
-              onChange={(e) => setSearchAsset(e.target.value)}
-              className="w-full bg-gray-100 text-xs sm:text-sm pl-8 pr-3 py-2 sm:py-2.5 rounded-xl outline-none"
-            />
-          </div>
-        </div>
+        {/* 4. Information/Rules Section */}
+        <div className="py-6 space-y-4">
+          <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Panduan Operasional & Ketentuan Sistem</h3>
+          <div className="space-y-4 text-xs text-gray-600 leading-relaxed">
+            <p>Selamat datang di platform trading Pintu Pro. Demi kenyamanan dan keamanan transaksi, harap mematuhi panduan operasional berikut:</p>
+            
+            <div className="space-y-2">
+              <h4 className="font-bold text-gray-800">1. Prosedur Top-Up (Deposit)</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Minimal deposit adalah Rp 50.000 (atau sesuai ketentuan terkini).</li>
+                <li>Transfer hanya ke nomor rekening resmi yang tertera di menu deposit.</li>
+                <li>Setelah transfer, pastikan untuk mengunggah bukti transfer agar saldo diproses otomatis oleh sistem.</li>
+              </ul>
+            </div>
 
-        {/* Table Header */}
-        <div className="flex items-center justify-between text-[10px] font-bold uppercase text-gray-400 py-2 border-b border-gray-100">
-          <div className="flex items-center gap-1">
-            <span>ASET</span>
-            <ArrowUpDown className="w-3 h-3" />
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-1">
-              <span>TOTAL</span>
-              <ArrowUpDown className="w-3 h-3" />
+            <div className="space-y-2">
+              <h4 className="font-bold text-gray-800">2. Prosedur Penarikan (Withdrawal)</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Minimal penarikan adalah Rp 100.000.</li>
+                <li>Penarikan diproses setiap hari kerja. Estimasi waktu cair maksimal 1x24 jam.</li>
+                <li>Setiap penarikan akan dikenakan biaya admin dan pajak penarikan sesuai pengaturan sistem yang berlaku.</li>
+              </ul>
             </div>
-            <div className="flex items-center gap-1 w-16 justify-end">
-              <span>TERSEDIA</span>
-              <ArrowUpDown className="w-3 h-3" />
-            </div>
-          </div>
-        </div>
 
-        {/* Asset Rows */}
-        <div className="divide-y divide-gray-100">
-          {/* Rupiah Balance Row */}
-          <div className="py-3 flex items-center justify-between hover:bg-gray-50 px-1 rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-extrabold flex items-center justify-center text-xs">
-                Rp
-              </div>
-              <div>
-                <p className="font-bold text-xs text-gray-900">Rupiah</p>
-                <p className="text-[10px] text-gray-400">IDR</p>
-              </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-gray-800">3. Sistem Compounding & Trading</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Profit compounding sebesar 1% per hari dihitung berdasarkan modal yang diaktifkan.</li>
+                <li>Profit harian akan masuk ke dompet profit setiap hari pukul 00:00 WIB.</li>
+                <li>Gunakan fitur "Re-Compound" untuk menggabungkan profit ke modal agar profit hari berikutnya lebih besar.</li>
+              </ul>
             </div>
-            <div className="text-right">
-              <p className="font-bold text-xs text-gray-900">{formatIdr(idrCash)}</p>
-              <p className="text-[10px] text-gray-400">{formatIdr(idrCash)}</p>
-            </div>
-          </div>
 
-          {/* USDT Balance Row */}
-          <div className="py-3 flex items-center justify-between hover:bg-gray-50 px-1 rounded-xl">
-            <div className="flex items-center gap-3">
-              <CryptoIcon
-                src="https://assets.coingecko.com/coins/images/325/small/Tether.png"
-                symbol="USDT"
-                name="Tether USD"
-                className="w-8 h-8 rounded-full"
-              />
-              <div>
-                <p className="font-bold text-xs text-gray-900">Tether USD</p>
-                <p className="text-[10px] text-gray-400">USDT</p>
-              </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-gray-800">4. Keamanan & Layanan Pelanggan</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                <li><strong>KYC:</strong> Wajib melakukan verifikasi identitas (KYC) untuk membuka akses penarikan dana.</li>
+                <li><strong>Anti-Phishing:</strong> CS resmi tidak pernah meminta kata sandi atau kode OTP Anda.</li>
+                <li><strong>Bantuan:</strong> Hubungi Customer Service resmi hanya melalui link Telegram yang tersedia di menu Pengaturan.</li>
+              </ul>
             </div>
-            <div className="text-right">
-              <p className="font-bold text-xs text-gray-900">{formatUsdt(usdtCash)} USDT</p>
-              <p className="text-[10px] text-gray-400">{formatIdr(usdtCash * 17584)}</p>
-            </div>
-          </div>
 
-          {/* User Crypto & Stock Tokens */}
-          {markets
-            .filter((m) => {
-              if (searchAsset) {
-                return (
-                  m.name.toLowerCase().includes(searchAsset.toLowerCase()) ||
-                  m.symbol.toLowerCase().includes(searchAsset.toLowerCase())
-                );
-              }
-              return true;
-            })
-            .map((asset) => {
-              const qty = tokens[asset.symbol] || 0;
-              const valueIdr = qty * asset.priceIdr;
-              return (
-                <div
-                  key={asset.id}
-                  className="py-3 flex items-center justify-between hover:bg-gray-50 px-1 rounded-xl"
-                >
-                  <div className="flex items-center gap-3">
-                    <CryptoIcon
-                      src={asset.icon}
-                      symbol={asset.symbol}
-                      name={asset.name}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="font-bold text-xs text-gray-900">{asset.name}</p>
-                      <p className="text-[10px] text-gray-400 uppercase">{asset.symbol}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-xs text-gray-900">
-                      {qty} {asset.symbol}
-                    </p>
-                    <p className="text-[10px] text-gray-400">{formatIdr(valueIdr)}</p>
-                  </div>
-                </div>
-              );
-            })}
+            <p className="pt-2 border-t mt-2">Dengan melanjutkan penggunaan platform, Anda dianggap telah membaca, memahami, dan menyetujui seluruh aturan dan ketentuan sistem Pintu Pro.</p>
+          </div>
         </div>
       </div>
     </div>

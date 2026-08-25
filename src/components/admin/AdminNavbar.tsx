@@ -82,6 +82,10 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
       title: 'CMS Berita, Edukasi & Pengumuman',
       subtitle: 'Publikasi wawasan pasar, silabus Akademi Pintu, dan siaran pengumuman darurat.',
     },
+    notifications: {
+      title: 'Pusat Notifikasi & Siaran Global',
+      subtitle: 'Kirimkan siaran pengumuman, promo, dan pesan notifikasi ke seluruh pengguna aplikasi.',
+    },
   };
 
   const currentInfo = tabTitles[activeTab] || {

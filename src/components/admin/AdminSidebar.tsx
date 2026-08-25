@@ -17,6 +17,7 @@ import {
   ArrowUpRight,
   X,
   Percent,
+  Bell,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -27,7 +28,8 @@ export type AdminTab =
   | 'accounts'
   | 'finance'
   | 'compounding'
-  | 'cms';
+  | 'cms'
+  | 'notifications';
 
 interface AdminSidebarProps {
   activeTab: AdminTab;
@@ -104,6 +106,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'CMS',
       icon: FileText,
       badge: null,
+    },
+    {
+      id: 'notifications' as AdminTab,
+      label: 'Pusat Notifikasi & Siaran',
+      shortLabel: 'Notifikasi',
+      icon: Bell,
+      badge: 'Broadcast',
+      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
     },
   ];
 

@@ -465,6 +465,25 @@ let transactions: any[] = [
   },
 ];
 
+let notifications = [
+  {
+    id: 'notif_1',
+    title: '🎉 Selamat Datang di Pintu',
+    message: 'Nikmati trading spot & compounding modal dengan hasil 1% per hari. Verifikasi KYC Anda sekarang untuk fitur lengkap.',
+    type: 'success',
+    createdAt: '24 Agu 2026 00:00',
+    target: 'ALL',
+  },
+  {
+    id: 'notif_2',
+    title: '⚠️ Pemeliharaan Sistem Berkala',
+    message: 'Sistem compounding otomatis berjalan setiap pukul 00:00 WIB. Pastikan saldo aktif Anda siap.',
+    type: 'warning',
+    createdAt: '23 Agu 2026 12:00',
+    target: 'ALL',
+  }
+];
+
 let announcements = [
   {
     id: 'ann_1',
@@ -1425,6 +1444,8 @@ let systemConfig = {
   kycRequiredForWithdraw: true,
   globalBannerText: 'Sistem Pintu Pro berjalan normal. Likuiditas terjamin 100% didukung Audit On-Chain.',
   globalBannerEnabled: true,
+  withdrawalTaxPercent: 0,
+  telegramLink: '',
 };
 
 // Admin Dashboard & Comprehensive CRUD Endpoints
@@ -1528,6 +1549,10 @@ app.get('/api/admin/config', (req, res) => {
 app.post('/api/admin/config', (req, res) => {
   systemConfig = { ...systemConfig, ...req.body };
   res.json({ success: true, data: systemConfig, message: 'Konfigurasi sistem berhasil diperbarui!' });
+});
+
+app.get('/api/config', (req, res) => {
+  res.json({ success: true, data: { telegramLink: systemConfig.telegramLink } });
 });
 
 // 3. Markets CRUD
@@ -2028,6 +2053,46 @@ app.delete('/api/admin/announcements/:id', (req, res) => {
 
   const deleted = announcements.splice(idx, 1)[0];
   res.json({ success: true, data: deleted, message: 'Pengumuman berhasil dihapus' });
+});
+
+// Notifications API
+app.get('/api/notifications', (req, res) => {
+  res.json({ success: true, data: notifications });
+});
+
+app.get('/api/admin/notifications', (req, res) => {
+  res.json({ success: true, data: notifications });
+});
+
+app.post('/api/admin/notifications/broadcast', (req, res) => {
+  const { title, message, type, target } = req.body;
+  if (!title || !message) {
+    return res.status(400).json({ success: false, message: 'Judul dan pesan notifikasi wajib diisi' });
+  }
+
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  const newNotif = {
+    id: 'notif_' + Date.now(),
+    title: title.trim(),
+    message: message.trim(),
+    type: type || 'info',
+    target: target || 'ALL',
+    createdAt: dateStr,
+  };
+
+  notifications.unshift(newNotif);
+  res.json({ success: true, data: newNotif, message: 'Notifikasi berhasil disiarkan ke seluruh pengguna!' });
+});
+
+app.delete('/api/admin/notifications/:id', (req, res) => {
+  const idx = notifications.findIndex((n) => n.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Notifikasi tidak ditemukan' });
+
+  const deleted = notifications.splice(idx, 1)[0];
+  res.json({ success: true, data: deleted, message: 'Notifikasi berhasil dihapus' });
 });
 
 // Alias Endpoints for CMS

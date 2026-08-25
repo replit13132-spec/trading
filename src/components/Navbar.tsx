@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Mail, User as UserIcon, Shield, RefreshCw, ChevronDown, Check, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { Mail, User as UserIcon, Shield, RefreshCw, ChevronDown, Check, LogIn, UserPlus, LogOut, Bell, Clock } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const {
@@ -20,6 +20,18 @@ export const Navbar: React.FC = () => {
 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsList, setNotificationsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/notifications')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setNotificationsList(data.data);
+        }
+      })
+      .catch(() => {});
+  }, [showNotifications]);
 
   const spotTotalIdr = walletData?.totalIdr || 0;
   const compoundingTotalIdr = walletData?.totalCompoundingIdr || 0;
@@ -58,10 +70,8 @@ export const Navbar: React.FC = () => {
             onClick={() => setActiveTab('beranda')}
             className="flex items-center gap-1.5 sm:gap-2 hover:opacity-85 transition-opacity"
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-sm sm:text-base shadow-sm flex-shrink-0">
-              <span className="font-extrabold text-base sm:text-lg lowercase tracking-tighter">∩</span>
-            </div>
-            <span className="font-extrabold text-lg sm:text-xl text-gray-900 tracking-tight">pintu</span>
+            <img src="/assets/xmoney_logo.png" alt="XMoney Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+            <span className="font-extrabold text-lg sm:text-xl text-gray-900 tracking-tight">XMoney</span>
           </button>
 
           {/* Admin Dashboard Quick Link (Only for Admin role) */}
@@ -99,20 +109,28 @@ export const Navbar: React.FC = () => {
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-20px)] bg-white rounded-2xl shadow-xl border border-gray-100 p-3 z-50">
+              <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-20px)] max-h-96 overflow-y-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-3 z-50">
                 <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-                  <h4 className="text-sm font-bold text-gray-900">Pemberitahuan</h4>
-                  <span className="text-[11px] text-amber-600 font-semibold">Tandai dibaca</span>
+                  <h4 className="text-sm font-bold text-gray-900">Pemberitahuan & Siaran</h4>
+                  <span className="text-[11px] text-amber-600 font-semibold">{notificationsList.length} Pesan</span>
                 </div>
                 <div className="mt-2 space-y-2 text-xs">
-                  <div className="p-2 bg-amber-50/80 rounded-xl border border-amber-100">
-                    <p className="font-semibold text-gray-900">🎉 Selamat Datang di Pintu</p>
-                    <p className="text-gray-600 text-[11px] mt-0.5">Nikmati trading spot & futures dengan likuiditas tinggi dan leverage hingga 25x.</p>
-                  </div>
-                  <div className="p-2 bg-yellow-50/80 rounded-xl border border-yellow-100">
-                    <p className="font-semibold text-amber-900">⚠️ Jaringan BSC Selesai Maintenance</p>
-                    <p className="text-amber-800 text-[11px] mt-0.5">Deposit dan penarikan BEP-20 kini telah berjalan normal kembali.</p>
-                  </div>
+                  {notificationsList.length === 0 ? (
+                    <p className="text-center text-gray-400 py-4 text-xs">Belum ada pemberitahuan.</p>
+                  ) : (
+                    notificationsList.map((notif) => (
+                      <div key={notif.id} className="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-gray-900">{notif.title}</p>
+                          <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 bg-amber-200 text-amber-900 rounded">
+                            {notif.type || 'info'}
+                          </span>
+                        </div>
+                        <p className="text-gray-600 text-[11px] leading-relaxed">{notif.message}</p>
+                        <p className="text-[9px] text-gray-400 font-mono">{notif.createdAt}</p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}

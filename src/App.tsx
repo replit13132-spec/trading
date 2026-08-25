@@ -11,6 +11,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { LoginScreen } from './components/LoginScreen';
 import { RegisterScreen } from './components/RegisterScreen';
+import { FloatingTelegramButton } from './components/FloatingTelegramButton';
 import { Modals } from './components/Modals';
 
 const MainContent: React.FC = () => {
@@ -68,6 +69,7 @@ const MainContent: React.FC = () => {
 
       {/* Global Action Modals */}
       <Modals />
+      <FloatingTelegramButton />
     </div>
   );
 };
