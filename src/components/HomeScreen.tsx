@@ -100,7 +100,7 @@ export const HomeScreen: React.FC = () => {
               </span>
               <Diamond className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Pintu VIP</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">XMoney VIP</span>
           </button>
 
           {/* BTC Game */}

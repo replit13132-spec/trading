@@ -38,7 +38,7 @@ export const RegisterScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [referralCode, setReferralCode] = useState('PINTU2026');
+  const [referralCode, setReferralCode] = useState('XMONEY2026');
   const [showReferralInput, setShowReferralInput] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(true);
 
@@ -231,7 +231,7 @@ export const RegisterScreen: React.FC = () => {
     }
 
     if (!agreeTerms) {
-      setErrorMsg('Anda harus menyetujui Syarat & Ketentuan Pintu');
+      setErrorMsg('Anda harus menyetujui Syarat & Ketentuan');
       return;
     }
 
@@ -255,7 +255,7 @@ export const RegisterScreen: React.FC = () => {
 
       if (res.success) {
         confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-        setSuccessMsg(res.message || 'Pendaftaran berhasil! Selamat datang di Pintu.');
+        setSuccessMsg(res.message || 'Pendaftaran berhasil! Selamat datang.');
         setTimeout(() => {
           setIsOnboarded(true);
           setAuthScreen('none');
@@ -292,7 +292,7 @@ export const RegisterScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between max-w-lg md:max-w-xl mx-auto font-sans antialiased text-gray-900 shadow-xl relative overflow-x-hidden border-x border-gray-100">
-      {/* 1. Header with Back Navigation & Pintu Brand */}
+      {/* 1. Header with Back Navigation & Brand Logo */}
       <div className="bg-white px-5 py-4 flex items-center justify-between border-b border-gray-100 sticky top-0 z-20">
         <button
           id="btn-register-back"
@@ -304,11 +304,8 @@ export const RegisterScreen: React.FC = () => {
           <span className="text-xs font-semibold sm:inline">Kembali</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-sm shadow-sm">
-            <span className="font-extrabold text-base lowercase tracking-tighter">∩</span>
-          </div>
-          <span className="font-extrabold text-lg text-gray-900 tracking-tight">pintu</span>
+        <div className="flex items-center justify-center py-1">
+          <img src="/logo.png" alt="Logo" className="w-24 h-24 sm:w-28 sm:h-28 object-contain" />
         </div>
 
         <button
@@ -325,7 +322,7 @@ export const RegisterScreen: React.FC = () => {
         {/* Title */}
         <div className="mb-5 text-left">
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-            Buat Akun Pintu
+            Buat Akun Baru
           </h1>
           <p className="text-xs text-gray-500 mt-1 leading-relaxed">
             Mulai beli Bitcoin, Ethereum, Solana, dan 200+ aset crypto dengan mudah & aman.
@@ -435,7 +432,7 @@ export const RegisterScreen: React.FC = () => {
                       <span>Pindaian Wajah Berhasil</span>
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                     </p>
-                    <p className="text-[10px] text-gray-400">Telah tersimpan aman untuk verifikasi akun Pintu</p>
+                    <p className="text-[10px] text-gray-400">Telah tersimpan aman untuk verifikasi akun Anda</p>
                   </div>
                 </div>
 
@@ -570,8 +567,7 @@ export const RegisterScreen: React.FC = () => {
               serta{' '}
               <span className="text-amber-800 font-semibold hover:underline cursor-pointer">
                 Kebijakan Privasi
-              </span>{' '}
-              Pintu.
+              </span>.
             </label>
           </div>
 
@@ -594,7 +590,7 @@ export const RegisterScreen: React.FC = () => {
       {/* 4. Footer */}
       <div className="bg-white px-6 py-5 border-t border-gray-100 text-center">
         <p className="text-xs text-gray-600">
-          Sudah punya akun Pintu?{' '}
+          Sudah punya akun?{' '}
           <button
             type="button"
             onClick={handleGoToLogin}
@@ -624,7 +620,7 @@ export const RegisterScreen: React.FC = () => {
                 <ScanFace className="w-6 h-6 animate-pulse" />
               </div>
               <h3 className="text-base font-extrabold text-gray-900">Verifikasi Wajah Biometrik</h3>
-              <p className="text-xs text-gray-500 mt-0.5">Formalitas Pendaftaran Akun Pintu</p>
+              <p className="text-xs text-gray-500 mt-0.5">Formalitas Pendaftaran Akun</p>
             </div>
 
             {/* Camera Frame Container */}

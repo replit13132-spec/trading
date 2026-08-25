@@ -31,13 +31,10 @@ export const OnboardingScreen: React.FC = () => {
       {/* 1. Top Header */}
       <div className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-2">
-          {/* Subtle Pintu Brand Icon */}
-          <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-base shadow-sm">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true">
-              <path d="M6 4a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V4zm4 0v16h4V4h-4z" />
-            </svg>
+          {/* Subtle XMoney Brand Icon */}
+          <div className="w-20 h-20 flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" className="w-20 h-20 object-contain" />
           </div>
-          <span className="font-extrabold text-xl text-gray-900 tracking-tight">pintu</span>
         </div>
       </div>
 
@@ -70,9 +67,9 @@ export const OnboardingScreen: React.FC = () => {
                 </svg>
               </div>
 
-              {/* Bottom: Pintu */}
-              <div className="absolute bottom-1 w-16 h-16 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-lg font-bold text-2xl z-20 hover:scale-105 transition-transform">
-                <span className="font-extrabold text-2xl lowercase tracking-tighter">∩</span>
+              {/* Bottom: XMoney Logo */}
+              <div className="absolute bottom-1 w-24 h-24 flex items-center justify-center z-20 hover:scale-105 transition-transform">
+                <img src="/logo.png" alt="Logo" className="w-24 h-24 object-contain" />
               </div>
             </div>
 
@@ -85,7 +82,7 @@ export const OnboardingScreen: React.FC = () => {
             </p>
           </div>
         ) : (
-          /* Slide 2: "Trading dengan Pintu Pro" (Screenshot 20260823-200127.png) */
+          /* Slide 2: "Trading dengan XMoney Pro" (Screenshot 20260823-200127.png) */
           <div className="w-full flex flex-col items-center animate-in fade-in zoom-in-95 duration-300">
             {/* Visual: 4 Floating Dark Cards */}
             <div className="relative w-full max-w-[280px] h-60 my-4">
@@ -134,8 +131,8 @@ export const OnboardingScreen: React.FC = () => {
               {/* Card 4: PTU/IDR (Bottom Right) */}
               <div className="absolute bottom-0 right-0 bg-[#16181C] text-white p-3 rounded-2xl shadow-xl border border-gray-800 w-32 text-left transform -rotate-2 hover:rotate-0 transition-transform">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <div className="w-4 h-4 rounded-full bg-amber-500 text-[9px] font-extrabold flex items-center justify-center text-slate-950">
-                    ∩
+                  <div className="w-6 h-6 flex items-center justify-center">
+                     <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-300">PTU/IDR</span>
                 </div>
@@ -148,7 +145,7 @@ export const OnboardingScreen: React.FC = () => {
 
             {/* Typography */}
             <h1 className="text-2xl sm:text-[26px] font-extrabold text-gray-900 tracking-tight leading-tight mt-4">
-              Trading dengan Pintu Pro
+              Trading dengan XMoney Pro
             </h1>
             <p className="text-sm text-gray-600 mt-3 px-3 leading-relaxed max-w-sm">
               Maksimalkan keuntungan crypto kamu dengan likuiditas tinggi, eksekusi yang cepat, dan beragam fitur Pro.

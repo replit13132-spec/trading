@@ -287,7 +287,7 @@ export const WalletScreen: React.FC = () => {
         <div className="py-6 space-y-4">
           <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Panduan Operasional & Ketentuan Sistem</h3>
           <div className="space-y-4 text-xs text-gray-600 leading-relaxed">
-            <p>Selamat datang di platform trading Pintu Pro. Demi kenyamanan dan keamanan transaksi, harap mematuhi panduan operasional berikut:</p>
+            <p>Selamat datang di platform trading XMoney Pro. Demi kenyamanan dan keamanan transaksi, harap mematuhi panduan operasional berikut:</p>
             
             <div className="space-y-2">
               <h4 className="font-bold text-gray-800">1. Prosedur Top-Up (Deposit)</h4>
@@ -325,7 +325,7 @@ export const WalletScreen: React.FC = () => {
               </ul>
             </div>
 
-            <p className="pt-2 border-t mt-2">Dengan melanjutkan penggunaan platform, Anda dianggap telah membaca, memahami, dan menyetujui seluruh aturan dan ketentuan sistem Pintu Pro.</p>
+            <p className="pt-2 border-t mt-2">Dengan melanjutkan penggunaan platform, Anda dianggap telah membaca, memahami, dan menyetujui seluruh aturan dan ketentuan sistem XMoney Pro.</p>
           </div>
         </div>
       </div>

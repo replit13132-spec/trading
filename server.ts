@@ -12,11 +12,11 @@ app.use(express.json());
 let users: any[] = [
   {
     id: 'user_dummy_1',
-    name: 'Budi Santoso (Demo User)',
+    name: 'Budi Santoso',
     nik: '3171012304950001',
-    email: 'budi.demo@pintu.co.id',
+    email: 'budi.santoso@gmail.com',
     role: 'user',
-    isDummy: true,
+    isDummy: false,
     isVerified: true,
     balances: {
       idr: 50000000,
@@ -38,15 +38,7 @@ let users: any[] = [
       },
     },
     compoundingProfitIdr: 1250000,
-    capitalBatches: [
-      {
-        id: 'batch_demo_1',
-        amount: 25000000,
-        createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-        unlockDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-        isUnlocked: false,
-      },
-    ],
+    capitalBatches: [],
     proBalances: {
       idr: 15000000,
       usdt: 1200,
@@ -61,11 +53,12 @@ let users: any[] = [
   },
   {
     id: 'user_admin',
-    name: 'Pintu Administrator (Demo Admin)',
+    name: 'Administrator',
     nik: '3171099999990000',
-    email: 'admin@pintu.co.id',
+    email: process.env.ADMIN_EMAIL || 'admin@xmoney.com',
+    password: process.env.ADMIN_PASSWORD || 'password123',
     role: 'admin',
-    isDummy: true,
+    isDummy: false,
     isVerified: true,
     balances: {
       idr: 1000000000,
@@ -425,45 +418,7 @@ let bankAccounts: any[] = [
 const DEFAULT_RECEIPT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="580" viewBox="0 0 400 580" fill="none"><rect width="400" height="580" fill="%23f8fafc" rx="20"/><rect x="16" y="16" width="368" height="548" fill="%23ffffff" rx="16" stroke="%23cbd5e1" stroke-width="2"/><rect x="16" y="16" width="368" height="75" fill="%230052FF" rx="16"/><text x="36" y="58" fill="%23ffffff" font-family="sans-serif" font-size="18" font-weight="bold">BCA Mobile - M-Transfer</text><circle cx="345" cy="53" r="14" fill="%23ffffff" opacity="0.25"/><text x="36" y="125" fill="%231e293b" font-family="sans-serif" font-size="14" font-weight="bold">TRANSFER BANK BERHASIL</text><text x="36" y="145" fill="%2364748b" font-family="sans-serif" font-size="11">24 AGU 2026 14:22:18 WIB</text><line x1="36" y1="165" x2="364" y2="165" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="195" fill="%2364748b" font-family="sans-serif" font-size="11">Bank Tujuan</text><text x="36" y="215" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BCA VIRTUAL ACCOUNT</text><text x="36" y="245" fill="%2364748b" font-family="sans-serif" font-size="11">No. VA / Rekening Tujuan</text><text x="36" y="265" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">8820 1948 2109 0012</text><text x="36" y="295" fill="%2364748b" font-family="sans-serif" font-size="11">Nama Penerima</text><text x="36" y="315" fill="%230052FF" font-family="sans-serif" font-size="13" font-weight="bold">PT PINTU PRO INDONESIA</text><text x="36" y="345" fill="%2364748b" font-family="sans-serif" font-size="11">Pengirim / Remitter</text><text x="36" y="365" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BUDI SANTOSO</text><line x1="36" y1="385" x2="364" y2="385" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="415" fill="%2364748b" font-family="sans-serif" font-size="11">Jumlah Transfer Deposit</text><text x="36" y="440" fill="%2316a34a" font-family="sans-serif" font-size="22" font-weight="bold">Rp 10.000.000</text><text x="36" y="470" fill="%2364748b" font-family="sans-serif" font-size="11">No. Referensi Transaksi</text><text x="36" y="490" fill="%23334155" font-family="sans-serif" font-size="12" font-weight="bold">REF-20260824-99812</text><rect x="36" y="510" width="328" height="36" fill="%23ecfdf5" rx="8" stroke="%23a7f3d0"/><text x="200" y="533" text-anchor="middle" fill="%23047857" font-family="sans-serif" font-size="11" font-weight="bold">✓ RESI SAH & TERKIRIM KE SISTEM PINTU</text></svg>`;
 
 let spotOrders: any[] = [];
-let transactions: any[] = [
-  {
-    id: 'tx_103',
-    userId: 'user_dummy_1',
-    type: 'DEPOSIT',
-    amount: 10000000,
-    currency: 'IDR',
-    method: 'BCA Virtual Account',
-    status: 'PENDING',
-    proofImage: DEFAULT_RECEIPT_SVG,
-    note: 'Transfer via m-BCA a/n Budi Santoso',
-    timestamp: '2026-08-24 14:22:18',
-    description: 'Deposit IDR Rp 10.000.000 (Menunggu Verifikasi Bukti TF)',
-  },
-  {
-    id: 'tx_101',
-    userId: 'user_dummy_1',
-    type: 'DEPOSIT',
-    amount: 50000000,
-    currency: 'IDR',
-    method: 'BCA Virtual Account',
-    status: 'COMPLETED',
-    proofImage: DEFAULT_RECEIPT_SVG,
-    note: 'Deposit awal akun demo',
-    timestamp: '2026-08-22 14:32:10',
-    description: 'Deposit Rupiah via VA BCA',
-  },
-  {
-    id: 'tx_102',
-    userId: 'user_dummy_1',
-    type: 'TRANSFER',
-    amount: 1300,
-    currency: 'USDT',
-    method: 'Internal Transfer',
-    status: 'COMPLETED',
-    timestamp: '2026-08-23 10:15:00',
-    description: 'Transfer Spot ke Futures Wallet',
-  },
-];
+let transactions: any[] = [];
 
 let notifications = [
   {
@@ -735,7 +690,7 @@ app.post('/api/users/create', (req, res) => {
   const newUser = {
     id: 'user_' + Date.now(),
     name: name || 'Pengguna Baru',
-    email: email || `user_${Date.now()}@pintu.co.id`,
+    email: email || `user_${Date.now()}@email.com`,
     role: role || 'user',
     isDummy: true,
     isVerified: true,
@@ -1442,7 +1397,7 @@ let systemConfig = {
   minDepositIdr: 10000,
   minWithdrawIdr: 50000,
   kycRequiredForWithdraw: true,
-  globalBannerText: 'Sistem Pintu Pro berjalan normal. Likuiditas terjamin 100% didukung Audit On-Chain.',
+  globalBannerText: 'Sistem Trading berjalan normal. Likuiditas terjamin 100% didukung Audit On-Chain.',
   globalBannerEnabled: true,
   withdrawalTaxPercent: 0,
   telegramLink: '',
@@ -1945,7 +1900,7 @@ app.post('/api/admin/news/create', (req, res) => {
   const newArticle = {
     id: 'news_' + Date.now(),
     title: title.trim(),
-    source: source || 'Pintu Editorial',
+    source: source || 'Crypto Editorial',
     timeAgo: 'Baru saja',
     category: category || 'Altcoin',
     imageUrl: imageUrl || 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=600&auto=format&fit=crop&q=80',
@@ -2115,7 +2070,7 @@ app.post('/api/cms/news/create', (req, res) => {
   const newArticle = {
     id: 'news_' + Date.now(),
     title: title.trim(),
-    source: source || 'Pintu Editorial',
+    source: source || 'Crypto Editorial',
     timeAgo: 'Baru saja',
     category: category || 'Altcoin',
     imageUrl: imageUrl || 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=600&auto=format&fit=crop&q=80',
@@ -2398,7 +2353,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Pintu Pro Trading Backend & Frontend running on http://localhost:${PORT}`);
+    console.log(`Trading Backend & Frontend running on http://localhost:${PORT}`);
   });
 }
 

@@ -276,7 +276,7 @@ export const TransactionScreen: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 font-medium mt-0.5">
-                          {dt.day}, {dt.full} • {tx.method || 'Sistem Pintu'}
+                          {dt.day}, {dt.full} • {tx.method || 'Sistem Transfer'}
                         </p>
                       </div>
                     </div>

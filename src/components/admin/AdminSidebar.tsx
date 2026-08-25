@@ -140,15 +140,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/25 hover:scale-105 transition-transform"
-              title={isCollapsed ? 'Perluas Sidebar' : 'PINTU Admin'}
+              className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center flex-shrink-0 shadow-lg hover:scale-105 transition-transform overflow-hidden p-1"
+              title={isCollapsed ? 'Perluas Sidebar' : 'Admin Panel'}
             >
-              <ShieldAlert className="w-5 h-5 text-slate-950" />
+              <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
             </button>
             {(!isCollapsed || isMobileOpen) && (
               <div className="overflow-hidden">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-sm tracking-tight text-white">PINTU</span>
+                  <span className="font-extrabold text-sm tracking-tight text-white">XMoney</span>
                   <span className="text-[10px] uppercase font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded-md">
                     Admin
                   </span>

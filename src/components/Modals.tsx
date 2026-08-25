@@ -80,7 +80,7 @@ export const Modals: React.FC = () => {
   ) || bankAccountsList[0] || {
     bankName: depositMethod,
     accountNumber: '8820 1948 2109 0012',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT XMONEY PRO INDONESIA',
     notes: 'Transfer 24 jam.',
   };
 
@@ -372,7 +372,7 @@ export const Modals: React.FC = () => {
                   <div className="flex items-center justify-between text-amber-950">
                     <span className="font-medium text-[11px]">Rekening Tujuan ({activeSelectedAccount?.bankName}):</span>
                     <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
-                      a/n {activeSelectedAccount?.accountHolder || 'PT PINTU PRO INDONESIA'}
+                      a/n {activeSelectedAccount?.accountHolder || 'PT XMONEY PRO INDONESIA'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between bg-white border border-amber-100 p-2 rounded-xl">
@@ -658,7 +658,7 @@ export const Modals: React.FC = () => {
             <form onSubmit={handleTransferSubmit} className="space-y-4">
               <div>
                 <h3 className="text-base font-bold text-gray-900">Transfer Dana Internal</h3>
-                <p className="text-xs text-gray-500">Pindahkan saldo antar dompet Pintu instan tanpa biaya</p>
+                <p className="text-xs text-gray-500">Pindahkan saldo antar dompet instan tanpa biaya</p>
               </div>
 
               {transferMsg && (
@@ -676,8 +676,8 @@ export const Modals: React.FC = () => {
                     onChange={(e) => setTransferFrom(e.target.value)}
                     className="bg-white border border-gray-200 px-2.5 py-1 rounded-lg font-bold text-gray-900 text-xs outline-none"
                   >
-                    <option value="spot">Pintu Spot Wallet</option>
-                    <option value="pro">Pintu Pro Spot</option>
+                    <option value="spot">Spot Wallet</option>
+                    <option value="pro">Pro Spot</option>
                     <option value="futures">Futures Margin Wallet</option>
                   </select>
                 </div>
@@ -694,8 +694,8 @@ export const Modals: React.FC = () => {
                     className="bg-white border border-gray-200 px-2.5 py-1 rounded-lg font-bold text-gray-900 text-xs outline-none"
                   >
                     <option value="futures">Futures Margin Wallet</option>
-                    <option value="pro">Pintu Pro Spot</option>
-                    <option value="spot">Pintu Spot Wallet</option>
+                    <option value="pro">Pro Spot</option>
+                    <option value="spot">Spot Wallet</option>
                   </select>
                 </div>
               </div>
@@ -864,7 +864,7 @@ export const Modals: React.FC = () => {
                     }}
                     className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-2.5 px-4 rounded-xl text-xs font-extrabold shadow transition-colors"
                   >
-                    Buat Akun Pintu
+                    Buat Akun Baru
                   </button>
                 </div>
 
@@ -880,7 +880,7 @@ export const Modals: React.FC = () => {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-base font-bold text-gray-900">Masuk ke Akun Pintu</h3>
+                  <h3 className="text-base font-bold text-gray-900">Masuk ke Akun</h3>
                   <p className="text-xs text-gray-500">Masukkan email dan PIN akun Anda</p>
                 </div>
 
@@ -888,7 +888,7 @@ export const Modals: React.FC = () => {
                   <input
                     type="email"
                     placeholder="Alamat Email"
-                    defaultValue="budi.demo@pintu.co.id"
+                    defaultValue=""
                     className="w-full bg-gray-100 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none"
                   />
                   <input

@@ -63,15 +63,14 @@ export const Navbar: React.FC = () => {
 
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 px-2.5 sm:px-4 py-2.5 sm:py-3 select-none">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-1.5 sm:gap-3">
-        {/* Left: Pintu Brand & Admin Dashboard */}
+        {/* Left: Brand Logo & Admin Dashboard */}
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           <button
             id="brand-logo-btn"
             onClick={() => setActiveTab('beranda')}
             className="flex items-center gap-1.5 sm:gap-2 hover:opacity-85 transition-opacity"
           >
-            <img src="/assets/xmoney_logo.png" alt="XMoney Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
-            <span className="font-extrabold text-lg sm:text-xl text-gray-900 tracking-tight">XMoney</span>
+            <img src="/logo.png" alt="Logo" className="w-32 h-16 sm:w-40 sm:h-20 object-contain flex-shrink-0" />
           </button>
 
           {/* Admin Dashboard Quick Link (Only for Admin role) */}
@@ -164,7 +163,7 @@ export const Navbar: React.FC = () => {
                       {currentUser?.name || 'Pengguna'}
                     </p>
                     <p className="text-[11px] text-gray-500 truncate">
-                      {currentUser?.email || 'user@pintu.co.id'}
+                      {currentUser?.email || 'user@email.com'}
                     </p>
                     <span
                       className={`inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded mt-1 ${
