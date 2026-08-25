@@ -61,19 +61,25 @@ export const HomeScreen: React.FC = () => {
     <div className="pb-24 max-w-lg md:max-w-xl lg:max-w-2xl mx-auto bg-white min-h-screen w-full overflow-hidden pt-2">
       {/* Quick Action Grid (2 rows x 4 icons) */}
       <div className="px-3 sm:px-4 py-2 sm:py-3">
-        <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 shadow-sm grid grid-cols-4 gap-y-3 sm:gap-y-4 gap-x-1 sm:gap-x-2 text-center">
-          {/* Transaksi */}
+        <div className="bg-white border border-violet-200/90 rounded-2xl p-3 sm:p-4 shadow-sm grid grid-cols-4 gap-y-4 gap-x-2 text-center relative overflow-visible">
+          {/* Futures Lite */}
           <button
-            id="quick-transaksi"
+            id="quick-futures"
             onClick={() => {
-              setActiveTab('transaksi');
+              const btc = markets.find((m) => m.symbol === 'BTC');
+              if (btc) setSelectedMarket(btc);
+              setActiveTab('trade');
             }}
-            className="flex flex-col items-center group p-1"
+            className="flex flex-col items-center group p-1 relative"
           >
-            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            {/* New Red Badge */}
+            <span className="absolute -top-1.5 -left-1 sm:left-1 bg-red-500 text-white text-[7px] sm:text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase leading-none tracking-wider scale-90 z-20 shadow-sm">
+              New
+            </span>
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <TrendingUp className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Transaksi</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Futures Lite</span>
           </button>
 
           {/* Earn */}
@@ -82,25 +88,26 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setIsDepositModalOpen(true)}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <Vault className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <Vault className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Earn</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Earn</span>
           </button>
 
-          {/* Pintu VIP */}
+          {/* XMoney VIP */}
           <button
             id="quick-vip"
             onClick={() => setActiveTab('wallet')}
-            className="flex flex-col items-center group p-1"
+            className="flex flex-col items-center group p-1 relative"
           >
-            <div className="relative p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <span className="absolute -top-1.5 -right-2 bg-violet-100 text-violet-800 text-[7px] sm:text-[8px] font-bold px-1 py-0.2 rounded-full whitespace-nowrap">
-                RM
-              </span>
-              <Diamond className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            {/* Personal RM Badge */}
+            <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-[#E8F1FF] text-[#1A73E8] text-[7px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap scale-90 z-20 shadow-sm">
+              Personal RM
+            </span>
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <Diamond className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">XMoney VIP</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">XMoney VIP</span>
           </button>
 
           {/* BTC Game */}
@@ -111,10 +118,10 @@ export const HomeScreen: React.FC = () => {
             }}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <Gamepad2 className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">BTC Game</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">BTC Game</span>
           </button>
 
           {/* PTU Staking */}
@@ -127,22 +134,25 @@ export const HomeScreen: React.FC = () => {
             }}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              {/* Custom outline circle-N icon */}
+              <div className="w-5 h-5 sm:w-[22px] sm:h-[22px] rounded-full border-2 border-gray-900 flex items-center justify-center font-black text-gray-900 text-[10px] sm:text-[11px] leading-none">
+                N
+              </div>
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">PTU Staking</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">PTU Staking</span>
           </button>
 
-          {/* Investasi Rutin */}
+          {/* Auto Invest */}
           <button
             id="quick-dca"
             onClick={() => setIsDepositModalOpen(true)}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <Calendar className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Investasi Rutin</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Auto Invest</span>
           </button>
 
           {/* Price Alert */}
@@ -151,106 +161,241 @@ export const HomeScreen: React.FC = () => {
             onClick={() => setActiveTab('market')}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <Bell className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Price Alert</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Price Alert</span>
           </button>
 
-          {/* Lainnya */}
+          {/* More */}
           <button
             id="quick-more"
             onClick={() => setActiveTab('market')}
             className="flex flex-col items-center group p-1"
           >
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gray-50 group-hover:bg-violet-50 transition-colors">
-              <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+            <div className="p-2.5 rounded-xl bg-white group-hover:bg-violet-50 transition-colors">
+              <ChevronDown className="w-5 h-5 text-gray-900" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">Lainnya</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-800 mt-1 sm:mt-1.5 truncate max-w-full">More</span>
           </button>
         </div>
       </div>
 
-      {/* 4. Top Movers (24H) Section */}
+      {/* Bento Grid Asset Price Tracker (EXACTLY matching screenshot) */}
       <div className="px-3 sm:px-4 py-3">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Top Movers (24H)</h2>
-        </div>
-
-        {/* Filter Pills */}
-        <div className="flex items-center gap-2 mb-3 overflow-x-auto scrollbar-none pb-1">
-          <button
-            onClick={() => setTopMoversFilter('spot')}
-            className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
-              topMoversFilter === 'spot'
-                ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
-                : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'
-            }`}
+        <div className="grid grid-cols-12 gap-3.5">
+          {/* LEFT SIDE: Bitcoin Card (Tall, span 5/12) */}
+          <div
+            onClick={() => {
+              const btc = markets.find((m) => m.symbol === 'BTC');
+              if (btc) {
+                setSelectedMarket(btc);
+                setActiveTab('market');
+              }
+            }}
+            className="col-span-5 bg-white border border-violet-200/90 rounded-2xl p-3 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[290px] relative overflow-hidden"
           >
-            Spot
-          </button>
-          <button
-            onClick={() => setTopMoversFilter('tokenized')}
-            className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
-              topMoversFilter === 'tokenized'
-                ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
-                : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'
-            }`}
-          >
-            Tokenized Assets
-          </button>
-        </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 rounded-full bg-[#F7931A] flex items-center justify-center text-white font-black text-xs shadow-sm">
+                B
+              </div>
+              <div className="overflow-hidden min-w-0">
+                <p className="font-bold text-xs text-gray-900 leading-tight">Bitcoin</p>
+                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">BTC</p>
+              </div>
+            </div>
 
-        {/* Horizontal Card Carousel */}
-        <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
-          {topMoversList.map((asset) => {
-            const isPos = asset.change24h >= 0;
-            return (
-              <div
-                key={asset.id}
-                onClick={() => {
-                  setSelectedMarket(asset);
+            <div className="my-2">
+              <p className="text-xs font-semibold text-gray-900">Rp</p>
+              <p className="text-base sm:text-lg font-extrabold text-gray-900 tracking-tight leading-none">
+                1.422.091.500
+              </p>
+            </div>
+
+            {/* Golden Rising Sparkline with beautiful Area Gradient fill */}
+            <div className="w-full h-20 my-1">
+              <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="btc-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#F7931A" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#F7931A" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,25 C15,22 25,28 40,20 C55,12 65,18 80,10 C90,6 95,14 100,5"
+                  fill="none"
+                  stroke="#F7931A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M0,25 C15,22 25,28 40,20 C55,12 65,18 80,10 C90,6 95,14 100,5 L100,30 L0,30 Z"
+                  fill="url(#btc-grad)"
+                />
+              </svg>
+            </div>
+
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-emerald-600">
+              <span>▲</span> 3,75%
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: Apple, Nvidia, Alphabet (span 7/12) */}
+          <div className="col-span-7 flex flex-col gap-3">
+            {/* Apple Card (Horizontal Layout) */}
+            <div
+              onClick={() => {
+                const aapl = markets.find((m) => m.symbol === 'AAPL');
+                if (aapl) {
+                  setSelectedMarket(aapl);
                   setActiveTab('market');
-                }}
-                className="min-w-[145px] sm:min-w-[155px] flex-shrink-0 bg-white border border-gray-200/80 rounded-2xl p-2.5 sm:p-3 shadow-sm hover:shadow-md transition-all cursor-pointer snap-start"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <CryptoIcon
-                    src={asset.icon}
-                    symbol={asset.symbol}
-                    name={asset.name}
-                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="overflow-hidden min-w-0">
-                    <p className="font-bold text-xs text-gray-900 truncate">{asset.symbol}</p>
-                    <p className="text-[10px] text-gray-400 truncate">{asset.name}</p>
-                  </div>
+                }
+              }}
+              className="bg-white border border-violet-200/90 rounded-2xl p-3 flex items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] h-[90px]"
+            >
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center text-white text-[10px] font-black shrink-0">
+                  
                 </div>
-
-                <div className="my-1.5">
-                  <p className="text-xs font-bold text-gray-900 truncate">
-                    {formatIdr(asset.priceIdr)}
-                  </p>
-                  <p
-                    className={`text-[11px] font-bold mt-0.5 flex items-center gap-0.5 ${
-                      isPos ? 'text-emerald-600' : 'text-red-500'
-                    }`}
-                  >
-                    {isPos ? '▲' : '▼'} {Math.abs(asset.change24h).toFixed(2)}%
-                  </p>
-                </div>
-
-                <div className="mt-2 pt-1 border-t border-gray-50 flex justify-end">
-                  <Sparkline
-                    data={asset.sparkline}
-                    isPositive={isPos}
-                    width={85}
-                    height={22}
-                  />
+                <div className="min-w-0">
+                  <p className="font-bold text-xs text-gray-900 leading-tight truncate">Apple</p>
+                  <p className="text-[8px] text-gray-400 font-bold uppercase">AAPLX</p>
+                  <p className="text-xs font-extrabold text-gray-900 mt-0.5 truncate">Rp 5.489.912</p>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Gray SVG Sparkline & rate */}
+              <div className="flex flex-col items-end gap-1 w-20 sm:w-24 shrink-0">
+                <div className="w-full h-7">
+                  <svg viewBox="0 0 80 20" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="aapl-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8E8E93" stopOpacity="0.15" />
+                        <stop offset="100%" stopColor="#8E8E93" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M0,15 C10,12 20,18 30,10 C40,2 50,14 60,8 C70,2 75,5 80,4"
+                      fill="none"
+                      stroke="#8E8E93"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M0,15 C10,12 20,18 30,10 C40,2 50,14 60,8 C70,2 75,5 80,4 L80,20 L0,20 Z"
+                      fill="url(#aapl-grad)"
+                    />
+                  </svg>
+                </div>
+                <div className="flex items-center gap-0.5 text-[9px] font-black text-emerald-600">
+                  <span>▲</span> 0,01%
+                </div>
+              </div>
+            </div>
+
+            {/* Row of NVIDIA & Alphabet (2 Equal columns) */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* NVIDIA Card */}
+              <div
+                onClick={() => {
+                  const nvda = markets.find((m) => m.symbol === 'NVDA');
+                  if (nvda) {
+                    setSelectedMarket(nvda);
+                    setActiveTab('market');
+                  }
+                }}
+                className="bg-white border border-violet-200/90 rounded-2xl p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="w-6 h-6 rounded-full bg-[#76B900] flex items-center justify-center text-white text-[9px] font-black shadow-sm shrink-0">
+                    NV
+                  </div>
+                  <div className="mt-1">
+                    <p className="font-bold text-[11px] text-gray-900 leading-tight">NVIDIA</p>
+                    <p className="text-[8px] text-gray-400 font-bold uppercase">NVDAX</p>
+                  </div>
+                  <p className="text-xs font-extrabold text-gray-900 mt-1 truncate">Rp 3.727.274</p>
+                </div>
+
+                {/* Green SVG Sparkline */}
+                <div className="w-full h-8 my-1">
+                  <svg viewBox="0 0 80 20" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="nvda-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#22C55E" stopOpacity="0.2" />
+                        <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M0,4 C10,5 20,12 30,14 C40,16 50,8 60,15 C70,22 75,18 80,18"
+                      fill="none"
+                      stroke="#22C55E"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M0,4 C10,5 20,12 30,14 C40,16 50,8 60,15 C70,22 75,18 80,18 L80,20 L0,20 Z"
+                      fill="url(#nvda-grad)"
+                    />
+                  </svg>
+                </div>
+
+                <div className="flex items-center gap-0.5 text-[9px] font-black text-red-500">
+                  <span>▼</span> 2,12%
+                </div>
+              </div>
+
+              {/* Alphabet Card */}
+              <div
+                onClick={() => {
+                  const googl = markets.find((m) => m.symbol === 'GOOGL');
+                  if (googl) {
+                    setSelectedMarket(googl);
+                    setActiveTab('market');
+                  }
+                }}
+                className="bg-white border border-violet-200/90 rounded-2xl p-2.5 flex flex-col justify-between shadow-sm cursor-pointer hover:shadow-md transition-all active:scale-[0.98] min-h-[185px]"
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="w-6 h-6 rounded-full bg-[#4285F4] flex items-center justify-center text-white text-[9px] font-black shadow-sm shrink-0">
+                    G
+                  </div>
+                  <div className="mt-1">
+                    <p className="font-bold text-[11px] text-gray-900 leading-tight">Alphabet</p>
+                    <p className="text-[8px] text-gray-400 font-bold uppercase">GOOGLX</p>
+                  </div>
+                  <p className="text-xs font-extrabold text-gray-900 mt-1 truncate">Rp 6.166.271</p>
+                </div>
+
+                {/* Blue SVG Sparkline */}
+                <div className="w-full h-8 my-1">
+                  <svg viewBox="0 0 80 20" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="googl-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.2" />
+                        <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M0,16 C10,18 20,17 30,12 C40,7 50,14 60,5 C70,2 75,8 80,7"
+                      fill="none"
+                      stroke="#3B82F6"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M0,16 C10,18 20,17 30,12 C40,7 50,14 60,5 C70,2 75,8 80,7 L80,20 L0,20 Z"
+                      fill="url(#googl-grad)"
+                    />
+                  </svg>
+                </div>
+
+                <div className="flex items-center gap-0.5 text-[9px] font-black text-emerald-600">
+                  <span>▲</span> 1,47%
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

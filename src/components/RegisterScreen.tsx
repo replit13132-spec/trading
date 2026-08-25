@@ -255,10 +255,9 @@ export const RegisterScreen: React.FC = () => {
 
       if (res.success) {
         confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-        setSuccessMsg(res.message || 'Pendaftaran berhasil! Selamat datang.');
+        setSuccessMsg(res.message || 'Pendaftaran berhasil! Silakan masuk.');
         setTimeout(() => {
-          setIsOnboarded(true);
-          setAuthScreen('none');
+          setAuthScreen('login');
         }, 1500);
       } else {
         setErrorMsg(res.message || 'Gagal melakukan pendaftaran.');
@@ -277,10 +276,9 @@ export const RegisterScreen: React.FC = () => {
       const res = await loginWithSocial(provider);
       if (res.success) {
         confetti({ particleCount: 70, spread: 60 });
-        setSuccessMsg(`Pendaftaran cepat dengan ${provider === 'google' ? 'Google' : 'Apple ID'} berhasil!`);
+        setSuccessMsg(`Pendaftaran cepat dengan ${provider === 'google' ? 'Google' : 'Apple ID'} berhasil! Silakan masuk.`);
         setTimeout(() => {
-          setIsOnboarded(true);
-          setAuthScreen('none');
+          setAuthScreen('login');
         }, 1200);
       }
     } catch (err: any) {

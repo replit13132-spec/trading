@@ -341,17 +341,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
       const data = await res.json();
       if (data.success) {
-        if (data.currentUser) {
-          try {
-            localStorage.setItem('app_user_id', data.currentUser.id);
-            localStorage.setItem('app_current_user', JSON.stringify(data.currentUser));
-          } catch {}
-          setCurrentUser(data.currentUser);
-        }
-        setIsOnboarded(true);
-        try {
-          localStorage.setItem('app_is_onboarded', 'true');
-        } catch {}
+        // Do not auto-login registered user; let them log in manually.
         await refreshData();
         return { success: true, message: data.message };
       }

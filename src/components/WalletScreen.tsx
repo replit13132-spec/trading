@@ -15,6 +15,7 @@ import {
   RefreshCw,
   TrendingUp,
   CheckCircle2,
+  Send,
 } from 'lucide-react';
 
 export const WalletScreen: React.FC = () => {
@@ -220,11 +221,11 @@ export const WalletScreen: React.FC = () => {
         </div>
 
         {/* PROFIT COMPOUNDING CARD */}
-        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-4 my-3 shadow-lg space-y-3">
+        <div className="bg-gradient-to-r from-violet-950 to-purple-600 text-white rounded-2xl p-4 my-3 shadow-lg space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-violet-300" />
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-100">PROFIT COMPOUNDING</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-violet-100">PROFIT COMPOUNDING</span>
             </div>
             <span className="bg-white/20 backdrop-blur-md text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white">
               Bisa Ditarik Kapan Saja
@@ -236,7 +237,7 @@ export const WalletScreen: React.FC = () => {
               <p className="text-2xl font-black">
                 {showBalance ? formatIdr(profitAmount) : '••••••••'}
               </p>
-              <p className="text-[11px] text-emerald-100/90 mt-0.5">
+              <p className="text-[11px] text-violet-200/90 mt-0.5">
                 Minimal penarikan: Rp 100.000
               </p>
             </div>
@@ -244,7 +245,7 @@ export const WalletScreen: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsWithdrawModalOpen(true)}
-                className="bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold px-3 py-2 rounded-xl shadow transition-all active:scale-95"
+                className="bg-white text-violet-950 hover:bg-violet-50 text-xs font-extrabold px-3 py-2 rounded-xl shadow transition-all active:scale-95"
               >
                 Tarik Profit
               </button>
@@ -252,7 +253,7 @@ export const WalletScreen: React.FC = () => {
               <button
                 onClick={handleRecompound}
                 disabled={isRecompounding || profitAmount <= 0}
-                className="bg-emerald-900/40 hover:bg-emerald-900/60 border border-white/30 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition-all flex items-center gap-1 disabled:opacity-50 active:scale-95"
+                className="bg-violet-900/40 hover:bg-violet-900/60 border border-white/30 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition-all flex items-center gap-1 disabled:opacity-50 active:scale-95"
                 title="Gabungkan profit kembali ke Modal Awal agar ikut bertumbuh 1%/hari"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isRecompounding ? 'animate-spin' : ''}`} />
@@ -283,6 +284,39 @@ export const WalletScreen: React.FC = () => {
           </button>
         </div>
 
+        {/* Telegram Support Component Banner */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              fetch('/api/config')
+                .then((res) => res.json())
+                .then((data) => {
+                  const url = (data.success && data.data?.telegramLink) || 'https://t.me/xmoney_support';
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                })
+                .catch(() => {
+                  window.open('https://t.me/xmoney_support', '_blank', 'noopener,noreferrer');
+                });
+            }}
+            className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-sky-400 to-sky-600 hover:from-sky-500 hover:to-sky-700 text-white rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-[0.98] group relative overflow-hidden"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shadow-inner shrink-0 relative">
+                <Send className="w-5 h-5 rotate-[-25deg] translate-x-[-1px] translate-y-[0.5px] text-white" />
+                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-wider text-sky-100">Layanan Pelanggan</p>
+                <p className="text-xs sm:text-sm font-extrabold text-white">Hubungi CS via Telegram</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
         {/* 4. Information/Rules Section */}
         <div className="py-6 space-y-4">
           <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Panduan Operasional & Ketentuan Sistem</h3>
@@ -292,7 +326,7 @@ export const WalletScreen: React.FC = () => {
             <div className="space-y-2">
               <h4 className="font-bold text-gray-800">1. Prosedur Top-Up (Deposit)</h4>
               <ul className="list-disc pl-4 space-y-1">
-                <li>Minimal deposit adalah Rp 50.000 (atau sesuai ketentuan terkini).</li>
+                <li>Minimal deposit adalah Rp 500.000 (atau sesuai ketentuan terkini).</li>
                 <li>Transfer hanya ke nomor rekening resmi yang tertera di menu deposit.</li>
                 <li>Setelah transfer, pastikan untuk mengunggah bukti transfer agar saldo diproses otomatis oleh sistem.</li>
               </ul>
@@ -323,6 +357,10 @@ export const WalletScreen: React.FC = () => {
                 <li><strong>Anti-Phishing:</strong> CS resmi tidak pernah meminta kata sandi atau kode OTP Anda.</li>
                 <li><strong>Bantuan:</strong> Hubungi Customer Service resmi hanya melalui link Telegram yang tersedia di menu Pengaturan.</li>
               </ul>
+            </div>
+
+            <div className="p-3 bg-violet-50 text-violet-900 rounded-xl border border-violet-100 text-[11px] sm:text-xs font-semibold leading-relaxed mt-4">
+              xmoney telah mendaftarkan aset kripto berdasarkan peraturan Bappebti nomor 1 tahun 2025 [Jenis aset kripto]
             </div>
 
             <p className="pt-2 border-t mt-2">Dengan melanjutkan penggunaan platform, Anda dianggap telah membaca, memahami, dan menyetujui seluruh aturan dan ketentuan sistem XMoney Pro.</p>
