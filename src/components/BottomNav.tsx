@@ -18,7 +18,7 @@ export const BottomNav: React.FC = () => {
     },
     {
       id: 'trade',
-      label: 'Simulasi',
+      label: 'Trade',
       icon: ArrowLeftRight,
     },
     {

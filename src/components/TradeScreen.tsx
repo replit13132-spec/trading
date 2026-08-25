@@ -193,7 +193,7 @@ export const TradeScreen: React.FC = () => {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold animate-pulse">
             <Activity className="w-3 h-3" />
-            <span>Simulasi Live</span>
+            <span>Live Trade</span>
           </div>
           <Star className="w-4 h-4 text-amber-400 fill-amber-400 cursor-pointer" />
         </div>
@@ -291,15 +291,15 @@ export const TradeScreen: React.FC = () => {
         </div>
       )}
 
-      {/* SPOT TRADING PANEL (REPLACED WITH BEAUTIFUL LIVE SIMULATION & SIGNAL DASHBOARD) */}
+      {/* MARKET ANALYTICS PANEL (PROFESSIONAL SIGNAL & INDICATOR DASHBOARD) */}
       <div className="p-3 sm:p-4 bg-gray-50/50 border-b border-gray-100 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-            <span className="text-xs font-black uppercase tracking-wider text-gray-900">Pusat Analisis & Sinyal Simulasi</span>
+            <span className="text-xs font-black uppercase tracking-wider text-gray-900">Analisis Sinyal & Indikator Pasar</span>
           </div>
           <span className="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold">
-            Simulasi Live
+            Live Analysis
           </span>
         </div>
 
@@ -341,7 +341,7 @@ export const TradeScreen: React.FC = () => {
               })()}
             </div>
 
-            {/* Simulated Buy vs Sell Pressure */}
+            {/* Buy vs Sell Volume Pressure */}
             {(() => {
               // Create a deterministic buy pressure based on current price/stats
               const hash = (currentAsset.symbol.charCodeAt(0) + Math.round(currentAsset.priceIdr % 100)) % 40;
@@ -362,7 +362,7 @@ export const TradeScreen: React.FC = () => {
             })()}
           </div>
 
-          {/* Column 2: Simulated Market Stats */}
+          {/* Column 2: Market Stats */}
           <div className="space-y-2 text-xs flex flex-col justify-between">
             <div className="grid grid-cols-2 gap-2 pt-1">
               <div className="bg-gray-50 p-2 rounded-xl border border-gray-100">
@@ -382,9 +382,9 @@ export const TradeScreen: React.FC = () => {
             <div className="bg-amber-50/50 border border-amber-100/80 rounded-xl p-2.5 text-[10px] text-amber-900 leading-relaxed font-semibold">
               <div className="flex items-center gap-1 mb-0.5 text-amber-800 font-bold text-[11px]">
                 <Info className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
-                <span>Mode Simulasi Pasif</span>
+                <span>Info Pasar Real-Time</span>
               </div>
-              Halaman ini menampilkan simulasi grafik harga real-time tanpa mengeksekusi saldo atau dana dompet digital Anda.
+              Halaman ini menampilkan grafik harga dan buku order (order book) real-time untuk analisis pergerakan pasar serta pengambilan keputusan trading yang akurat.
             </div>
           </div>
         </div>

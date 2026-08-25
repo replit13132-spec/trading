@@ -20,6 +20,8 @@ export const MarketScreen: React.FC = () => {
       // Tab filter
       if (marketTab === 'Stocks' || marketTab === 'Tokenized Assets') {
         if (asset.category !== 'stocks') return false;
+      } else if (marketTab === 'Pro Spot' || marketTab === 'Futures') {
+        if (asset.category !== 'crypto') return false;
       } else if (marketTab === 'Watchlist') {
         if (!asset.isFavorite) return false;
       }
@@ -37,7 +39,7 @@ export const MarketScreen: React.FC = () => {
     .sort((a, b) => {
       if (filterPill === 'Trending') return Math.abs(b.change24h) - Math.abs(a.change24h);
       if (filterPill === 'Gainers') return b.change24h - a.change24h;
-      if (filterPill === 'Losers') return b.change24h - a.change24h;
+      if (filterPill === 'Losers') return a.change24h - b.change24h;
       return 0;
     });
 
