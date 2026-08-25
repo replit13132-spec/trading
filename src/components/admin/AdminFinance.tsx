@@ -122,6 +122,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
 
   const handleUpdateStatus = async (txId: string, status: 'COMPLETED' | 'REJECTED') => {
     try {
+      const targetTx = transactions.find((t) => t.id === txId);
       const res = await fetch(`/api/admin/transactions/${txId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -129,17 +130,25 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
       });
       const data = await res.json();
       if (data.success) {
-        setStatusMessage(
-          status === 'COMPLETED'
-            ? '✓ Status transaksi BERHASIL disetujui & saldo telah diperbarui!'
-            : '✓ Transaksi telah ditolak.'
-        );
+        if (status === 'COMPLETED') {
+          if (targetTx?.type === 'DEPOSIT') {
+            setStatusMessage('✅ Deposit BERHASIL di-ACC! Saldo akun trader telah otomatis ditambahkan.');
+          } else {
+            setStatusMessage('✅ Penarikan dana BERHASIL di-ACC & status transaksi telah selesai.');
+          }
+        } else {
+          if (targetTx?.type === 'WITHDRAW') {
+            setStatusMessage('⚠️ Penarikan ditolak. Saldo akun trader telah otomatis dikembalikan (Refund).');
+          } else {
+            setStatusMessage('❌ Transaksi deposit telah ditolak.');
+          }
+        }
         if (selectedTx && selectedTx.id === txId) {
           setSelectedTx({ ...selectedTx, status });
         }
         fetchTransactions();
         onRefresh();
-        setTimeout(() => setStatusMessage(''), 4000);
+        setTimeout(() => setStatusMessage(''), 5000);
       }
     } catch (e) {
       console.error(e);
