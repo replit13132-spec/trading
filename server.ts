@@ -706,24 +706,27 @@ app.post('/api/users/create', (req, res) => {
     name: name || 'Pengguna Baru',
     email: email || `user_${Date.now()}@email.com`,
     role: role || 'user',
-    isDummy: true,
+    isDummy: false,
     isVerified: true,
     balances: {
-      idr: Number(initialIdr) || 10000000,
-      usdt: Number(initialUsdt) || 500,
-      tokens: {
-        BTC: 0.005,
-        ETH: 0.05,
-        SOL: 1.0,
-      },
+      idr: Number(initialIdr) || 0,
+      usdt: Number(initialUsdt) || 0,
+      tokens: {},
     },
+    compoundingBalances: {
+      idr: 0,
+      usdt: 0,
+      tokens: {},
+    },
+    compoundingProfitIdr: 0,
+    capitalBatches: [],
     proBalances: {
-      idr: 5000000,
-      usdt: 250,
+      idr: 0,
+      usdt: 0,
       tokens: {},
     },
     futuresBalances: {
-      usdt: 250,
+      usdt: 0,
     },
   };
   users.push(newUser);
@@ -766,9 +769,6 @@ app.post('/api/auth/register', (req, res) => {
     return res.status(400).json({ success: false, message: 'NIK ini sudah terdaftar dalam sistem.' });
   }
 
-  const bonusIdr = referralCode ? 10000000 : 5000000;
-  const bonusUsdt = referralCode ? 100 : 50;
-
   const newUser = {
     id: 'user_' + Date.now(),
     name: name.trim(),
@@ -779,22 +779,24 @@ app.post('/api/auth/register', (req, res) => {
     isDummy: false,
     isVerified: true,
     balances: {
-      idr: bonusIdr,
-      usdt: bonusUsdt,
-      tokens: {
-        BTC: 0.002,
-        ETH: 0.02,
-        SOL: 0.5,
-        PTU: 100,
-      },
+      idr: 0,
+      usdt: 0,
+      tokens: {},
     },
+    compoundingBalances: {
+      idr: 0,
+      usdt: 0,
+      tokens: {},
+    },
+    compoundingProfitIdr: 0,
+    capitalBatches: [],
     proBalances: {
-      idr: 2000000,
-      usdt: 100,
+      idr: 0,
+      usdt: 0,
       tokens: {},
     },
     futuresBalances: {
-      usdt: 100,
+      usdt: 0,
     },
   };
 
@@ -843,12 +845,19 @@ app.post('/api/auth/social', (req, res) => {
       isDummy: false,
       isVerified: true,
       balances: {
-        idr: 10000000,
-        usdt: 200,
-        tokens: { BTC: 0.005, ETH: 0.05, PTU: 50 },
+        idr: 0,
+        usdt: 0,
+        tokens: {},
       },
-      proBalances: { idr: 5000000, usdt: 100, tokens: {} },
-      futuresBalances: { usdt: 100 },
+      compoundingBalances: {
+        idr: 0,
+        usdt: 0,
+        tokens: {},
+      },
+      compoundingProfitIdr: 0,
+      capitalBatches: [],
+      proBalances: { idr: 0, usdt: 0, tokens: {} },
+      futuresBalances: { usdt: 0 },
     };
     users.push(user);
   }
@@ -873,8 +882,14 @@ app.post('/api/users/reset-balance', (req, res) => {
       user.proBalances.usdt = 8000;
       user.futuresBalances.usdt = 7000;
     } else {
-      user.balances.idr = 50000000;
-      user.balances.usdt = 2500;
+      user.balances.idr = 0;
+      user.balances.usdt = 0;
+      user.balances.tokens = {};
+      user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+      user.compoundingProfitIdr = 0;
+      user.capitalBatches = [];
+      user.proBalances = { idr: 0, usdt: 0, tokens: {} };
+      user.futuresBalances = { usdt: 0 };
     }
   }
   res.json({ success: true, currentUser: user });
@@ -885,21 +900,13 @@ app.get('/api/user/wallet', (req, res) => {
   const user = resolveUser(req);
   
   if (!user.compoundingBalances) {
-    user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
+    user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
   }
   if (user.compoundingProfitIdr === undefined) {
-    user.compoundingProfitIdr = 1250000;
+    user.compoundingProfitIdr = 0;
   }
   if (!user.capitalBatches) {
-    user.capitalBatches = [
-      {
-        id: 'batch_demo_1',
-        amount: 25000000,
-        createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-        unlockDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-        isUnlocked: false,
-      },
-    ];
+    user.capitalBatches = [];
   }
 
   // Calculate total portfolio value in IDR
@@ -2244,7 +2251,7 @@ app.post('/api/admin/compounding/trigger', (req, res) => {
     }
 
     if (!user.compoundingBalances) {
-      user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
+      user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
     }
 
     let idrYield = 0;
