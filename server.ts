@@ -1173,10 +1173,31 @@ function applyDatabaseState(data: any) {
     markets = hardcodedMarkets.map((hm) => {
       const lm = loadedMap.get(hm.id);
       if (lm) {
+        let priceIdr = lm.priceIdr ?? hm.priceIdr;
+        let priceUsdt = lm.priceUsdt ?? hm.priceUsdt;
+
+        // Prevent corrupted prices (like 2) for major coins
+        if (hm.symbol === 'BTC' && (priceIdr < 100000000 || priceUsdt < 5000)) {
+          priceIdr = hm.priceIdr;
+          priceUsdt = hm.priceUsdt;
+        } else if (hm.symbol === 'ETH' && (priceIdr < 5000000 || priceUsdt < 300)) {
+          priceIdr = hm.priceIdr;
+          priceUsdt = hm.priceUsdt;
+        } else if (hm.symbol === 'SOL' && (priceIdr < 100000 || priceUsdt < 5)) {
+          priceIdr = hm.priceIdr;
+          priceUsdt = hm.priceUsdt;
+        } else if (hm.symbol === 'USDT' && (priceIdr < 10000 || priceUsdt < 0.5)) {
+          priceIdr = hm.priceIdr;
+          priceUsdt = hm.priceUsdt;
+        } else if (hm.symbol === 'BNB' && (priceIdr < 1000000 || priceUsdt < 50)) {
+          priceIdr = hm.priceIdr;
+          priceUsdt = hm.priceUsdt;
+        }
+
         return {
           ...hm,
-          priceIdr: lm.priceIdr ?? hm.priceIdr,
-          priceUsdt: lm.priceUsdt ?? hm.priceUsdt,
+          priceIdr,
+          priceUsdt,
           change24h: lm.change24h ?? hm.change24h,
           high24h: lm.high24h ?? hm.high24h,
           low24h: lm.low24h ?? hm.low24h,
@@ -1332,10 +1353,8 @@ async function initDatabase() {
     }
   }
 
-  // 3. If no state was loaded from anywhere, save initial seed
-  if (!loadedFromLocal && !isPgConnected) {
-    saveDatabaseToFile();
-  }
+  // 3. Save database state (this ensures any sanitized or initialized data is stored back)
+  saveDatabase();
 }
 
 // Initialize database on startup
