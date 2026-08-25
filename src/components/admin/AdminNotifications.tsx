@@ -115,31 +115,31 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
+              <span className="bg-white/20 text-white border border-white/10 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
                 <Megaphone className="w-3.5 h-3.5" /> Broadcast Center
               </span>
-              <span className="text-xs text-slate-400 font-medium">{notifications.length} Total Siaran</span>
+              <span className="text-xs text-violet-200 font-medium">{notifications.length} Total Siaran</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               Pusat Notifikasi & Siaran Global
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1">
+            <p className="text-xs sm:text-sm text-violet-100 max-w-2xl mt-1">
               Kirimkan pengumuman penting, pemberitahuan promo, update sistem, atau pesan siaran langsung ke lonceng notifikasi seluruh pengguna aplikasi.
             </p>
           </div>
           <button
             onClick={fetchNotifications}
             disabled={isLoading}
-            className="self-start sm:self-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all border border-slate-700 flex items-center gap-2"
+            className="self-start sm:self-auto px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/20 flex items-center gap-2"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-white' : ''}`} />
             <span>Muat Ulang</span>
           </button>
         </div>
@@ -149,7 +149,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-5">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-xl bg-violet-100 text-violet-800 flex items-center justify-center font-bold">
               <Send className="w-4 h-4" />
             </div>
             <div>
@@ -185,7 +185,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: 🎉 Bonus Cashback 100 USDT Telah Tiba!"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500"
                 required
               />
             </div>
@@ -195,7 +195,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="info">ℹ️ Informasi Umum (Info)</option>
                 <option value="success">🎉 Berhasil / Hadiah (Success)</option>
@@ -213,7 +213,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tuliskan isi pesan detail yang akan dibaca oleh pengguna..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
           </div>
@@ -222,7 +222,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 bg-slate-950 hover:bg-slate-900 text-amber-400 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 hover:scale-[1.02]"
+              className="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 hover:scale-[1.02]"
             >
               <Send className={`w-4 h-4 ${isSubmitting ? 'animate-pulse' : ''}`} />
               <span>{isSubmitting ? 'Menyiarkan...' : 'Kirim Siaran ke Seluruh Pengguna'}</span>
@@ -245,14 +245,14 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari siaran..."
-              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 w-full sm:w-64"
+              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500 w-full sm:w-64"
             />
           </div>
         </div>
 
         {isLoading ? (
           <div className="py-12 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
-            <RefreshCw className="w-6 h-6 animate-spin text-amber-600" />
+            <RefreshCw className="w-6 h-6 animate-spin text-violet-600" />
             <p className="text-xs">Memuat daftar siaran...</p>
           </div>
         ) : filteredNotifications.length === 0 ? (
@@ -276,7 +276,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
                     isEmergency
                       ? 'bg-rose-50/60 border-rose-200'
                       : isWarning
-                      ? 'bg-amber-50/60 border-amber-200'
+                      ? 'bg-violet-50/60 border-violet-200'
                       : isSuccess
                       ? 'bg-emerald-50/60 border-emerald-200'
                       : 'bg-slate-50/80 border-slate-200/80'
@@ -288,7 +288,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
                         isEmergency
                           ? 'bg-rose-100 text-rose-700'
                           : isWarning
-                          ? 'bg-amber-100 text-amber-800'
+                          ? 'bg-violet-100 text-violet-800'
                           : isSuccess
                           ? 'bg-emerald-100 text-emerald-700'
                           : isPromo
@@ -310,7 +310,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
                             isEmergency
                               ? 'bg-rose-200 text-rose-900'
                               : isWarning
-                              ? 'bg-amber-200 text-amber-900'
+                              ? 'bg-violet-200 text-violet-900'
                               : isSuccess
                               ? 'bg-emerald-200 text-emerald-900'
                               : isPromo

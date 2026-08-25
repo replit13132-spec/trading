@@ -807,7 +807,7 @@ export const Modals: React.FC = () => {
                     Crypto App Paling Simpel
                   </h2>
                   <p className="text-xs text-gray-500 mt-2 leading-relaxed px-2">
-                    Nikmati investasi crypto paling simpel. Harga mulai dari Rp 11.000, kembangkan asetmu dengan Earn & Futures 25x.
+                    Nikmati investasi crypto paling simpel. Harga mulai dari Rp 500.000, kembangkan asetmu dengan Earn & Futures 25x.
                   </p>
                 </div>
 

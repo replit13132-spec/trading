@@ -67,7 +67,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Pasar',
       icon: Coins,
       badge: markets.length,
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+      badgeColor: 'bg-violet-500/20 text-violet-400 border border-violet-500/30',
     },
     {
       id: 'users' as AdminTab,
@@ -83,7 +83,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Rekening',
       icon: Building2,
       badge: 'CRUD',
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+      badgeColor: 'bg-violet-500/20 text-violet-400 border border-violet-500/30',
     },
     {
       id: 'finance' as AdminTab,
@@ -91,7 +91,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Keuangan',
       icon: CreditCard,
       badge: stats?.pendingDeposits ? `${stats.pendingDeposits} Verifikasi` : null,
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse',
+      badgeColor: 'bg-violet-500/20 text-violet-400 border border-violet-500/30 animate-pulse',
     },
     {
       id: 'compounding' as AdminTab,
@@ -114,7 +114,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'Notifikasi',
       icon: Bell,
       badge: 'Broadcast',
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+      badgeColor: 'bg-violet-500/20 text-violet-400 border border-violet-500/30',
     },
     {
       id: 'settings' as AdminTab,
@@ -138,18 +138,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 bg-slate-950 text-slate-100 border-r border-slate-800/80 flex flex-col transition-all duration-300 ease-in-out shadow-2xl overflow-x-hidden ${
+        className={`fixed top-0 bottom-0 left-0 z-50 bg-white text-slate-800 border-r border-violet-100 flex flex-col transition-all duration-300 ease-in-out shadow-lg overflow-x-hidden ${
           isCollapsed ? 'w-[68px]' : 'w-[260px]'
         } ${
           isMobileOpen ? 'translate-x-0 !w-[280px]' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         {/* Brand Header */}
-        <div className="h-16 px-3 flex items-center justify-between border-b border-slate-800/80 bg-slate-900/40 flex-shrink-0">
+        <div className="h-16 px-3 flex items-center justify-between border-b border-violet-100 bg-violet-50/30 flex-shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center flex-shrink-0 shadow-lg hover:scale-105 transition-transform overflow-hidden p-1"
+              className="w-12 h-12 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0 shadow-sm hover:scale-105 transition-transform overflow-hidden p-1 border border-violet-100"
               title={isCollapsed ? 'Perluas Sidebar' : 'Admin Panel'}
             >
               <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
@@ -157,12 +157,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {(!isCollapsed || isMobileOpen) && (
               <div className="overflow-hidden">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-sm tracking-tight text-white">XMoney</span>
-                  <span className="text-[10px] uppercase font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded-md">
+                  <span className="font-extrabold text-sm tracking-tight text-violet-900">XMoney</span>
+                  <span className="text-[10px] uppercase font-bold bg-violet-100 text-violet-700 border border-violet-200 px-1.5 py-0.2 rounded-md">
                     Admin
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400 truncate">Sistem Kontrol Penuh</p>
+                <p className="text-[10px] text-violet-500 font-medium truncate">Sistem Kontrol Penuh</p>
               </div>
             )}
           </div>
@@ -172,7 +172,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {/* Mobile close button */}
             <button
               onClick={() => setIsMobileOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50"
             >
               <X className="w-5 h-5" />
             </button>
@@ -181,7 +181,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {(!isCollapsed || isMobileOpen) && (
               <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+                className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
                 title="Ciutkan Sidebar"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -191,7 +191,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">
+        <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1.5 scrollbar-thin scrollbar-thumb-violet-100">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -204,14 +204,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   onClick={() => setActiveTab(item.id)}
                   className={`w-10 h-10 mx-auto flex items-center justify-center rounded-xl transition-all duration-150 relative group ${
                     isActive
-                      ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-lg shadow-amber-500/30'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/80'
+                      ? 'bg-violet-600 text-white font-extrabold shadow-md shadow-violet-500/20'
+                      : 'text-slate-500 hover:text-violet-700 hover:bg-violet-50/80'
                   }`}
                   title={item.label}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {item.badge !== null && item.badge !== undefined && (
-                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full ring-2 ring-slate-950" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-violet-600 rounded-full ring-2 ring-white" />
                   )}
                 </button>
               );
@@ -226,14 +226,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 }}
                 className={`w-full group flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 relative ${
                   isActive
-                    ? 'bg-amber-500 text-slate-950 font-extrabold text-white shadow-lg shadow-amber-500/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-violet-600 text-white font-extrabold shadow-md shadow-violet-500/20'
+                    : 'text-slate-600 hover:text-violet-700 hover:bg-violet-50/80'
                 }`}
                 title={item.label}
               >
                 <Icon
                   className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110 ${
-                    isActive ? 'text-slate-950 font-extrabold' : 'text-slate-400 group-hover:text-amber-400'
+                    isActive ? 'text-white' : 'text-slate-400 group-hover:text-violet-600'
                   }`}
                 />
 
@@ -242,7 +242,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   {item.badge !== null && item.badge !== undefined && (
                     <span
                       className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0 ${
-                        isActive ? 'bg-white/20 text-white' : item.badgeColor || 'bg-slate-800 text-slate-300'
+                        isActive ? 'bg-white/20 text-white' : item.badgeColor || 'bg-gray-100 text-gray-600'
                       }`}
                     >
                       {item.badge}
@@ -255,26 +255,26 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </nav>
 
         {/* Bottom Section: Return to App */}
-        <div className="p-2.5 border-t border-slate-800/80 bg-slate-900/70 flex-shrink-0">
+        <div className="p-2.5 border-t border-violet-100 bg-violet-50/30 flex-shrink-0">
           {isCollapsed && !isMobileOpen ? (
             <button
               onClick={() => setMainTab('beranda')}
-              className="w-10 h-10 mx-auto flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 transition-all border border-slate-700/60 shadow-sm"
+              className="w-10 h-10 mx-auto flex items-center justify-center rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 transition-all border border-violet-100 shadow-sm"
               title="Kembali ke Tampilan User"
             >
-              <Sparkles className="w-5 h-5 text-amber-400" />
+              <Sparkles className="w-5 h-5 text-violet-600" />
             </button>
           ) : (
             <button
               onClick={() => setMainTab('beranda')}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold transition-all border border-slate-700/60 shadow-sm"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 hover:text-violet-900 text-xs font-bold transition-all border border-violet-100 shadow-sm"
               title="Kembali ke Tampilan Pengguna (App View)"
             >
               <div className="flex items-center gap-2 overflow-hidden">
-                <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <Sparkles className="w-4 h-4 text-violet-600 flex-shrink-0" />
                 <span className="truncate">Ke Tampilan User</span>
               </div>
-              <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-violet-500 flex-shrink-0" />
             </button>
           )}
         </div>

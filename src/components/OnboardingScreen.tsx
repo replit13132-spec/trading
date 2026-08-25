@@ -78,7 +78,7 @@ export const OnboardingScreen: React.FC = () => {
               Crypto App Paling Simpel
             </h1>
             <p className="text-sm text-gray-600 mt-3 px-3 leading-relaxed max-w-sm">
-              Nikmati investasi crypto paling simpel. Harga mulai dari Rp 11.000, kembangkan asetmu dengan Earn.
+              Nikmati investasi crypto paling simpel. Harga mulai dari Rp 500.000, kembangkan asetmu dengan Earn.
             </p>
           </div>
         ) : (

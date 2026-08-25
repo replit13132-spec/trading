@@ -112,7 +112,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase font-extrabold tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md hidden sm:inline-block">
+              <span className="text-[10px] uppercase font-extrabold tracking-wider text-violet-800 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-md hidden sm:inline-block">
                 Admin Panel
               </span>
               <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">
@@ -129,7 +129,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {/* Live Clock */}
           <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-600">
-            <Clock className="w-3.5 h-3.5 text-amber-800" />
+            <Clock className="w-3.5 h-3.5 text-violet-800" />
             <span>{timeStr}</span>
           </div>
 
@@ -137,25 +137,25 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="p-2 text-gray-600 hover:text-amber-800 hover:bg-amber-50 border border-gray-200 rounded-xl transition-all"
+            className="p-2 text-gray-600 hover:text-violet-800 hover:bg-violet-50 border border-gray-200 rounded-xl transition-all"
             title="Muat ulang data terkini"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-amber-800' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-violet-800' : ''}`} />
           </button>
 
           {/* User / Admin Switcher Dropdown */}
           <div className="relative">
             <button
               onClick={() => setShowUserDropdown(!showUserDropdown)}
-              className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors shadow-sm"
+              className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 rounded-xl text-xs font-bold transition-colors shadow-sm"
             >
-              <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-[10px] text-white uppercase font-bold">
+              <div className="w-5 h-5 rounded-full bg-violet-600 flex items-center justify-center text-[10px] text-white uppercase font-bold">
                 {currentUser?.name ? currentUser.name.charAt(0) : 'A'}
               </div>
               <span className="max-w-[80px] sm:max-w-[120px] truncate hidden sm:inline-block">
                 {currentUser?.name || 'Administrator'}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-violet-500" />
             </button>
 
             {showUserDropdown && (
@@ -164,7 +164,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
                   <p className="text-[10px] uppercase font-bold text-gray-400">Sesi Aktif Saat Ini</p>
                   <p className="text-xs font-bold text-gray-900 truncate">{currentUser?.name}</p>
                   <p className="text-[11px] text-gray-500 truncate">{currentUser?.email}</p>
-                  <span className="inline-block mt-1 text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">
+                  <span className="inline-block mt-1 text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-violet-100 text-violet-900">
                     Role: {currentUser?.role?.toUpperCase()}
                   </span>
                 </div>
@@ -181,7 +181,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
                         }}
                         className={`w-full text-left px-2 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
                           u.id === currentUser?.id
-                            ? 'bg-amber-50 text-amber-900 font-bold'
+                            ? 'bg-violet-50 text-violet-900 font-bold'
                             : 'hover:bg-gray-50 text-gray-700'
                         }`}
                       >
@@ -198,7 +198,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
           {/* Quick Exit to User App */}
           <button
             onClick={() => setActiveTab('beranda')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-amber-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 text-white font-extrabold hover:bg-violet-700 rounded-xl text-xs transition-all shadow-md shadow-violet-500/10"
           >
             <span className="hidden sm:inline">Aplikasi User</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

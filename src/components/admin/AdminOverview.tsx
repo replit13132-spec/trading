@@ -64,8 +64,8 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
       value: formatIdr(stats?.totalVolumeIdr || 1450000000),
       subtext: 'Trading spot & derivatif 24 jam',
       icon: Activity,
-      color: 'text-amber-800',
-      bg: 'bg-amber-50 border-amber-200',
+      color: 'text-violet-800',
+      bg: 'bg-violet-50 border-violet-200',
       action: () => setActiveTab('markets'),
     },
     {
@@ -100,40 +100,40 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-3xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-white/10 blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold mb-3 border border-amber-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-3 border border-white/10">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Sistem Operasi Master Exchange</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white mb-2">
             Pusat Pengendali Ekosistem Trading Exchange
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm text-violet-100 leading-relaxed mb-6">
             Akses kontrol penuh CRUD untuk seluruh modul aplikasi: manipulasi harga pasar live, manipulasi saldo pengguna, upload gambar koin, audit transaksi, dan publikasi konten.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setActiveTab('markets')}
-              className="px-4 py-2 bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/30 flex items-center gap-1.5"
+              className="px-4 py-2 bg-white text-violet-700 hover:bg-violet-50 text-xs font-bold rounded-xl transition-all shadow-md flex items-center gap-1.5"
             >
               <Coins className="w-4 h-4" />
               <span>Kelola Koin & Gambar</span>
             </button>
             <button
               onClick={() => setActiveTab('users')}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-all border border-slate-700 flex items-center gap-1.5"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition-all border border-white/20 flex items-center gap-1.5"
             >
               <Users className="w-4 h-4" />
               <span>Kelola Pengguna & Saldo</span>
             </button>
             <button
               onClick={() => setActiveTab('finance')}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-all border border-slate-700 flex items-center gap-1.5"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition-all border border-white/20 flex items-center gap-1.5"
             >
-              <CreditCard className="w-4 h-4 text-emerald-400" />
+              <CreditCard className="w-4 h-4 text-emerald-300" />
               <span>Audit Keuangan</span>
             </button>
           </div>
@@ -160,7 +160,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 <p className="text-xl font-extrabold text-gray-900 mb-1">{c.value}</p>
                 <p className="text-[11px] text-gray-500 flex items-center justify-between">
                   <span>{c.subtext}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-amber-800" />
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-violet-800" />
                 </p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
         <div className="lg:col-span-1 bg-white border border-gray-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+              <div className="w-7 h-7 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center font-bold">
                 <Zap className="w-4 h-4" />
               </div>
               <h3 className="font-bold text-sm text-gray-900">Simulasi Volatilitas Pasar</h3>
@@ -184,7 +184,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
             </p>
 
             {pumpMessage && (
-              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold rounded-xl animate-fade-in">
+              <div className="mb-4 p-3 bg-violet-50 border border-violet-200 text-violet-900 text-xs font-bold rounded-xl animate-fade-in">
                 {pumpMessage}
               </div>
             )}
@@ -195,7 +195,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 <select
                   value={pumpSymbol}
                   onChange={(e) => setPumpSymbol(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500"
                 >
                   {markets.map((m) => (
                     <option key={m.id} value={m.symbol}>
@@ -215,7 +215,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                       onClick={() => setPumpPercent(val)}
                       className={`py-1.5 rounded-lg text-xs font-bold border transition-all ${
                         pumpPercent === val
-                          ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-600'
+                          ? 'bg-violet-500 text-slate-950 font-extrabold border-violet-600'
                           : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
                       }`}
                     >
@@ -257,7 +257,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               </div>
               <button
                 onClick={() => setActiveTab('markets')}
-                className="text-xs font-bold text-amber-800 hover:text-amber-900 hover:underline"
+                className="text-xs font-bold text-violet-800 hover:text-violet-900 hover:underline"
               >
                 Kelola Semua ({markets.length}) &rarr;
               </button>
@@ -273,7 +273,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                         <span className="font-bold text-xs text-gray-900">{m.symbol}</span>
                         <span className="text-[10px] text-gray-400 font-medium">/ IDR</span>
                         {m.isHot && (
-                          <span className="text-[9px] uppercase font-extrabold bg-amber-100 text-amber-700 px-1 rounded">
+                          <span className="text-[9px] uppercase font-extrabold bg-violet-100 text-violet-700 px-1 rounded">
                             Hot
                           </span>
                         )}

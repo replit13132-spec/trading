@@ -41,7 +41,7 @@ export const AdminDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-800 flex flex-col antialiased">
+    <div className="min-h-screen bg-violet-50/30 text-slate-800 flex flex-col antialiased">
       {/* Collapsible / Expandable Sidebar */}
       <AdminSidebar
         activeTab={activeTab}
