@@ -131,6 +131,59 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {}
   }, [currentUser]);
 
+  // Synchronize state with URL hash for seamless browser back/forward buttons
+  useEffect(() => {
+    const handleHashChange = () => {
+      try {
+        const hash = window.location.hash.substring(1); // remove '#'
+        if (!hash) {
+          setAuthScreen('none');
+          setActiveTab('beranda');
+          return;
+        }
+
+        if (hash === 'login' || hash === 'register') {
+          setAuthScreen(hash);
+        } else if (['beranda', 'market', 'trade', 'transaksi', 'wallet', 'admin'].includes(hash)) {
+          setAuthScreen('none');
+          setActiveTab(hash as any);
+        }
+      } catch (err) {
+        console.error('Error handling hash change:', err);
+      }
+    };
+
+    // Initialize state from hash on first mount
+    handleHashChange();
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Update URL hash when state changes programmatically (user clicks tabs or auth screens)
+  useEffect(() => {
+    try {
+      let targetHash = '';
+      if (authScreen !== 'none') {
+        targetHash = authScreen;
+      } else {
+        targetHash = activeTab;
+      }
+
+      const currentHash = window.location.hash.substring(1);
+      if (targetHash && currentHash !== targetHash) {
+        if (!currentHash) {
+          // If there was no hash initially, replace state so we don't pollute the back-button history
+          window.history.replaceState(null, '', '#' + targetHash);
+        } else {
+          window.location.hash = targetHash;
+        }
+      }
+    } catch (err) {
+      console.error('Error syncing state to hash:', err);
+    }
+  }, [activeTab, authScreen]);
+
   const formatIdr = (amount: number = 0) => {
     if (isNaN(amount)) return 'Rp 0';
     return 'Rp ' + Math.round(amount).toLocaleString('id-ID');

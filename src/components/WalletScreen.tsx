@@ -116,7 +116,7 @@ export const WalletScreen: React.FC = () => {
     <div className="pb-24 max-w-lg md:max-w-xl lg:max-w-2xl mx-auto bg-black text-white min-h-screen select-none w-full overflow-hidden">
       {/* 1. Top Tab Header (Ringkasan) */}
       <div className="px-4 pt-3 border-b border-gray-800 flex items-center justify-center text-xs sm:text-sm font-semibold">
-        <span className="pb-2.5 text-white font-bold border-b-2 border-amber-500">
+        <span className="pb-2.5 text-white font-bold border-b-2 border-violet-500">
           Ringkasan
         </span>
       </div>
@@ -193,10 +193,10 @@ export const WalletScreen: React.FC = () => {
         {/* 3 Breakdown Cards: SALDO, ASET (Modal Pokok), PROFIT COMPOUNDING */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
           {/* 1. SALDO KAS */}
-          <div className="bg-amber-50/90 border border-amber-200/90 rounded-2xl p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-amber-950">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900">💳 SALDO</span>
-              <span className="text-[10px] font-extrabold text-amber-950 bg-amber-200 px-2 py-0.5 rounded-full">Kas</span>
+          <div className="bg-violet-50/90 border border-violet-200/90 rounded-2xl p-3.5 space-y-1">
+            <div className="flex items-center justify-between text-violet-950">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-violet-900">💳 SALDO</span>
+              <span className="text-[10px] font-extrabold text-violet-950 bg-violet-200 px-2 py-0.5 rounded-full">Kas</span>
             </div>
             <p className="text-lg font-extrabold text-gray-900">
               {showBalance ? formatIdr(currentUser?.balances?.idr || 0) : '••••••••'}
@@ -205,17 +205,17 @@ export const WalletScreen: React.FC = () => {
           </div>
 
           {/* 2. ASET (Modal Pokok) */}
-          <div className="bg-yellow-50/90 border border-yellow-200/90 rounded-2xl p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-amber-950">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900">📈 ASET</span>
-              <span className="text-[10px] font-bold text-amber-900 bg-yellow-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+          <div className="bg-violet-50/90 border border-violet-200/90 rounded-2xl p-3.5 space-y-1">
+            <div className="flex items-center justify-between text-violet-950">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-violet-900">📈 ASET</span>
+              <span className="text-[10px] font-bold text-violet-900 bg-violet-200 px-2 py-0.5 rounded-full flex items-center gap-1">
                 <Lock className="w-2.5 h-2.5" /> 3 Bulan
               </span>
             </div>
-            <p className="text-lg font-extrabold text-amber-950">
+            <p className="text-lg font-extrabold text-violet-950">
               {showBalance ? formatIdr(compoundingCapital) : '••••••••'}
             </p>
-            <p className="text-[10px] text-amber-800">Modal utama compounding</p>
+            <p className="text-[10px] text-violet-800">Modal utama compounding</p>
           </div>
         </div>
 
@@ -223,7 +223,7 @@ export const WalletScreen: React.FC = () => {
         <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-4 my-3 shadow-lg space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Sparkles className="w-4 h-4 text-violet-300" />
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-100">PROFIT COMPOUNDING</span>
             </div>
             <span className="bg-white/20 backdrop-blur-md text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white">
@@ -267,16 +267,16 @@ export const WalletScreen: React.FC = () => {
           <button
             id="wallet-deposit-btn"
             onClick={() => setIsDepositModalOpen(true)}
-            className="flex items-center justify-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors group bg-white"
+            className="flex items-center justify-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-violet-50 hover:border-violet-300 transition-colors group bg-white"
           >
-            <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
             <span className="text-xs sm:text-sm font-bold text-gray-800">Deposit</span>
           </button>
 
           <button
             id="wallet-withdraw-btn"
             onClick={() => setIsWithdrawModalOpen(true)}
-            className="flex items-center justify-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors group bg-white"
+            className="flex items-center justify-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-violet-50 hover:border-violet-300 transition-colors group bg-white"
           >
             <ArrowDownToLine className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             <span className="text-xs sm:text-sm font-bold text-gray-800">Tarik</span>

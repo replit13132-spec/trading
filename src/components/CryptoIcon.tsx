@@ -57,7 +57,7 @@ const KNOWN_ICONS: Record<string, string> = {
 };
 
 const BRAND_COLORS: Record<string, { bg: string; text: string }> = {
-  BTC: { bg: 'bg-amber-500', text: 'text-white' },
+  BTC: { bg: 'bg-violet-500', text: 'text-white' },
   ETH: { bg: 'bg-indigo-600', text: 'text-white' },
   SOL: { bg: 'bg-teal-500', text: 'text-white' },
   PTU: { bg: 'bg-blue-600', text: 'text-white' },
@@ -93,7 +93,7 @@ const BRAND_COLORS: Record<string, { bg: string; text: string }> = {
   OP: { bg: 'bg-red-600', text: 'text-white' },
   XLM: { bg: 'bg-cyan-500', text: 'text-white' },
   XMR: { bg: 'bg-orange-600', text: 'text-white' },
-  XAU: { bg: 'bg-amber-600', text: 'text-white' },
+  XAU: { bg: 'bg-violet-600', text: 'text-white' },
   NVDA: { bg: 'bg-green-600', text: 'text-white' },
   AAPL: { bg: 'bg-gray-800', text: 'text-white' },
   TSLA: { bg: 'bg-red-600', text: 'text-white' },

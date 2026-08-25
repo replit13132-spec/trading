@@ -132,7 +132,7 @@ export const LoginScreen: React.FC = () => {
         <button
           id="btn-login-to-register"
           onClick={handleGoToRegister}
-          className="text-xs font-bold text-amber-900 hover:text-amber-800 py-1.5 px-2.5 rounded-lg hover:bg-amber-50 transition-colors"
+          className="text-xs font-bold text-violet-900 hover:text-violet-800 py-1.5 px-2.5 rounded-lg hover:bg-violet-50 transition-colors"
         >
           Daftar
         </button>
@@ -142,7 +142,7 @@ export const LoginScreen: React.FC = () => {
       <div className="px-5 sm:px-6 py-5 flex-1 flex flex-col justify-center">
         {/* Title & Subtitle */}
         <div className="mb-4 text-left">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 text-[11px] font-bold mb-2 border border-amber-200/60">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-50 text-violet-900 text-[11px] font-bold mb-2 border border-violet-200/60">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Autentikasi Akun Aman</span>
           </div>
@@ -186,7 +186,7 @@ export const LoginScreen: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Contoh: user@email.com"
-                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-3 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 rounded-xl py-3 pl-10 pr-4 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
               />
             </div>
@@ -209,7 +209,7 @@ export const LoginScreen: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Masukkan Password Anda (default: 123456)"
-                className="w-full bg-white border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 rounded-xl py-3 pl-10 pr-10 text-xs font-medium text-gray-900 outline-none transition-all"
+                className="w-full bg-white border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 rounded-xl py-3 pl-10 pr-10 text-xs font-medium text-gray-900 outline-none transition-all"
                 required
               />
               <button
@@ -227,7 +227,7 @@ export const LoginScreen: React.FC = () => {
             id="btn-login-submit"
             type="submit"
             disabled={loading}
-            className="w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-xs shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
+            className="w-full bg-violet-500 hover:bg-violet-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-xs shadow-md shadow-violet-500/20 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -245,7 +245,7 @@ export const LoginScreen: React.FC = () => {
           <button
             type="button"
             onClick={handleGoToRegister}
-            className="font-bold text-amber-800 hover:underline"
+            className="font-bold text-violet-800 hover:underline"
           >
             Daftar Sekarang
           </button>

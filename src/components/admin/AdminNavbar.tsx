@@ -86,6 +86,10 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
       title: 'Pusat Notifikasi & Siaran Global',
       subtitle: 'Kirimkan siaran pengumuman, promo, dan pesan notifikasi ke seluruh pengguna aplikasi.',
     },
+    settings: {
+      title: 'Konfigurasi & Pengaturan Sistem',
+      subtitle: 'Sesuaikan biaya transaksi, link Telegram customer service, pesan pemeliharaan, dan limit deposit.',
+    },
   };
 
   const currentInfo = tabTitles[activeTab] || {

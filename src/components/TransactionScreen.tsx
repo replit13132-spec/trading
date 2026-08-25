@@ -76,13 +76,13 @@ export const TransactionScreen: React.FC = () => {
     <div className="pb-28 max-w-lg md:max-w-xl lg:max-w-3xl mx-auto bg-slate-50 min-h-screen text-slate-900 select-none">
       {/* Top Header */}
       <div className="bg-slate-950 text-white px-5 pt-6 pb-8 rounded-b-[32px] shadow-xl relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-10 -top-10 w-48 h-48 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute right-20 bottom-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
         
         <div className="relative z-10 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="bg-amber-500/20 text-amber-400 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 border border-amber-500/30">
-              <History className="w-3.5 h-3.5 text-amber-400" /> Pusat Transaksi & Compounding
+            <span className="bg-violet-500/20 text-violet-400 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 border border-violet-500/30">
+              <History className="w-3.5 h-3.5 text-violet-400" /> Pusat Transaksi & Compounding
             </span>
             <span className="text-xs text-slate-400 font-medium">Real-Time Sync</span>
           </div>
@@ -100,7 +100,7 @@ export const TransactionScreen: React.FC = () => {
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-1">
           <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
             <span>Aset Compounding</span>
-            <Lock className="w-3.5 h-3.5 text-amber-600" />
+            <Lock className="w-3.5 h-3.5 text-violet-600" />
           </div>
           <p className="text-lg sm:text-xl font-extrabold text-slate-900">
             {formatIdr(compoundingCapital)}
@@ -156,9 +156,9 @@ export const TransactionScreen: React.FC = () => {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-amber-600" /> Rincian Tanggal & Masa Lock Modal (3 Bulan)
+                <Calendar className="w-3.5 h-3.5 text-violet-600" /> Rincian Tanggal & Masa Lock Modal (3 Bulan)
               </h3>
-              <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-md">
+              <span className="text-[10px] bg-violet-100 text-violet-900 font-bold px-2 py-0.5 rounded-md">
                 {capitalBatches.length} Batch Aktif
               </span>
             </div>
@@ -169,12 +169,12 @@ export const TransactionScreen: React.FC = () => {
               const isUnlocked = batch.isUnlocked || new Date(batch.unlockDate) <= new Date();
 
               return (
-                <div key={batch.id || index} className="bg-white rounded-2xl p-4 shadow-sm border border-amber-200/70 space-y-3 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-full pointer-events-none" />
+                <div key={batch.id || index} className="bg-white rounded-2xl p-4 shadow-sm border border-violet-200/70 space-y-3 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-500/10 to-transparent rounded-bl-full pointer-events-none" />
                   
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-sm">
+                      <div className="w-10 h-10 rounded-xl bg-violet-100 text-violet-800 flex items-center justify-center font-black text-sm">
                         {dt.date}
                       </div>
                       <div>
@@ -183,9 +183,9 @@ export const TransactionScreen: React.FC = () => {
                       </div>
                     </div>
                     <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg flex items-center gap-1 ${
-                      isUnlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
+                      isUnlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-violet-100 text-violet-900'
                     }`}>
-                      {isUnlocked ? <CheckCircle2 className="w-3 h-3 text-emerald-700" /> : <Lock className="w-3 h-3 text-amber-800" />}
+                      {isUnlocked ? <CheckCircle2 className="w-3 h-3 text-emerald-700" /> : <Lock className="w-3 h-3 text-violet-800" />}
                       {isUnlocked ? 'Modal Dapat Ditarik' : 'Terkunci 3 Bulan'}
                     </span>
                   </div>
@@ -197,7 +197,7 @@ export const TransactionScreen: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-[10px] text-slate-500 font-semibold">Modal Bisa Ditarik:</p>
-                      <p className={`font-bold ${isUnlocked ? 'text-emerald-700' : 'text-amber-700'}`}>
+                      <p className={`font-bold ${isUnlocked ? 'text-emerald-700' : 'text-violet-700'}`}>
                         {unlockDt.full}
                       </p>
                     </div>
@@ -221,7 +221,7 @@ export const TransactionScreen: React.FC = () => {
 
           {isLoading ? (
             <div className="bg-white rounded-2xl p-8 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
-              <RefreshCw className="w-6 h-6 animate-spin text-amber-600" />
+              <RefreshCw className="w-6 h-6 animate-spin text-violet-600" />
               <p className="text-xs">Memuat riwayat transaksi...</p>
             </div>
           ) : filteredTxs.length === 0 ? (
@@ -249,7 +249,7 @@ export const TransactionScreen: React.FC = () => {
                         isDeposit
                           ? 'bg-blue-100 text-blue-700'
                           : isRecompound
-                          ? 'bg-amber-100 text-amber-800'
+                          ? 'bg-violet-100 text-violet-800'
                           : isWithdraw
                           ? 'bg-rose-100 text-rose-700'
                           : 'bg-emerald-100 text-emerald-700'
@@ -270,7 +270,7 @@ export const TransactionScreen: React.FC = () => {
                           </span>
                           <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full ${
                             tx.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                            tx.status === 'PENDING' ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-800'
+                            tx.status === 'PENDING' ? 'bg-violet-100 text-violet-900' : 'bg-slate-100 text-slate-800'
                           }`}>
                             {tx.status || 'COMPLETED'}
                           </span>

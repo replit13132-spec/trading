@@ -23,7 +23,7 @@ interface AdminUsersProps {
 }
 
 export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
-  const { allUsers, currentUser, switchUser, formatIdr, formatUsdt } = useApp();
+  const { allUsers, currentUser, switchUser, formatIdr, formatUsdt, refreshData } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
@@ -37,7 +37,8 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
     phone: '',
     role: 'user' as 'user' | 'admin',
     initialIdr: '50000000',
-    initialUsdt: '2500',
+    initialCompoundingAsset: '10000000',
+    initialCompoundingProfit: '0',
   });
 
   // Edit Modal
@@ -49,8 +50,8 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
     role: 'user' as 'user' | 'admin',
     isVerified: true,
     idr: '',
-    usdt: '',
-    futuresUsdt: '',
+    compoundingAsset: '',
+    compoundingProfit: '',
   });
 
   const filteredUsers = allUsers.filter((u) => {
@@ -76,8 +77,9 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
           name: createForm.name,
           email: createForm.email || `${createForm.name.toLowerCase().replace(/\s+/g, '')}@trade.co.id`,
           role: createForm.role,
-          initialIdr: Number(createForm.initialIdr) || 10000000,
-          initialUsdt: Number(createForm.initialUsdt) || 500,
+          initialIdr: Number(createForm.initialIdr) || 0,
+          initialCompoundingAsset: Number(createForm.initialCompoundingAsset) || 0,
+          initialCompoundingProfit: Number(createForm.initialCompoundingProfit) || 0,
         }),
       });
       const data = await res.json();
@@ -90,9 +92,11 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
           phone: '',
           role: 'user',
           initialIdr: '50000000',
-          initialUsdt: '2500',
+          initialCompoundingAsset: '10000000',
+          initialCompoundingProfit: '0',
         });
         onRefresh();
+        refreshData();
         setTimeout(() => setStatusMessage(''), 4000);
       }
     } catch (e: any) {
@@ -109,8 +113,8 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
       role: user.role,
       isVerified: Boolean(user.isVerified),
       idr: String(user.balances?.idr || 0),
-      usdt: String(user.balances?.usdt || 0),
-      futuresUsdt: String(user.futuresBalances?.usdt || 0),
+      compoundingAsset: String(user.compoundingBalances?.idr || 0),
+      compoundingProfit: String(user.compoundingProfitIdr || 0),
     });
   };
 
@@ -130,11 +134,11 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
           isVerified: editForm.isVerified,
           balances: {
             idr: Number(editForm.idr),
-            usdt: Number(editForm.usdt),
           },
-          futuresBalances: {
-            usdt: Number(editForm.futuresUsdt),
+          compoundingBalances: {
+            idr: Number(editForm.compoundingAsset),
           },
+          compoundingProfitIdr: Number(editForm.compoundingProfit),
         }),
       });
       const data = await res.json();
@@ -142,6 +146,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
         setStatusMessage(`Akun ${editingUser.name} berhasil diperbarui!`);
         setEditingUser(null);
         onRefresh();
+        refreshData();
         setTimeout(() => setStatusMessage(''), 4000);
       } else {
         alert(data.message || 'Gagal memperbarui pengguna');
@@ -158,6 +163,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
       if (data.success) {
         setStatusMessage(data.message);
         onRefresh();
+        refreshData();
         setTimeout(() => setStatusMessage(''), 4000);
       }
     } catch (e) {
@@ -174,6 +180,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
       if (data.success) {
         setStatusMessage(`Akun ${name} berhasil dihapus dari sistem!`);
         onRefresh();
+        refreshData();
         setTimeout(() => setStatusMessage(''), 4000);
       } else {
         alert(data.message || 'Gagal menghapus akun');
@@ -249,8 +256,8 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3 text-center">Status KYC</th>
                 <th className="px-4 py-3 text-right">Saldo Rupiah</th>
-                <th className="px-4 py-3 text-right">Saldo USDT (Spot)</th>
-                <th className="px-4 py-3 text-right">Saldo Futures</th>
+                <th className="px-4 py-3 text-right text-emerald-600">Saldo Aset</th>
+                <th className="px-4 py-3 text-right text-amber-600">Saldo Compounding</th>
                 <th className="px-4 py-3 text-center">Aksi CRUD</th>
               </tr>
             </thead>
@@ -322,11 +329,11 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                     <td className="px-4 py-3 text-right font-mono font-bold text-gray-900">
                       {formatIdr(user.balances?.idr || 0)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono font-bold text-amber-800">
-                      ${formatUsdt(user.balances?.usdt || 0)}
+                    <td className="px-4 py-3 text-right font-mono font-bold text-emerald-600">
+                      {formatIdr(user.compoundingBalances?.idr || 0)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono font-bold text-purple-600">
-                      ${formatUsdt(user.futuresBalances?.usdt || 0)}
+                    <td className="px-4 py-3 text-right font-mono font-bold text-amber-600">
+                      {formatIdr(user.compoundingProfitIdr || 0)}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1.5">
@@ -415,23 +422,32 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Saldo Awal IDR</label>
+                  <label className="block font-bold text-gray-700 mb-1 text-[10px]">Saldo Awal IDR</label>
                   <input
                     type="number"
                     value={createForm.initialIdr}
                     onChange={(e) => setCreateForm({ ...createForm, initialIdr: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-2.5 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Saldo Awal USDT</label>
+                  <label className="block font-bold text-gray-700 mb-1 text-[10px]">Awal Aset (IDR)</label>
                   <input
                     type="number"
-                    value={createForm.initialUsdt}
-                    onChange={(e) => setCreateForm({ ...createForm, initialUsdt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
+                    value={createForm.initialCompoundingAsset}
+                    onChange={(e) => setCreateForm({ ...createForm, initialCompoundingAsset: e.target.value })}
+                    className="w-full px-2.5 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1 text-[10px]">Awal Compound (IDR)</label>
+                  <input
+                    type="number"
+                    value={createForm.initialCompoundingProfit}
+                    onChange={(e) => setCreateForm({ ...createForm, initialCompoundingProfit: e.target.value })}
+                    className="w-full px-2.5 py-2 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -535,22 +551,22 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Saldo USDT (Spot)</label>
+                    <label className="block font-bold text-gray-700 mb-1 text-[11px]">Saldo Aset (IDR)</label>
                     <input
                       type="number"
                       step="any"
-                      value={editForm.usdt}
-                      onChange={(e) => setEditForm({ ...editForm, usdt: e.target.value })}
+                      value={editForm.compoundingAsset}
+                      onChange={(e) => setEditForm({ ...editForm, compoundingAsset: e.target.value })}
                       className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-gray-700 mb-1">Saldo USDT (Futures)</label>
+                    <label className="block font-bold text-gray-700 mb-1 text-[11px]">Saldo Compounding (IDR)</label>
                     <input
                       type="number"
                       step="any"
-                      value={editForm.futuresUsdt}
-                      onChange={(e) => setEditForm({ ...editForm, futuresUsdt: e.target.value })}
+                      value={editForm.compoundingProfit}
+                      onChange={(e) => setEditForm({ ...editForm, compoundingProfit: e.target.value })}
                       className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-amber-500"
                     />
                   </div>

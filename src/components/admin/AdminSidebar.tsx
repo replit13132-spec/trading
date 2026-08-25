@@ -29,7 +29,8 @@ export type AdminTab =
   | 'finance'
   | 'compounding'
   | 'cms'
-  | 'notifications';
+  | 'notifications'
+  | 'settings';
 
 interface AdminSidebarProps {
   activeTab: AdminTab;
@@ -114,6 +115,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       icon: Bell,
       badge: 'Broadcast',
       badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+    },
+    {
+      id: 'settings' as AdminTab,
+      label: 'Konfigurasi & Pengaturan',
+      shortLabel: 'Pengaturan',
+      icon: Settings,
+      badge: 'Sistem',
+      badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700',
     },
   ];
 

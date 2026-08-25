@@ -195,7 +195,7 @@ export const TradeScreen: React.FC = () => {
             <Activity className="w-3 h-3" />
             <span>Live Trade</span>
           </div>
-          <Star className="w-4 h-4 text-amber-400 fill-amber-400 cursor-pointer" />
+          <Star className="w-4 h-4 text-violet-400 fill-violet-400 cursor-pointer" />
         </div>
       </div>
 
@@ -254,7 +254,7 @@ export const TradeScreen: React.FC = () => {
               onClick={() => setTopTab(t)}
               className={`py-2 sm:py-2.5 transition-colors relative ${
                 topTab === t
-                  ? 'text-gray-900 font-bold border-b-2 border-amber-500'
+                  ? 'text-gray-900 font-bold border-b-2 border-violet-500'
                   : 'text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -295,10 +295,10 @@ export const TradeScreen: React.FC = () => {
       <div className="p-3 sm:p-4 bg-gray-50/50 border-b border-gray-100 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
             <span className="text-xs font-black uppercase tracking-wider text-gray-900">Analisis Sinyal & Indikator Pasar</span>
           </div>
-          <span className="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold">
+          <span className="text-[10px] bg-violet-100 text-violet-900 px-2 py-0.5 rounded-full font-bold">
             Live Analysis
           </span>
         </div>
@@ -311,8 +311,8 @@ export const TradeScreen: React.FC = () => {
               {(() => {
                 const change = currentAsset.change24h;
                 let signalText = 'NETRAL';
-                let signalColor = 'text-amber-500 bg-amber-50 border-amber-200';
-                let pulseBg = 'bg-amber-400';
+                let signalColor = 'text-violet-500 bg-violet-50 border-violet-200';
+                let pulseBg = 'bg-violet-400';
                 
                 if (change >= 5) {
                   signalText = 'STRONG BUY';
@@ -379,9 +379,9 @@ export const TradeScreen: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-amber-50/50 border border-amber-100/80 rounded-xl p-2.5 text-[10px] text-amber-900 leading-relaxed font-semibold">
-              <div className="flex items-center gap-1 mb-0.5 text-amber-800 font-bold text-[11px]">
-                <Info className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
+            <div className="bg-violet-50/50 border border-violet-100/80 rounded-xl p-2.5 text-[10px] text-violet-900 leading-relaxed font-semibold">
+              <div className="flex items-center gap-1 mb-0.5 text-violet-800 font-bold text-[11px]">
+                <Info className="w-3.5 h-3.5 flex-shrink-0 text-violet-600" />
                 <span>Info Pasar Real-Time</span>
               </div>
               Halaman ini menampilkan grafik harga dan buku order (order book) real-time untuk analisis pergerakan pasar serta pengambilan keputusan trading yang akurat.
@@ -494,7 +494,7 @@ export const TradeScreen: React.FC = () => {
                     setShowAssetSelector(false);
                   }}
                   className={`w-full p-2.5 flex items-center justify-between rounded-2xl transition-colors text-left ${
-                    currentAsset.id === m.id ? 'bg-amber-50 border border-amber-200' : 'hover:bg-gray-50'
+                    currentAsset.id === m.id ? 'bg-violet-50 border border-violet-200' : 'hover:bg-gray-50'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">

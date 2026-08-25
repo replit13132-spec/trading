@@ -212,7 +212,7 @@ export const CandleChart: React.FC<CandleChartProps> = ({
               onClick={() => setTimeframe(tf)}
               className={`px-2 py-0.5 rounded font-medium transition-colors ${
                 timeframe === tf
-                  ? 'text-amber-800 font-bold bg-amber-50'
+                  ? 'text-violet-800 font-bold bg-violet-50'
                   : 'text-gray-500 hover:text-gray-900'
               }`}
             >

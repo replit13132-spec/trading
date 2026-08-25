@@ -145,7 +145,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
       )}
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-purple-400 text-slate-950 rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -167,7 +167,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center font-bold">
+          <div className="w-11 h-11 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center font-bold">
             <Percent className="w-6 h-6" />
           </div>
           <div>
@@ -190,19 +190,19 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
         </div>
 
         <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center font-bold">
+          <div className="w-11 h-11 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center font-bold">
             <Coins className="w-6 h-6" />
           </div>
           <div>
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Profit IDR</p>
-            <p className="text-sm font-extrabold text-amber-800 font-mono">
+            <p className="text-sm font-extrabold text-violet-800 font-mono">
               {formatIdr(totalProfitDistributedIdr)}
             </p>
           </div>
         </div>
 
         <div className="bg-white border border-gray-200/80 rounded-3xl p-4 shadow-sm flex items-center gap-3">
-          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center font-bold">
+          <div className="w-11 h-11 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center font-bold">
             <Clock className="w-6 h-6" />
           </div>
           <div>
@@ -224,7 +224,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
 
           <button
             onClick={fetchCompoundingData}
-            className="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-violet-800 hover:underline flex items-center gap-1"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Segarkan Data</span>
@@ -255,7 +255,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
                         <p className="text-[10px] text-gray-400 font-normal">{u.email}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-extrabold text-amber-800 font-mono">
+                    <td className="px-4 py-3 font-extrabold text-violet-800 font-mono">
                       {dailyRate}%
                     </td>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800">

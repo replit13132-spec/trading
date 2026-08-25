@@ -61,7 +61,7 @@ export const MarketScreen: React.FC = () => {
             placeholder="Cari aset..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white text-gray-900 placeholder-gray-400 text-xs pl-10 pr-4 py-2.5 rounded-xl border border-transparent focus:border-amber-500 outline-none transition-all"
+            className="w-full bg-gray-100 hover:bg-gray-200/70 focus:bg-white text-gray-900 placeholder-gray-400 text-xs pl-10 pr-4 py-2.5 rounded-xl border border-transparent focus:border-violet-500 outline-none transition-all"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@ export const MarketScreen: React.FC = () => {
             onClick={() => setMarketTab(tab)}
             className={`pb-2.5 whitespace-nowrap transition-colors relative ${
               marketTab === tab
-                ? 'text-gray-900 font-bold border-b-2 border-amber-500'
+                ? 'text-gray-900 font-bold border-b-2 border-violet-500'
                 : 'text-gray-400 hover:text-gray-700'
             }`}
           >
@@ -90,7 +90,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Semua')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Semua'
-              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
+              ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -100,7 +100,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Trending')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border flex items-center gap-1 whitespace-nowrap transition-all ${
             filterPill === 'Trending'
-              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
+              ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -110,7 +110,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Gainers')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Gainers'
-              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
+              ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -120,7 +120,7 @@ export const MarketScreen: React.FC = () => {
           onClick={() => setFilterPill('Losers')}
           className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap transition-all ${
             filterPill === 'Losers'
-              ? 'border-amber-500 text-amber-800 bg-amber-50 font-bold'
+              ? 'border-violet-500 text-violet-800 bg-violet-50 font-bold'
               : 'border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -219,7 +219,7 @@ export const MarketScreen: React.FC = () => {
                     <span className="text-[10px] sm:text-[11px] text-gray-400 font-medium">/IDR</span>
                   </div>
                   <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-gray-400 mt-0.5 truncate">
-                    <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400 flex-shrink-0" />
+                    <Star className="w-2.5 h-2.5 fill-violet-400 text-violet-400 flex-shrink-0" />
                     <span className="truncate">Vol. {asset.volume24hIdr}</span>
                   </div>
                 </div>

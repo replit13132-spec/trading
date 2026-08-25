@@ -203,7 +203,7 @@ export const Modals: React.FC = () => {
 
             {depositSuccess ? (
               <div className="py-6 text-center space-y-4">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 animate-pulse">
+                <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto text-violet-600 animate-pulse">
                   <Clock className="w-8 h-8" />
                 </div>
                 <div>
@@ -217,14 +217,14 @@ export const Modals: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 text-left text-xs space-y-2">
-                  <div className="flex items-center justify-between text-amber-900 font-bold">
+                <div className="bg-violet-50/80 border border-violet-200/80 rounded-2xl p-3.5 text-left text-xs space-y-2">
+                  <div className="flex items-center justify-between text-violet-900 font-bold">
                     <span>Status Verifikasi:</span>
-                    <span className="bg-amber-200 text-amber-800 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">
+                    <span className="bg-violet-200 text-violet-800 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">
                       Menunggu Admin
                     </span>
                   </div>
-                  <div className="text-[11px] text-amber-700 space-y-1">
+                  <div className="text-[11px] text-violet-700 space-y-1">
                     <p>• Estimasi proses verifikasi: 1 - 5 menit</p>
                     <p>• Tim Admin akan mengecek kesesuaian gambar bukti transfer Anda di Dashboard Admin.</p>
                   </div>
@@ -233,7 +233,7 @@ export const Modals: React.FC = () => {
                 {depositProof && (
                   <div className="border border-gray-200 rounded-2xl p-2.5 bg-gray-50 text-left">
                     <p className="text-[11px] font-bold text-gray-600 mb-1.5 flex items-center gap-1">
-                      <ImageIcon className="w-3.5 h-3.5 text-amber-600" /> Pratinjau Bukti Transfer yang Terkirim:
+                      <ImageIcon className="w-3.5 h-3.5 text-violet-600" /> Pratinjau Bukti Transfer yang Terkirim:
                     </p>
                     <div className="rounded-xl overflow-hidden border border-gray-200 bg-white max-h-48 flex items-center justify-center">
                       <img src={depositProof} alt="Bukti Transfer" className="max-h-48 object-contain w-full" />
@@ -246,7 +246,7 @@ export const Modals: React.FC = () => {
                     setDepositSuccess(false);
                     setIsDepositModalOpen(false);
                   }}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl text-xs transition-colors shadow-md shadow-amber-500/20"
+                  className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl text-xs transition-colors shadow-md shadow-violet-500/20"
                 >
                   Selesai & Kembali ke Portofolio
                 </button>
@@ -256,7 +256,7 @@ export const Modals: React.FC = () => {
                 <div>
                   <h3 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
                     <span>Deposit Saldo & Upload Bukti</span>
-                    <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-violet-100 text-violet-900 font-bold px-2 py-0.5 rounded-full">
                       Instan & Aman
                     </span>
                   </h3>
@@ -273,7 +273,7 @@ export const Modals: React.FC = () => {
                     }}
                     className={`flex-1 py-1.5 rounded-lg transition-all ${
                       depositCurrency === 'IDR'
-                        ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                        ? 'bg-violet-500 text-slate-950 font-extrabold shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
@@ -287,7 +287,7 @@ export const Modals: React.FC = () => {
                     }}
                     className={`flex-1 py-1.5 rounded-lg transition-all ${
                       depositCurrency === 'USDT'
-                        ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                        ? 'bg-violet-500 text-slate-950 font-extrabold shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
@@ -296,12 +296,12 @@ export const Modals: React.FC = () => {
                 </div>
 
                 {/* Info Card Rule Top Up */}
-                <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 text-[11px] text-amber-900 space-y-1">
-                  <div className="font-extrabold flex items-center gap-1.5 text-amber-950">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <div className="bg-violet-50 border border-violet-200/80 rounded-2xl p-3 text-[11px] text-violet-900 space-y-1">
+                  <div className="font-extrabold flex items-center gap-1.5 text-violet-950">
+                    <Sparkles className="w-3.5 h-3.5 text-violet-600" />
                     <span>Ketentuan Setoran & Compounding:</span>
                   </div>
-                  <ul className="space-y-0.5 text-amber-800 font-medium pl-1">
+                  <ul className="space-y-0.5 text-violet-800 font-medium pl-1">
                     <li>• <b>Setoran Awal:</b> Minimal Rp 500.000 (menunggu verifikasi Admin)</li>
                     <li>• <b>Penempatan:</b> Modal masuk ke "ASET" & bertumbuh <b>1% per hari</b></li>
                     <li>• <b>Penarikan Modal Pokok:</b> Terkunci <b>3 bulan</b> sejak tanggal setor</li>
@@ -316,7 +316,7 @@ export const Modals: React.FC = () => {
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-violet-500 focus:bg-white transition-all"
                     placeholder="Masukkan nominal deposit (min Rp 500.000)..."
                     min={depositCurrency === 'IDR' ? 500000 : 10}
                     required
@@ -330,7 +330,7 @@ export const Modals: React.FC = () => {
                         key={preset}
                         type="button"
                         onClick={() => setDepositAmount(preset.toString())}
-                        className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-amber-50 hover:border-amber-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
+                        className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-violet-50 hover:border-violet-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
                       >
                         {depositCurrency === 'IDR' 
                           ? preset >= 1000000 
@@ -348,7 +348,7 @@ export const Modals: React.FC = () => {
                   <select
                     value={depositMethod}
                     onChange={(e) => setDepositMethod(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500"
+                    className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-violet-500"
                   >
                     {bankAccountsList.length > 0 ? (
                       bankAccountsList.map((acc) => (
@@ -369,21 +369,21 @@ export const Modals: React.FC = () => {
                 </div>
 
                 {/* Bank / VA Info Card */}
-                <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
-                  <div className="flex items-center justify-between text-amber-950">
+                <div className="bg-violet-50/70 border border-violet-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-violet-950">
                     <span className="font-medium text-[11px]">Rekening Tujuan ({activeSelectedAccount?.bankName}):</span>
-                    <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-extrabold text-violet-900 bg-violet-100 px-2 py-0.5 rounded-full">
                       a/n {activeSelectedAccount?.accountHolder || 'PT XMONEY PRO INDONESIA'}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between bg-white border border-amber-100 p-2 rounded-xl">
+                  <div className="flex items-center justify-between bg-white border border-violet-100 p-2 rounded-xl">
                     <span className="font-mono font-extrabold text-sm text-gray-900">
                       {activeSelectedAccount?.accountNumber || '8820 1948 2109 0012'}
                     </span>
                     <button
                       type="button"
                       onClick={handleCopyVa}
-                      className="text-[11px] font-bold text-amber-900 hover:bg-amber-100 px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
+                      className="text-[11px] font-bold text-violet-900 hover:bg-violet-100 px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
                     >
                       {copiedVa ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedVa ? 'Tersalin' : 'Salin Nomor'}</span>
@@ -400,15 +400,15 @@ export const Modals: React.FC = () => {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
-                      <Upload className="w-3.5 h-3.5 text-amber-600" />
+                      <Upload className="w-3.5 h-3.5 text-violet-600" />
                       <span>Upload Bukti Transfer (Foto / Resi)</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setDepositProof(SAMPLE_RECEIPT_SVG)}
-                      className="text-[10px] font-bold text-amber-900 hover:underline flex items-center gap-1"
+                      className="text-[10px] font-bold text-violet-900 hover:underline flex items-center gap-1"
                     >
-                      <Sparkles className="w-3 h-3 text-amber-500" />
+                      <Sparkles className="w-3 h-3 text-violet-500" />
                       <span>Pakai Resi Contoh (Demo)</span>
                     </button>
                   </div>
@@ -444,9 +444,9 @@ export const Modals: React.FC = () => {
                   ) : (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-gray-300 hover:border-amber-500 hover:bg-amber-50/40 transition-all rounded-2xl p-4 text-center cursor-pointer space-y-1.5 group"
+                      className="border-2 border-dashed border-gray-300 hover:border-violet-500 hover:bg-violet-50/40 transition-all rounded-2xl p-4 text-center cursor-pointer space-y-1.5 group"
                     >
-                      <div className="w-10 h-10 bg-amber-50 group-hover:bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 transition-all">
+                      <div className="w-10 h-10 bg-violet-50 group-hover:bg-violet-100 rounded-full flex items-center justify-center mx-auto text-violet-700 transition-all">
                         <Upload className="w-5 h-5" />
                       </div>
                       <p className="text-xs font-bold text-gray-800">Klik di sini untuk memilih foto bukti transfer</p>
@@ -463,13 +463,13 @@ export const Modals: React.FC = () => {
                     value={depositNote}
                     onChange={(e) => setDepositNote(e.target.value)}
                     placeholder="Contoh: Transfer via BCA m-Banking a/n Budi Santoso"
-                    className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-amber-500"
+                    className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-violet-500"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg shadow-amber-500/25 text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg shadow-violet-500/25 text-xs transition-all flex items-center justify-center gap-2"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Kirim Bukti Transfer & Ajukan Top Up</span>
@@ -538,7 +538,7 @@ export const Modals: React.FC = () => {
                   }}
                   className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
                     withdrawCategory === 'CAPITAL'
-                      ? 'bg-amber-600 text-white shadow'
+                      ? 'bg-violet-600 text-white shadow'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -553,7 +553,7 @@ export const Modals: React.FC = () => {
                   }}
                   className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
                     withdrawCategory === 'REGULAR'
-                      ? 'bg-amber-500 text-slate-950 font-extrabold shadow'
+                      ? 'bg-violet-500 text-slate-950 font-extrabold shadow'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -579,14 +579,14 @@ export const Modals: React.FC = () => {
               )}
 
               {withdrawCategory === 'CAPITAL' && (
-                <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1">
-                  <div className="flex items-center justify-between font-bold text-amber-900">
+                <div className="bg-violet-50/80 border border-violet-200/80 rounded-2xl p-3 text-xs space-y-1">
+                  <div className="flex items-center justify-between font-bold text-violet-900">
                     <span>Opsi: Penarikan Modal Pokok (ASET)</span>
-                    <span className="bg-amber-200 text-amber-900 px-2 py-0.5 rounded text-[10px] font-extrabold flex items-center gap-1">
+                    <span className="bg-violet-200 text-violet-900 px-2 py-0.5 rounded text-[10px] font-extrabold flex items-center gap-1">
                       <Clock className="w-3 h-3" /> Lock 3 Bulan
                     </span>
                   </div>
-                  <p className="text-[11px] text-amber-800">
+                  <p className="text-[11px] text-violet-800">
                     • Penarikan Modal Pokok hanya dapat dilakukan <b>3 bulan</b> setelah tanggal penanaman modal/deposit.
                   </p>
                 </div>
@@ -599,7 +599,7 @@ export const Modals: React.FC = () => {
                   type="number"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-violet-500 focus:bg-white transition-all"
                   placeholder="Masukkan nominal penarikan..."
                   required
                 />
@@ -625,7 +625,7 @@ export const Modals: React.FC = () => {
                   value={withdrawDest}
                   onChange={(e) => setWithdrawDest(e.target.value)}
                   placeholder="Contoh: BCA 1234567890 a/n Budi Santoso"
-                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-amber-500 focus:bg-white transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-violet-500 focus:bg-white transition-all"
                   required
                 />
               </div>
@@ -635,7 +635,7 @@ export const Modals: React.FC = () => {
                 className={`w-full font-extrabold py-3 rounded-xl shadow-lg text-xs transition-all flex items-center justify-center gap-2 ${
                   withdrawCategory === 'PROFIT'
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                    : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20'
+                    : 'bg-violet-500 hover:bg-violet-400 text-slate-950 shadow-violet-500/20'
                 }`}
               >
                 <span>Konfirmasi Penarikan</span>
@@ -684,7 +684,7 @@ export const Modals: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center my-1">
-                  <ArrowRightLeft className="w-4 h-4 text-amber-600 rotate-90" />
+                  <ArrowRightLeft className="w-4 h-4 text-violet-600 rotate-90" />
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
@@ -724,7 +724,7 @@ export const Modals: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
+                className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
               >
                 Konfirmasi Transfer
               </button>
@@ -745,8 +745,8 @@ export const Modals: React.FC = () => {
             </button>
 
             <div className="text-center space-y-3 py-2">
-              <div className="w-14 h-14 bg-amber-100 text-amber-900 rounded-full flex items-center justify-center mx-auto font-bold">
-                <ShieldCheck className="w-8 h-8 text-amber-600" />
+              <div className="w-14 h-14 bg-violet-100 text-violet-900 rounded-full flex items-center justify-center mx-auto font-bold">
+                <ShieldCheck className="w-8 h-8 text-violet-600" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Verifikasi Akun (KYC)</h3>
               <p className="text-xs text-gray-500">
@@ -772,7 +772,7 @@ export const Modals: React.FC = () => {
 
               <button
                 onClick={() => setIsKYCModalOpen(false)}
-                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
+                className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-md text-xs transition-colors"
               >
                 Selesai & Lanjutkan
               </button>
@@ -815,7 +815,7 @@ export const Modals: React.FC = () => {
                   <button
                     id="onboarding-register-btn"
                     onClick={() => setAuthModalMode('register')}
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-2xl shadow-md text-xs transition-colors"
+                    className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-2xl shadow-md text-xs transition-colors"
                   >
                     Daftar
                   </button>
@@ -863,7 +863,7 @@ export const Modals: React.FC = () => {
                     onClick={() => {
                       setIsAuthModalOpen(false);
                     }}
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-2.5 px-4 rounded-xl text-xs font-extrabold shadow transition-colors"
+                    className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 py-2.5 px-4 rounded-xl text-xs font-extrabold shadow transition-colors"
                   >
                     Buat Akun Baru
                   </button>
@@ -872,7 +872,7 @@ export const Modals: React.FC = () => {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setAuthModalMode('onboarding')}
-                    className="text-xs text-amber-800 font-bold hover:underline"
+                    className="text-xs text-violet-800 font-bold hover:underline"
                   >
                     ← Kembali
                   </button>
@@ -903,7 +903,7 @@ export const Modals: React.FC = () => {
                     onClick={() => {
                       setIsAuthModalOpen(false);
                     }}
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow text-xs transition-colors"
+                    className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl shadow text-xs transition-colors"
                   >
                     Masuk Sekarang
                   </button>
@@ -912,7 +912,7 @@ export const Modals: React.FC = () => {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setAuthModalMode('onboarding')}
-                    className="text-xs text-amber-800 font-bold hover:underline"
+                    className="text-xs text-violet-800 font-bold hover:underline"
                   >
                     ← Kembali
                   </button>

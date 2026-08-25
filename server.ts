@@ -1348,7 +1348,7 @@ async function initDatabase() {
         }
       }
     } catch (err: any) {
-      console.error('[PostgreSQL] Connection failed, falling back to local file storage:', err?.message || err);
+      console.log('[PostgreSQL] Local connection not active, falling back to local file storage.');
       isPgConnected = false;
     }
   }
@@ -1535,7 +1535,7 @@ app.post('/api/users/switch', (req, res) => {
 });
 
 app.post('/api/users/create', (req, res) => {
-  const { name, email, role, initialIdr, initialUsdt } = req.body;
+  const { name, email, role, initialIdr, initialUsdt, initialCompoundingAsset, initialCompoundingProfit } = req.body;
   const newUser = {
     id: 'user_' + Date.now(),
     name: name || 'Pengguna Baru',
@@ -1549,11 +1549,11 @@ app.post('/api/users/create', (req, res) => {
       tokens: {},
     },
     compoundingBalances: {
-      idr: 0,
+      idr: Number(initialCompoundingAsset) || 0,
       usdt: 0,
       tokens: {},
     },
-    compoundingProfitIdr: 0,
+    compoundingProfitIdr: Number(initialCompoundingProfit) || 0,
     capitalBatches: [],
     proBalances: {
       idr: 0,
@@ -2507,7 +2507,7 @@ app.put('/api/admin/users/:id', (req, res) => {
   const user = users.find((u) => u.id === req.params.id);
   if (!user) return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan' });
 
-  const { name, email, phone, role, isVerified, isDummy, balances, proBalances, futuresBalances } = req.body;
+  const { name, email, phone, role, isVerified, isDummy, balances, proBalances, futuresBalances, compoundingBalances, compoundingProfitIdr } = req.body;
   if (name) user.name = name;
   if (email) user.email = email;
   if (phone !== undefined) user.phone = phone;
@@ -2517,6 +2517,13 @@ app.put('/api/admin/users/:id', (req, res) => {
   if (balances) user.balances = { ...user.balances, ...balances };
   if (proBalances) user.proBalances = { ...user.proBalances, ...proBalances };
   if (futuresBalances) user.futuresBalances = { ...user.futuresBalances, ...futuresBalances };
+  if (compoundingBalances) {
+    if (!user.compoundingBalances) user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+    user.compoundingBalances = { ...user.compoundingBalances, ...compoundingBalances };
+  }
+  if (compoundingProfitIdr !== undefined) {
+    user.compoundingProfitIdr = Number(compoundingProfitIdr);
+  }
 
   res.json({ success: true, user, message: `Akun ${user.name} berhasil diperbarui!` });
 });
@@ -3301,7 +3308,7 @@ app.use('/api/*', (req, res) => {
 
 
 async function startServer() {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',

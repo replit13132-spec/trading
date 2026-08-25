@@ -159,7 +159,7 @@ export const OnboardingScreen: React.FC = () => {
             onClick={() => setCurrentSlide(0)}
             className={`transition-all duration-200 rounded-full ${
               currentSlide === 0
-                ? 'w-3 h-3 bg-amber-500'
+                ? 'w-3 h-3 bg-violet-500'
                 : 'w-2.5 h-2.5 bg-gray-200 hover:bg-gray-300'
             }`}
             aria-label="Slide 1"
@@ -168,7 +168,7 @@ export const OnboardingScreen: React.FC = () => {
             onClick={() => setCurrentSlide(1)}
             className={`transition-all duration-200 rounded-full ${
               currentSlide === 1
-                ? 'w-3 h-3 bg-amber-500'
+                ? 'w-3 h-3 bg-violet-500'
                 : 'w-2.5 h-2.5 bg-gray-200 hover:bg-gray-300'
             }`}
             aria-label="Slide 2"
@@ -181,7 +181,7 @@ export const OnboardingScreen: React.FC = () => {
         <button
           id="btn-onboarding-daftar"
           onClick={handleRegister}
-          className="w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-sm shadow-md transition-all flex items-center justify-center"
+          className="w-full bg-violet-500 hover:bg-violet-400 active:scale-[0.99] text-slate-950 font-extrabold py-3.5 px-4 rounded-2xl text-sm shadow-md transition-all flex items-center justify-center"
         >
           Daftar
         </button>
@@ -189,7 +189,7 @@ export const OnboardingScreen: React.FC = () => {
         <button
           id="btn-onboarding-masuk"
           onClick={handleLogin}
-          className="w-full bg-white hover:bg-amber-50 active:scale-[0.99] border-2 border-amber-500 text-amber-900 font-extrabold py-3 px-4 rounded-2xl text-sm transition-all flex items-center justify-center"
+          className="w-full bg-white hover:bg-violet-50 active:scale-[0.99] border-2 border-violet-500 text-violet-900 font-extrabold py-3 px-4 rounded-2xl text-sm transition-all flex items-center justify-center"
         >
           Masuk
         </button>

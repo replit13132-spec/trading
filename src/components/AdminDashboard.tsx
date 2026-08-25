@@ -10,6 +10,7 @@ import { AdminFinance } from './admin/AdminFinance';
 import { AdminCompounding } from './admin/AdminCompounding';
 import { AdminCMS } from './admin/AdminCMS';
 import { AdminNotifications } from './admin/AdminNotifications';
+import { AdminSettings } from './admin/AdminSettings';
 
 export const AdminDashboard: React.FC = () => {
   const { currentUser, setActiveTab: setMainTab } = useApp();
@@ -90,6 +91,8 @@ export const AdminDashboard: React.FC = () => {
           {activeTab === 'cms' && <AdminCMS onRefresh={fetchStats} />}
 
           {activeTab === 'notifications' && <AdminNotifications onRefresh={fetchStats} />}
+
+          {activeTab === 'settings' && <AdminSettings onRefresh={fetchStats} />}
         </main>
       </div>
     </div>
