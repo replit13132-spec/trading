@@ -1,12 +1,28 @@
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
+import { Pool } from 'pg';
 import { createServer as createViteServer } from 'vite';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+
+// Persistent Database Configuration
+const DATA_DIR = path.join(process.cwd(), 'data');
+const DB_FILE = path.join(DATA_DIR, 'db.json');
+
+function ensureDataDir() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (err) {
+    console.error('Error creating data directory:', err);
+  }
+}
 
 // In-Memory Database Seed Data: Exactly 2 Demo Accounts (User and Admin)
 let users: any[] = [
@@ -555,6 +571,202 @@ let academyItems = [
   },
 ];
 
+// PostgreSQL & Local Database Persistence Functions
+let pgPool: Pool | null = null;
+let isPgConnected = false;
+
+function initPgPool(): Pool | null {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    console.log('[Database] DATABASE_URL not set in environment. Using local data/db.json storage.');
+    return null;
+  }
+
+  try {
+    const isSsl = connectionString.includes('sslmode=require') || connectionString.includes('ssl=true');
+    const pool = new Pool({
+      connectionString,
+      ssl: isSsl ? { rejectUnauthorized: false } : false,
+      max: 10,
+      connectionTimeoutMillis: 5000,
+    });
+
+    pool.on('error', (err) => {
+      console.error('[PostgreSQL] Idle client pool error:', err.message);
+    });
+
+    return pool;
+  } catch (err: any) {
+    console.error('[PostgreSQL] Failed to initialize connection pool:', err?.message || err);
+    return null;
+  }
+}
+
+function applyDatabaseState(data: any) {
+  if (Array.isArray(data.users) && data.users.length > 0) users = data.users;
+  if (data.currentUserId) currentUserId = data.currentUserId;
+  if (Array.isArray(data.markets) && data.markets.length > 0) markets = data.markets;
+  if (Array.isArray(data.bankAccounts) && data.bankAccounts.length > 0) bankAccounts = data.bankAccounts;
+  if (Array.isArray(data.spotOrders)) spotOrders = data.spotOrders;
+  if (Array.isArray(data.transactions)) transactions = data.transactions;
+  if (Array.isArray(data.notifications)) notifications = data.notifications;
+  if (Array.isArray(data.announcements)) announcements = data.announcements;
+  if (data.compoundingSettings) compoundingSettings = { ...compoundingSettings, ...data.compoundingSettings };
+  if (Array.isArray(data.compoundingLogs)) compoundingLogs = data.compoundingLogs;
+  if (Array.isArray(data.newsArticles) && data.newsArticles.length > 0) newsArticles = data.newsArticles;
+  if (Array.isArray(data.academyItems) && data.academyItems.length > 0) academyItems = data.academyItems;
+  if (Array.isArray(data.futuresPositions)) futuresPositions = data.futuresPositions;
+}
+
+function getDatabasePayload() {
+  return {
+    users,
+    currentUserId,
+    markets,
+    bankAccounts,
+    spotOrders,
+    transactions,
+    notifications,
+    announcements,
+    compoundingSettings,
+    compoundingLogs,
+    newsArticles,
+    academyItems,
+    futuresPositions,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function saveDatabaseToFile() {
+  try {
+    ensureDataDir();
+    const payload = getDatabasePayload();
+    fs.writeFileSync(DB_FILE, JSON.stringify(payload, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('[Database] Failed to write db.json:', err);
+  }
+}
+
+async function persistToPostgres() {
+  if (!pgPool || !isPgConnected) return;
+  try {
+    const payload = getDatabasePayload();
+    const entries = Object.entries(payload);
+    for (const [key, value] of entries) {
+      await pgPool.query(
+        `INSERT INTO app_state (key, data, updated_at) 
+         VALUES ($1, $2, NOW()) 
+         ON CONFLICT (key) DO UPDATE 
+         SET data = EXCLUDED.data, updated_at = NOW();`,
+        [key, JSON.stringify(value)]
+      );
+    }
+  } catch (err: any) {
+    console.error('[PostgreSQL] Failed to persist state to PostgreSQL:', err?.message || err);
+  }
+}
+
+let saveTimeout: any = null;
+function saveDatabase() {
+  saveDatabaseToFile();
+  if (isPgConnected && pgPool) {
+    persistToPostgres().catch((e) => {
+      console.error('[PostgreSQL] Error in persistToPostgres:', e?.message || e);
+    });
+  }
+}
+
+function queueSaveDatabase() {
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    saveDatabase();
+  }, 150);
+}
+
+async function initDatabase() {
+  ensureDataDir();
+
+  // 1. First attempt to load from local file cache
+  let loadedFromLocal = false;
+  if (fs.existsSync(DB_FILE)) {
+    try {
+      const raw = fs.readFileSync(DB_FILE, 'utf-8');
+      const data = JSON.parse(raw);
+      applyDatabaseState(data);
+      loadedFromLocal = true;
+      console.log(`[Database] Loaded ${users.length} users, ${transactions.length} transactions from local db.json cache.`);
+    } catch (e) {
+      console.error('[Database] Failed to read local db.json:', e);
+    }
+  }
+
+  // 2. Next, connect to PostgreSQL if DATABASE_URL is configured
+  if (process.env.DATABASE_URL) {
+    try {
+      pgPool = initPgPool();
+      if (pgPool) {
+        const client = await pgPool.connect();
+        try {
+          // Create persistent table if it doesn't exist yet
+          await client.query(`
+            CREATE TABLE IF NOT EXISTS app_state (
+              key VARCHAR(100) PRIMARY KEY,
+              data JSONB NOT NULL,
+              updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+          `);
+
+          // Fetch all state records from PostgreSQL
+          const result = await client.query('SELECT key, data FROM app_state;');
+          if (result.rows.length > 0) {
+            const pgState: Record<string, any> = {};
+            for (const row of result.rows) {
+              pgState[row.key] = row.data;
+            }
+            applyDatabaseState(pgState);
+            isPgConnected = true;
+            console.log(`[PostgreSQL] Connected successfully to PostgreSQL! Loaded ${users.length} users and ${transactions.length} transactions.`);
+          } else {
+            isPgConnected = true;
+            console.log('[PostgreSQL] Connected to PostgreSQL. Initializing tables with seed data...');
+            await persistToPostgres();
+          }
+        } finally {
+          client.release();
+        }
+      }
+    } catch (err: any) {
+      console.error('[PostgreSQL] Connection failed, falling back to local file storage:', err?.message || err);
+      isPgConnected = false;
+    }
+  }
+
+  // 3. If no state was loaded from anywhere, save initial seed
+  if (!loadedFromLocal && !isPgConnected) {
+    saveDatabaseToFile();
+  }
+}
+
+// Initialize database on startup
+initDatabase();
+
+// Auto-save on every state-mutating request
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+    res.on('finish', () => {
+      if (res.statusCode >= 200 && res.statusCode < 400) {
+        queueSaveDatabase();
+      }
+    });
+  }
+  next();
+});
+
+// Periodic safety save every 30 seconds
+setInterval(() => {
+  saveDatabase();
+}, 30000);
+
 // Helper: generate realistic candles
 function generateCandles(basePrice: number, count: number = 40, timeframe: string = '15m') {
   const candles: any[] = [];
@@ -605,6 +817,18 @@ setInterval(() => {
     });
   });
 }, 3000);
+
+// Health & Database Info Endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    database: isPgConnected ? 'PostgreSQL' : 'Local Persistence (data/db.json)',
+    isPostgres: isPgConnected,
+    usersCount: users.length,
+    transactionsCount: transactions.length,
+    marketsCount: markets.length,
+  });
+});
 
 // API Endpoints
 // Markets
