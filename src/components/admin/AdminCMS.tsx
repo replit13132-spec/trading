@@ -35,10 +35,10 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
     category: 'Market Update',
     summary: '',
     content: '',
-    author: 'Tim Riset Pintu',
+    author: 'Tim Riset Analis',
     readTime: '3 mnt',
     imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=600&auto=format&fit=crop&q=60',
-    source: 'Pintu News',
+    source: 'Market News',
   });
 
   // Academy Form
@@ -232,7 +232,7 @@ export const AdminCMS: React.FC<AdminCMSProps> = ({ onRefresh }) => {
             }`}
           >
             <GraduationCap className="w-4 h-4" />
-            <span>Akademi Pintu ({academyList.length})</span>
+            <span>Akademi Crypto ({academyList.length})</span>
           </button>
 
           <button

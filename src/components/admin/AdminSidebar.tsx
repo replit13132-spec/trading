@@ -259,7 +259,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <button
               onClick={() => setMainTab('beranda')}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold transition-all border border-slate-700/60 shadow-sm"
-              title="Kembali ke Tampilan Pengguna (Pintu App)"
+              title="Kembali ke Tampilan Pengguna (App View)"
             >
               <div className="flex items-center gap-2 overflow-hidden">
                 <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" />

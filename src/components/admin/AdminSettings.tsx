@@ -31,7 +31,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
     telegramLink: '',
     depositFeePercent: 0,
     minDepositIdr: 50000,
-    announcementBanner: 'Selamat datang di Pintu Crypto & US Stocks Trading Exchange!',
+    announcementBanner: 'Selamat datang di Crypto & US Stocks Trading Exchange!',
     bannerActive: true,
   });
 

@@ -798,7 +798,7 @@ export const Modals: React.FC = () => {
                   <CryptoIcon symbol="BTC" name="Bitcoin" className="w-8 h-8 rounded-full shadow" />
                   <CryptoIcon symbol="ETH" name="Ethereum" className="w-8 h-8 rounded-full shadow" />
                   <CryptoIcon symbol="SOL" name="Solana" className="w-8 h-8 rounded-full shadow" />
-                  <CryptoIcon symbol="PTU" name="Pintu Token" className="w-8 h-8 rounded-full shadow" />
+                  <CryptoIcon symbol="PTU" name="Platform Token" className="w-8 h-8 rounded-full shadow" />
                 </div>
 
                 <div>

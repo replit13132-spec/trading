@@ -80,7 +80,7 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
     },
     cms: {
       title: 'CMS Berita, Edukasi & Pengumuman',
-      subtitle: 'Publikasi wawasan pasar, silabus Akademi Pintu, dan siaran pengumuman darurat.',
+      subtitle: 'Publikasi wawasan pasar, silabus Akademi Crypto, dan siaran pengumuman darurat.',
     },
     notifications: {
       title: 'Pusat Notifikasi & Siaran Global',

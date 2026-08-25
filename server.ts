@@ -148,7 +148,7 @@ let markets: any[] = [
   {
     id: 'ptu',
     symbol: 'PTU',
-    name: 'Pintu Token',
+    name: 'Platform Token',
     category: 'crypto',
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/15112.png',
     color: '#0052FF',
@@ -364,7 +364,7 @@ let bankAccounts: any[] = [
     bankName: 'Bank Central Asia (BCA)',
     bankCode: 'BCA',
     accountNumber: '8820 1948 2109 0012',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT CRYPTO INDONESIA',
     category: 'Virtual Account',
     isActive: true,
     notes: 'Transfer via BCA Mobile / ATM / Internet Banking 24 jam.',
@@ -375,7 +375,7 @@ let bankAccounts: any[] = [
     bankName: 'Bank Mandiri',
     bankCode: 'MANDIRI',
     accountNumber: '1370 0098 7654 3',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT CRYPTO INDONESIA',
     category: 'Transfer Bank',
     isActive: true,
     notes: 'Transfer via Livin by Mandiri atau ATM Mandiri.',
@@ -386,7 +386,7 @@ let bankAccounts: any[] = [
     bankName: 'Bank Rakyat Indonesia (BRI)',
     bankCode: 'BRI',
     accountNumber: '0123 0100 9876 501',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT CRYPTO INDONESIA',
     category: 'Transfer Bank',
     isActive: true,
     notes: 'Transfer via BRImo / ATM BRI.',
@@ -397,7 +397,7 @@ let bankAccounts: any[] = [
     bankName: 'Bank Negara Indonesia (BNI)',
     bankCode: 'BNI',
     accountNumber: '0987 6543 210',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT CRYPTO INDONESIA',
     category: 'Virtual Account',
     isActive: true,
     notes: 'Transfer via BNI Mobile Banking / ATM BNI.',
@@ -408,14 +408,14 @@ let bankAccounts: any[] = [
     bankName: 'QRIS Standar Nasional',
     bankCode: 'QRIS',
     accountNumber: 'ID1029384756102',
-    accountHolder: 'PT PINTU PRO INDONESIA',
+    accountHolder: 'PT CRYPTO INDONESIA',
     category: 'QRIS',
     isActive: true,
     notes: 'Pindai kode QR menggunakan GoPay, OVO, ShopeePay, Dana, LinkAja, atau m-Banking.',
     createdAt: '2026-08-01 00:00:00',
   },
 ];
-const DEFAULT_RECEIPT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="580" viewBox="0 0 400 580" fill="none"><rect width="400" height="580" fill="%23f8fafc" rx="20"/><rect x="16" y="16" width="368" height="548" fill="%23ffffff" rx="16" stroke="%23cbd5e1" stroke-width="2"/><rect x="16" y="16" width="368" height="75" fill="%230052FF" rx="16"/><text x="36" y="58" fill="%23ffffff" font-family="sans-serif" font-size="18" font-weight="bold">BCA Mobile - M-Transfer</text><circle cx="345" cy="53" r="14" fill="%23ffffff" opacity="0.25"/><text x="36" y="125" fill="%231e293b" font-family="sans-serif" font-size="14" font-weight="bold">TRANSFER BANK BERHASIL</text><text x="36" y="145" fill="%2364748b" font-family="sans-serif" font-size="11">24 AGU 2026 14:22:18 WIB</text><line x1="36" y1="165" x2="364" y2="165" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="195" fill="%2364748b" font-family="sans-serif" font-size="11">Bank Tujuan</text><text x="36" y="215" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BCA VIRTUAL ACCOUNT</text><text x="36" y="245" fill="%2364748b" font-family="sans-serif" font-size="11">No. VA / Rekening Tujuan</text><text x="36" y="265" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">8820 1948 2109 0012</text><text x="36" y="295" fill="%2364748b" font-family="sans-serif" font-size="11">Nama Penerima</text><text x="36" y="315" fill="%230052FF" font-family="sans-serif" font-size="13" font-weight="bold">PT PINTU PRO INDONESIA</text><text x="36" y="345" fill="%2364748b" font-family="sans-serif" font-size="11">Pengirim / Remitter</text><text x="36" y="365" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BUDI SANTOSO</text><line x1="36" y1="385" x2="364" y2="385" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="415" fill="%2364748b" font-family="sans-serif" font-size="11">Jumlah Transfer Deposit</text><text x="36" y="440" fill="%2316a34a" font-family="sans-serif" font-size="22" font-weight="bold">Rp 10.000.000</text><text x="36" y="470" fill="%2364748b" font-family="sans-serif" font-size="11">No. Referensi Transaksi</text><text x="36" y="490" fill="%23334155" font-family="sans-serif" font-size="12" font-weight="bold">REF-20260824-99812</text><rect x="36" y="510" width="328" height="36" fill="%23ecfdf5" rx="8" stroke="%23a7f3d0"/><text x="200" y="533" text-anchor="middle" fill="%23047857" font-family="sans-serif" font-size="11" font-weight="bold">✓ RESI SAH & TERKIRIM KE SISTEM PINTU</text></svg>`;
+const DEFAULT_RECEIPT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="580" viewBox="0 0 400 580" fill="none"><rect width="400" height="580" fill="%23f8fafc" rx="20"/><rect x="16" y="16" width="368" height="548" fill="%23ffffff" rx="16" stroke="%23cbd5e1" stroke-width="2"/><rect x="16" y="16" width="368" height="75" fill="%230052FF" rx="16"/><text x="36" y="58" fill="%23ffffff" font-family="sans-serif" font-size="18" font-weight="bold">BCA Mobile - M-Transfer</text><circle cx="345" cy="53" r="14" fill="%23ffffff" opacity="0.25"/><text x="36" y="125" fill="%231e293b" font-family="sans-serif" font-size="14" font-weight="bold">TRANSFER BANK BERHASIL</text><text x="36" y="145" fill="%2364748b" font-family="sans-serif" font-size="11">24 AGU 2026 14:22:18 WIB</text><line x1="36" y1="165" x2="364" y2="165" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="195" fill="%2364748b" font-family="sans-serif" font-size="11">Bank Tujuan</text><text x="36" y="215" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BCA VIRTUAL ACCOUNT</text><text x="36" y="245" fill="%2364748b" font-family="sans-serif" font-size="11">No. VA / Rekening Tujuan</text><text x="36" y="265" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">8820 1948 2109 0012</text><text x="36" y="295" fill="%2364748b" font-family="sans-serif" font-size="11">Nama Penerima</text><text x="36" y="315" fill="%230052FF" font-family="sans-serif" font-size="13" font-weight="bold">PT CRYPTO INDONESIA</text><text x="36" y="345" fill="%2364748b" font-family="sans-serif" font-size="11">Pengirim / Remitter</text><text x="36" y="365" fill="%230f172a" font-family="sans-serif" font-size="13" font-weight="bold">BUDI SANTOSO</text><line x1="36" y1="385" x2="364" y2="385" stroke="%23e2e8f0" stroke-width="1"/><text x="36" y="415" fill="%2364748b" font-family="sans-serif" font-size="11">Jumlah Transfer Deposit</text><text x="36" y="440" fill="%2316a34a" font-family="sans-serif" font-size="22" font-weight="bold">Rp 10.000.000</text><text x="36" y="470" fill="%2364748b" font-family="sans-serif" font-size="11">No. Referensi Transaksi</text><text x="36" y="490" fill="%23334155" font-family="sans-serif" font-size="12" font-weight="bold">REF-20260824-99812</text><rect x="36" y="510" width="328" height="36" fill="%23ecfdf5" rx="8" stroke="%23a7f3d0"/><text x="200" y="533" text-anchor="middle" fill="%23047857" font-family="sans-serif" font-size="11" font-weight="bold">✓ RESI SAH & TERKIRIM KE SISTEM EXCHANGE</text></svg>`;
 
 let spotOrders: any[] = [];
 let transactions: any[] = [];
@@ -423,7 +423,7 @@ let transactions: any[] = [];
 let notifications = [
   {
     id: 'notif_1',
-    title: '🎉 Selamat Datang di Pintu',
+    title: '🎉 Selamat Datang di Exchange',
     message: 'Nikmati trading spot & compounding modal dengan hasil 1% per hari. Verifikasi KYC Anda sekarang untuk fitur lengkap.',
     type: 'success',
     createdAt: '24 Agu 2026 00:00',
@@ -481,7 +481,7 @@ let newsArticles = [
   {
     id: 'news_1',
     title: 'Harga Polygon (POL) Diam-diam Rebound 26,38% dalam Sehari, Akankah Tembus Level Tertinggi?',
-    source: 'Pintu News • Altcoin',
+    source: 'Market News • Altcoin',
     timeAgo: '1 hari',
     category: 'Altcoin',
     imageUrl: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=600&auto=format&fit=crop&q=80',
@@ -490,7 +490,7 @@ let newsArticles = [
   {
     id: 'news_2',
     title: '3 Altcoin Ini Berdarah di Weekend, Anjlok Belasan Persen Menjelang Keputusan Suku Bunga Fed',
-    source: 'Pintu News • Altcoin',
+    source: 'Market News • Altcoin',
     timeAgo: '1 hari',
     category: 'Market',
     imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80',
@@ -666,11 +666,25 @@ app.get('/api/markets/:symbol/orderbook', (req, res) => {
   });
 });
 
+// Helper to resolve current authenticated user (via header, query, body, or fallback)
+function resolveUser(req: express.Request) {
+  const headerUserId = (req.headers['x-user-id'] as string) || '';
+  const queryUserId = (req.query.userId as string) || '';
+  const bodyUserId = (req.body && req.body.currentUserId) || '';
+  const targetId = headerUserId || queryUserId || bodyUserId || currentUserId;
+  const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
+  return found || users.find((u) => u.id === currentUserId) || users[0];
+}
+
 // User & Account Management
 app.get('/api/users', (req, res) => {
+  const user = resolveUser(req);
+  if (user) {
+    currentUserId = user.id;
+  }
   res.json({
     success: true,
-    currentUser: users.find((u) => u.id === currentUserId) || users[0],
+    currentUser: user,
     allUsers: users,
   });
 });
@@ -817,7 +831,7 @@ app.post('/api/auth/login', (req, res) => {
 
 app.post('/api/auth/social', (req, res) => {
   const { provider, name, email } = req.body;
-  const targetEmail = email || `user.${provider}@pintu.co.id`;
+  const targetEmail = email || `user.${provider}@trade.co.id`;
   let user = users.find((u) => u.email === targetEmail);
 
   if (!user) {
@@ -844,7 +858,7 @@ app.post('/api/auth/social', (req, res) => {
 });
 
 app.post('/api/users/reset-balance', (req, res) => {
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (user) {
     if (user.id === 'user_dummy_1') {
       user.balances.idr = 50000000;
@@ -868,7 +882,7 @@ app.post('/api/users/reset-balance', (req, res) => {
 
 // Wallet Operations
 app.get('/api/user/wallet', (req, res) => {
-  const user = users.find((u) => u.id === currentUserId) || users[0];
+  const user = resolveUser(req);
   
   if (!user.compoundingBalances) {
     user.compoundingBalances = { idr: 25000000, usdt: 1500, tokens: {} };
@@ -938,7 +952,7 @@ app.get('/api/user/wallet', (req, res) => {
 
 app.post('/api/user/deposit', (req, res) => {
   const { amount, currency, method, proofImage, note } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const depositAmount = Number(amount);
@@ -981,7 +995,7 @@ app.post('/api/user/deposit', (req, res) => {
 // Penarikan Profit Compounding (Min Rp 100.000, kapan saja)
 app.post('/api/user/withdraw-profit', (req, res) => {
   const { amount, destination } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const numAmount = Number(amount);
@@ -1026,7 +1040,7 @@ app.post('/api/user/withdraw-profit', (req, res) => {
 // Gabungkan Profit ke Modal Awal (Re-Compound)
 app.post('/api/user/recompound-profit', (req, res) => {
   const { amount } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const currentProfit = user.compoundingProfitIdr || 0;
@@ -1082,7 +1096,7 @@ app.post('/api/user/recompound-profit', (req, res) => {
 // Penarikan Modal Pokok (ASET) - Terkunci 3 Bulan sejak tanggal setor
 app.post('/api/user/withdraw-capital', (req, res) => {
   const { amount, destination } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const numAmount = Number(amount);
@@ -1149,7 +1163,7 @@ app.post('/api/user/withdraw-capital', (req, res) => {
 
 app.post('/api/user/withdraw', (req, res) => {
   const { amount, currency, destination } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const withdrawAmount = Number(amount);
@@ -1183,7 +1197,7 @@ app.post('/api/user/withdraw', (req, res) => {
 
 app.post('/api/user/transfer', (req, res) => {
   const { from, to, amount, currency } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const numAmount = Number(amount);
@@ -1235,7 +1249,7 @@ app.post('/api/user/transfer', (req, res) => {
 // Trading: Spot
 app.post('/api/trade/spot', (req, res) => {
   const { symbol, side, type, amount, price } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const market = markets.find((m) => m.symbol === symbol.toUpperCase());
@@ -1298,7 +1312,7 @@ app.post('/api/trade/spot', (req, res) => {
 // Trading: Futures
 app.post('/api/trade/futures', (req, res) => {
   const { symbol, side, leverage, marginMode, amountUsdt, tpPrice, slPrice } = req.body;
-  const user = users.find((u) => u.id === currentUserId);
+  const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
   const market = markets.find((m) => m.symbol === symbol.toUpperCase()) || markets[0];
@@ -1364,13 +1378,15 @@ app.post('/api/trade/futures/close/:id', (req, res) => {
 });
 
 app.get('/api/user/positions', (req, res) => {
-  const userPositions = futuresPositions.filter((p) => p.userId === currentUserId);
+  const user = resolveUser(req);
+  const userPositions = futuresPositions.filter((p) => p.userId === user.id);
   res.json({ success: true, data: userPositions });
 });
 
 app.get('/api/user/orders', (req, res) => {
-  const userOrders = spotOrders.filter((o) => o.userId === currentUserId);
-  const userTxs = transactions.filter((t) => t.userId === currentUserId);
+  const user = resolveUser(req);
+  const userOrders = spotOrders.filter((o) => o.userId === user.id);
+  const userTxs = transactions.filter((t) => t.userId === user.id);
   res.json({ success: true, spotOrders: userOrders, transactions: userTxs });
 });
 

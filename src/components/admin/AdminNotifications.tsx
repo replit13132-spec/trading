@@ -131,7 +131,7 @@ export const AdminNotifications: React.FC<AdminNotificationsProps> = ({ onRefres
               Pusat Notifikasi & Siaran Global
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1">
-              Kirimkan pengumuman penting, pemberitahuan promo, update sistem, atau pesan siaran langsung ke lonceng notifikasi seluruh pengguna aplikasi Pintu.
+              Kirimkan pengumuman penting, pemberitahuan promo, update sistem, atau pesan siaran langsung ke lonceng notifikasi seluruh pengguna aplikasi.
             </p>
           </div>
           <button

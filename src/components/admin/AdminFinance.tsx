@@ -484,7 +484,7 @@ export const AdminFinance: React.FC<AdminFinanceProps> = ({ onRefresh }) => {
                   <div className="flex items-center justify-between pb-2.5 border-b border-gray-100">
                     <div>
                       <h4 className="font-extrabold text-xs text-gray-900">{tx.userName || 'Trader'}</h4>
-                      <p className="text-[10px] text-gray-400">{tx.userEmail || 'user@pintu.co.id'}</p>
+                      <p className="text-[10px] text-gray-400">{tx.userEmail || 'user@trade.co.id'}</p>
                     </div>
                     <span
                       className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${

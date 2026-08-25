@@ -154,7 +154,7 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
       bankName: '',
       bankCode: 'BCA',
       accountNumber: '',
-      accountHolder: 'PT PINTU PRO INDONESIA',
+      accountHolder: 'PT CRYPTO INDONESIA',
       category: 'Virtual Account',
       isActive: true,
       notes: '',
@@ -328,7 +328,7 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
             <span>Manajemen Rekening Deposit & Pembayaran</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Kelola daftar rekening bank tujuan transfer deposit, virtual account, dan QRIS untuk transaksi pengguna PINTU.
+            Kelola daftar rekening bank tujuan transfer deposit, virtual account, dan QRIS untuk transaksi pengguna platform.
           </p>
         </div>
 
@@ -596,7 +596,7 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
                 <label className="block font-bold text-slate-700 mb-1">Atas Nama Pemilik Rekening</label>
                 <input
                   type="text"
-                  placeholder="Contoh: PT PINTU PRO INDONESIA"
+                  placeholder="Contoh: PT CRYPTO INDONESIA"
                   value={formData.accountHolder}
                   onChange={(e) => setFormData({ ...formData, accountHolder: e.target.value })}
                   required

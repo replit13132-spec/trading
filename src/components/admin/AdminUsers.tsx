@@ -74,7 +74,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: createForm.name,
-          email: createForm.email || `${createForm.name.toLowerCase().replace(/\s+/g, '')}@pintu.co.id`,
+          email: createForm.email || `${createForm.name.toLowerCase().replace(/\s+/g, '')}@trade.co.id`,
           role: createForm.role,
           initialIdr: Number(createForm.initialIdr) || 10000000,
           initialUsdt: Number(createForm.initialUsdt) || 500,

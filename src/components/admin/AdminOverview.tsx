@@ -108,7 +108,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
             <span>Sistem Operasi Master Exchange</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white mb-2">
-            Pusat Pengendali Ekosistem Trading Pintu
+            Pusat Pengendali Ekosistem Trading Exchange
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
             Akses kontrol penuh CRUD untuk seluruh modul aplikasi: manipulasi harga pasar live, manipulasi saldo pengguna, upload gambar koin, audit transaksi, dan publikasi konten.

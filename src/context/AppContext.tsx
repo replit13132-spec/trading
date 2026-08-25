@@ -60,10 +60,39 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mode, setMode] = useState<'pintu' | 'pro'>('pintu');
-  const [isOnboarded, setIsOnboarded] = useState<boolean>(false);
+  
+  const [isOnboarded, setIsOnboarded] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('app_is_onboarded');
+      if (saved !== null) return saved === 'true';
+      const savedUser = localStorage.getItem('app_current_user');
+      return !!savedUser; // if user exists, already onboarded
+    } catch {
+      return false;
+    }
+  });
+
   const [authScreen, setAuthScreen] = useState<'none' | 'login' | 'register'>('none');
-  const [activeTab, setActiveTab] = useState<'beranda' | 'market' | 'trade' | 'transaksi' | 'wallet' | 'admin'>('beranda');
-  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  
+  const [activeTab, setActiveTab] = useState<'beranda' | 'market' | 'trade' | 'transaksi' | 'wallet' | 'admin'>(() => {
+    try {
+      const saved = localStorage.getItem('app_active_tab');
+      if (saved && ['beranda', 'market', 'trade', 'transaksi', 'wallet', 'admin'].includes(saved)) {
+        return saved as any;
+      }
+    } catch {}
+    return 'beranda';
+  });
+
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => {
+    try {
+      const saved = localStorage.getItem('app_current_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [allUsers, setAllUsers] = useState<UserAccount[]>([]);
   const [markets, setMarkets] = useState<Asset[]>([]);
   const [selectedMarket, setSelectedMarket] = useState<Asset | null>(null);
@@ -80,6 +109,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
 
+  // Sync state changes to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('app_active_tab', activeTab);
+    } catch {}
+  }, [activeTab]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('app_is_onboarded', String(isOnboarded));
+    } catch {}
+  }, [isOnboarded]);
+
+  useEffect(() => {
+    try {
+      if (currentUser) {
+        localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+        localStorage.setItem('app_user_id', currentUser.id);
+      }
+    } catch {}
+  }, [currentUser]);
+
   const formatIdr = (amount: number = 0) => {
     if (isNaN(amount)) return 'Rp 0';
     return 'Rp ' + Math.round(amount).toLocaleString('id-ID');
@@ -90,13 +141,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return amount.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
   };
 
+  const getAuthHeaders = (): Record<string, string> => {
+    try {
+      const storedId = localStorage.getItem('app_user_id') || currentUser?.id;
+      if (storedId) {
+        return { 'x-user-id': storedId };
+      }
+    } catch {}
+    return {};
+  };
+
   const refreshData = useCallback(async () => {
     try {
+      const authHdrs = getAuthHeaders();
       const [mkRes, userRes, walletRes, posRes, newsRes, acadRes, annRes] = await Promise.all([
         fetch('/api/markets'),
-        fetch('/api/users'),
-        fetch('/api/user/wallet'),
-        fetch('/api/user/positions'),
+        fetch('/api/users', { headers: authHdrs }),
+        fetch('/api/user/wallet', { headers: authHdrs }),
+        fetch('/api/user/positions', { headers: authHdrs }),
         fetch('/api/content/news'),
         fetch('/api/content/academy'),
         fetch('/api/announcements'),
@@ -130,6 +192,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (userJson.success) {
         setCurrentUser(userJson.currentUser);
         setAllUsers(userJson.allUsers);
+        try {
+          localStorage.setItem('app_current_user', JSON.stringify(userJson.currentUser));
+          localStorage.setItem('app_user_id', userJson.currentUser.id);
+        } catch {}
       }
       if (walletJson.success) {
         setWalletData(walletJson.data);
@@ -157,11 +223,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/users/switch', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ userId }),
       });
       const data = await res.json();
       if (data.success) {
+        try {
+          localStorage.setItem('app_user_id', data.currentUser.id);
+          localStorage.setItem('app_current_user', JSON.stringify(data.currentUser));
+          localStorage.setItem('app_is_onboarded', 'true');
+        } catch {}
+        setIsOnboarded(true);
+        setCurrentUser(data.currentUser);
         await refreshData();
         // If switched to admin account, automatically open the Admin Dashboard
         if (data.currentUser?.role === 'admin') {
@@ -179,11 +252,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ email, identifier: email, password }),
       });
       const data = await res.json();
       if (data.success) {
+        try {
+          localStorage.setItem('app_user_id', data.currentUser.id);
+          localStorage.setItem('app_current_user', JSON.stringify(data.currentUser));
+          localStorage.setItem('app_is_onboarded', 'true');
+        } catch {}
+        setIsOnboarded(true);
+        setCurrentUser(data.currentUser);
         await refreshData();
         // If logged in as admin, automatically set activeTab to admin
         if (data.currentUser?.role === 'admin') {
@@ -203,11 +283,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ name, nik, email, password, referralCode }),
       });
       const data = await res.json();
       if (data.success) {
+        setIsOnboarded(true);
+        try {
+          localStorage.setItem('app_is_onboarded', 'true');
+        } catch {}
         await refreshData();
         return { success: true, message: data.message };
       }
@@ -223,11 +307,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const email = provider === 'google' ? 'user.google@gmail.com' : 'user.apple@icloud.com';
       const res = await fetch('/api/auth/social', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ provider, name, email }),
       });
       const data = await res.json();
       if (data.success) {
+        try {
+          localStorage.setItem('app_user_id', data.currentUser.id);
+          localStorage.setItem('app_current_user', JSON.stringify(data.currentUser));
+          localStorage.setItem('app_is_onboarded', 'true');
+        } catch {}
+        setIsOnboarded(true);
+        setCurrentUser(data.currentUser);
         await refreshData();
         return { success: true };
       }
@@ -269,7 +360,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/trade/spot', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ symbol, side, type, amount, price }),
       });
       const data = await res.json();
@@ -287,7 +378,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/trade/futures', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(params),
       });
       const data = await res.json();
@@ -303,7 +394,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const closeFuturesPosition = async (id: string) => {
     try {
-      const res = await fetch(`/api/trade/futures/close/${id}`, { method: 'POST' });
+      const res = await fetch(`/api/trade/futures/close/${id}`, {
+        method: 'POST',
+        headers: { ...getAuthHeaders() },
+      });
       const data = await res.json();
       if (data.success) {
         await refreshData();
@@ -325,7 +419,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/deposit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, currency, method, proofImage, note }),
       });
       const data = await res.json();
@@ -344,7 +438,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/withdraw', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, currency, destination }),
       });
       const data = await res.json();
@@ -362,7 +456,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/withdraw-profit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, destination }),
       });
       const data = await res.json();
@@ -380,7 +474,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/recompound-profit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount }),
       });
       const data = await res.json();
@@ -398,7 +492,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/withdraw-capital', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, destination }),
       });
       const data = await res.json();
@@ -416,7 +510,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await fetch('/api/user/transfer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ from, to, amount, currency }),
       });
       const data = await res.json();
