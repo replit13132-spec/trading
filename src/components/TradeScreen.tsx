@@ -291,92 +291,101 @@ export const TradeScreen: React.FC = () => {
         </div>
       )}
 
-      {/* SPOT TRADING PANEL */}
+      {/* SPOT TRADING PANEL (REPLACED WITH BEAUTIFUL LIVE SIMULATION & SIGNAL DASHBOARD) */}
       <div className="p-3 sm:p-4 bg-gray-50/50 border-b border-gray-100 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-extrabold text-gray-900">Eksekusi Pasar Spot</span>
-          <div className="flex items-center gap-1 bg-gray-200 p-0.5 rounded-xl text-[11px] font-bold">
-            <button
-              onClick={() => setTradeSide('BUY')}
-              className={`px-3 py-1 rounded-lg transition-all ${
-                tradeSide === 'BUY' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:text-black'
-              }`}
-            >
-              Beli
-            </button>
-            <button
-              onClick={() => setTradeSide('SELL')}
-              className={`px-3 py-1 rounded-lg transition-all ${
-                tradeSide === 'SELL' ? 'bg-red-600 text-white shadow-sm' : 'text-gray-600 hover:text-black'
-              }`}
-            >
-              Jual
-            </button>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+            <span className="text-xs font-black uppercase tracking-wider text-gray-900">Pusat Analisis & Sinyal Simulasi</span>
           </div>
+          <span className="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold">
+            Simulasi Live
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-[10px] text-gray-400">
-              <span>Jumlah ({currentAsset.symbol})</span>
-              <span className="font-mono text-gray-700">
-                Saldo: {tradeSide === 'BUY' ? formatIdr(userRupiah) : `${userTokenBalance} ${currentAsset.symbol}`}
-              </span>
-            </div>
-            <div className="relative">
-              <input
-                type="number"
-                step="any"
-                value={amountCoin}
-                onChange={(e) => setAmountCoin(e.target.value)}
-                placeholder="0.00"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-extrabold text-gray-400">
-                {currentAsset.symbol}
-              </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+          {/* Column 1: Market Signal Meter */}
+          <div className="space-y-2.5">
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-wide">Rekomendasi Sinyal</span>
+              {(() => {
+                const change = currentAsset.change24h;
+                let signalText = 'NETRAL';
+                let signalColor = 'text-amber-500 bg-amber-50 border-amber-200';
+                let pulseBg = 'bg-amber-400';
+                
+                if (change >= 5) {
+                  signalText = 'STRONG BUY';
+                  signalColor = 'text-emerald-600 bg-emerald-50 border-emerald-200';
+                  pulseBg = 'bg-emerald-500';
+                } else if (change >= 1) {
+                  signalText = 'BUY';
+                  signalColor = 'text-teal-600 bg-teal-50 border-teal-200';
+                  pulseBg = 'bg-teal-500';
+                } else if (change <= -5) {
+                  signalText = 'STRONG SELL';
+                  signalColor = 'text-rose-600 bg-rose-50 border-rose-200';
+                  pulseBg = 'bg-rose-500';
+                } else if (change <= -1) {
+                  signalText = 'SELL';
+                  signalColor = 'text-red-500 bg-red-50 border-red-200';
+                  pulseBg = 'bg-red-500';
+                }
+                
+                return (
+                  <div className={`mt-1.5 px-3 py-2 rounded-xl border ${signalColor} flex items-center gap-2 font-black text-xs sm:text-sm tracking-wide`}>
+                    <span className={`w-2 h-2 rounded-full ${pulseBg} animate-ping`} />
+                    <span>{signalText}</span>
+                  </div>
+                );
+              })()}
             </div>
 
-            {/* Quick % buttons */}
-            <div className="flex items-center gap-1.5 pt-1">
-              {['25%', '50%', '75%', '100%'].map((pct) => (
-                <button
-                  key={pct}
-                  onClick={() => {
-                    const ratio = parseInt(pct) / 100;
-                    if (tradeSide === 'BUY') {
-                      const maxCoins = (userRupiah * ratio) / currentAsset.priceIdr;
-                      setAmountCoin(maxCoins > 0 ? maxCoins.toFixed(4) : '0.01');
-                    } else {
-                      setAmountCoin((userTokenBalance * ratio).toFixed(4));
-                    }
-                  }}
-                  className="flex-1 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-[10px] font-bold transition-all"
-                >
-                  {pct}
-                </button>
-              ))}
-            </div>
+            {/* Simulated Buy vs Sell Pressure */}
+            {(() => {
+              // Create a deterministic buy pressure based on current price/stats
+              const hash = (currentAsset.symbol.charCodeAt(0) + Math.round(currentAsset.priceIdr % 100)) % 40;
+              const buyPressure = 40 + hash; // between 40% and 80%
+              const sellPressure = 100 - buyPressure;
+              
+              return (
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-bold text-gray-500">
+                    <span>Tekanan Beli ({buyPressure}%)</span>
+                    <span>Tekanan Jual ({sellPressure}%)</span>
+                  </div>
+                  <div className="h-2.5 w-full bg-red-500 rounded-full overflow-hidden flex">
+                    <div className="bg-emerald-500 h-full transition-all duration-1000" style={{ width: `${buyPressure}%` }} />
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
-          <div className="space-y-2 flex flex-col justify-between">
-            <div className="text-[10px] text-gray-400">
-              <span>Total Estimasi Transaksi</span>
-              <p className="text-sm font-extrabold text-gray-900 font-mono mt-1">
-                {formatIdr(totalCostIdr)}
-              </p>
+          {/* Column 2: Simulated Market Stats */}
+          <div className="space-y-2 text-xs flex flex-col justify-between">
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="bg-gray-50 p-2 rounded-xl border border-gray-100">
+                <span className="text-[9px] text-gray-400 block font-bold uppercase">Sentimen Pasar</span>
+                <span className="font-extrabold text-gray-800 text-xs mt-0.5 block">
+                  {currentAsset.change24h >= 0 ? 'Bullish 🔥' : 'Bearish ❄️'}
+                </span>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-xl border border-gray-100">
+                <span className="text-[9px] text-gray-400 block font-bold uppercase">Volatilitas</span>
+                <span className="font-extrabold text-gray-800 text-xs mt-0.5 block">
+                  {Math.abs(currentAsset.change24h) > 5 ? 'Tinggi' : 'Sedang'}
+                </span>
+              </div>
             </div>
 
-            <button
-              onClick={handleExecuteTrade}
-              className={`w-full py-2.5 rounded-xl font-extrabold text-xs text-white shadow-md transition-all ${
-                tradeSide === 'BUY'
-                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'
-                  : 'bg-red-600 hover:bg-red-700 shadow-red-500/20'
-              }`}
-            >
-              {tradeSide === 'BUY' ? `Beli ${currentAsset.symbol}` : `Jual ${currentAsset.symbol}`}
-            </button>
+            <div className="bg-amber-50/50 border border-amber-100/80 rounded-xl p-2.5 text-[10px] text-amber-900 leading-relaxed font-semibold">
+              <div className="flex items-center gap-1 mb-0.5 text-amber-800 font-bold text-[11px]">
+                <Info className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
+                <span>Mode Simulasi Pasif</span>
+              </div>
+              Halaman ini menampilkan simulasi grafik harga real-time tanpa mengeksekusi saldo atau dana dompet digital Anda.
+            </div>
           </div>
         </div>
       </div>

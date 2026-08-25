@@ -734,6 +734,169 @@ let markets: any[] = [
     volume24hUsdt: '921K',
     sparkline: [176, 178, 180.8],
   },
+  {
+    id: 'ftm',
+    symbol: 'FTM',
+    name: 'Fantom',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/4001/small/Fantom.png',
+    color: '#1969FF',
+    priceIdr: 10540,
+    priceUsdt: 0.60,
+    change24h: 4.15,
+    high24h: 11200,
+    low24h: 9800,
+    volume24hIdr: '18,4B',
+    volume24hUsdt: '1,05M',
+    sparkline: [0.55, 0.58, 0.60],
+  },
+  {
+    id: 'jup',
+    symbol: 'JUP',
+    name: 'Jupiter',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/34188/small/jup.png',
+    color: '#31C5C5',
+    priceIdr: 17400,
+    priceUsdt: 0.99,
+    change24h: 5.30,
+    high24h: 18400,
+    low24h: 16500,
+    volume24hIdr: '12,4B',
+    volume24hUsdt: '705K',
+    sparkline: [0.91, 0.95, 0.99],
+  },
+  {
+    id: 'wif',
+    symbol: 'WIF',
+    name: 'dogwifhat',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/33566/small/dogwifhat.png',
+    color: '#E4A853',
+    priceIdr: 43080,
+    priceUsdt: 2.45,
+    change24h: 7.20,
+    high24h: 46200,
+    low24h: 39500,
+    volume24hIdr: '35,1B',
+    volume24hUsdt: '2,00M',
+    sparkline: [2.15, 2.30, 2.45],
+    isHot: true,
+  },
+  {
+    id: 'bonk',
+    symbol: 'BONK',
+    name: 'Bonk',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/28600/small/bonk.png',
+    color: '#F29C38',
+    priceIdr: 0.38,
+    priceUsdt: 0.0000216,
+    change24h: 9.45,
+    high24h: 0.42,
+    low24h: 0.34,
+    volume24hIdr: '18,9B',
+    volume24hUsdt: '1,07M',
+    sparkline: [0.000018, 0.000020, 0.0000216],
+    isHot: true,
+  },
+  {
+    id: 'fet',
+    symbol: 'FET',
+    name: 'Artificial Superintelligence Alliance',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/5681/small/Fetch.png',
+    color: '#002E5F',
+    priceIdr: 25320,
+    priceUsdt: 1.44,
+    change24h: 3.82,
+    high24h: 26500,
+    low24h: 24200,
+    volume24hIdr: '22,6B',
+    volume24hUsdt: '1,28M',
+    sparkline: [1.35, 1.40, 1.44],
+  },
+  {
+    id: 'tia',
+    symbol: 'TIA',
+    name: 'Celestia',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/31967/small/celestia.png',
+    color: '#7B2CBF',
+    priceIdr: 96360,
+    priceUsdt: 5.48,
+    change24h: 4.85,
+    high24h: 101000,
+    low24h: 92000,
+    volume24hIdr: '14,8B',
+    volume24hUsdt: '841K',
+    sparkline: [5.12, 5.30, 5.48],
+  },
+  {
+    id: 'sei',
+    symbol: 'SEI',
+    name: 'Sei Network',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/30748/small/sei-logo.png',
+    color: '#B32424',
+    priceIdr: 8790,
+    priceUsdt: 0.50,
+    change24h: 6.12,
+    high24h: 9200,
+    low24h: 8100,
+    volume24hIdr: '16,2B',
+    volume24hUsdt: '921K',
+    sparkline: [0.45, 0.48, 0.50],
+  },
+  {
+    id: 'aave',
+    symbol: 'AAVE',
+    name: 'Aave',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/12645/small/AAVE.png',
+    color: '#B6509E',
+    priceIdr: 2539000,
+    priceUsdt: 144.4,
+    change24h: 2.85,
+    high24h: 2620000,
+    low24h: 2480000,
+    volume24hIdr: '11,4B',
+    volume24hUsdt: '648K',
+    sparkline: [138, 141, 144.4],
+  },
+  {
+    id: 'ldo',
+    symbol: 'LDO',
+    name: 'Lido DAO',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/13573/small/Lido_DAO.png',
+    color: '#00A3FF',
+    priceIdr: 21980,
+    priceUsdt: 1.25,
+    change24h: -1.45,
+    high24h: 23100,
+    low24h: 21200,
+    volume24hIdr: '9,5B',
+    volume24hUsdt: '540K',
+    sparkline: [1.32, 1.29, 1.25],
+  },
+  {
+    id: 'floki',
+    symbol: 'FLOKI',
+    name: 'Floki',
+    category: 'crypto',
+    icon: 'https://assets.coingecko.com/coins/images/18399/small/floki.png',
+    color: '#FFB800',
+    priceIdr: 2.25,
+    priceUsdt: 0.000128,
+    change24h: 8.12,
+    high24h: 2.45,
+    low24h: 2.05,
+    volume24hIdr: '25,4B',
+    volume24hUsdt: '1,45M',
+    sparkline: [0.000115, 0.000121, 0.000128],
+    isHot: true,
+  },
 ];
 
 let futuresPositions: any[] = [];
@@ -1001,7 +1164,39 @@ function applyDatabaseState(data: any) {
     users = data.users.map(sanitizeUser);
   }
   if (data.currentUserId) currentUserId = data.currentUserId;
-  if (Array.isArray(data.markets) && data.markets.length > 0) markets = data.markets;
+  if (Array.isArray(data.markets) && data.markets.length > 0) {
+    const hardcodedMarkets = [...markets];
+    const loadedMarkets = data.markets;
+    const loadedMap = new Map<string, any>(loadedMarkets.map((m: any) => [m.id, m]));
+    
+    // For each hardcoded market, if it exists in loaded, keep loaded price and stats
+    markets = hardcodedMarkets.map((hm) => {
+      const lm = loadedMap.get(hm.id);
+      if (lm) {
+        return {
+          ...hm,
+          priceIdr: lm.priceIdr ?? hm.priceIdr,
+          priceUsdt: lm.priceUsdt ?? hm.priceUsdt,
+          change24h: lm.change24h ?? hm.change24h,
+          high24h: lm.high24h ?? hm.high24h,
+          low24h: lm.low24h ?? hm.low24h,
+          volume24hIdr: lm.volume24hIdr ?? hm.volume24hIdr,
+          volume24hUsdt: lm.volume24hUsdt ?? hm.volume24hUsdt,
+          sparkline: lm.sparkline ?? hm.sparkline,
+          isFavorite: lm.isFavorite ?? hm.isFavorite,
+        };
+      }
+      return hm;
+    });
+
+    // Append any loaded markets that are not in the hardcoded list
+    const hardcodedIds = new Set(hardcodedMarkets.map((hm) => hm.id));
+    loadedMarkets.forEach((lm: any) => {
+      if (!hardcodedIds.has(lm.id)) {
+        markets.push(lm);
+      }
+    });
+  }
   if (Array.isArray(data.bankAccounts) && data.bankAccounts.length > 0) bankAccounts = data.bankAccounts;
   if (Array.isArray(data.spotOrders)) spotOrders = data.spotOrders;
   if (Array.isArray(data.transactions)) transactions = data.transactions;
