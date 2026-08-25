@@ -965,8 +965,41 @@ function initPgPool(): Pool | null {
   }
 }
 
+function sanitizeUser(user: any) {
+  if (!user) return user;
+  if (!user.balances) {
+    user.balances = { idr: 0, usdt: 0, btc: 0, eth: 0, sol: 0, ptu: 0, tokens: {} };
+  } else {
+    if (typeof user.balances.idr !== 'number') user.balances.idr = 0;
+    if (typeof user.balances.usdt !== 'number') user.balances.usdt = 0;
+    if (!user.balances.tokens) user.balances.tokens = {};
+  }
+  if (!user.compoundingBalances) {
+    user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+  } else {
+    if (typeof user.compoundingBalances.idr !== 'number') user.compoundingBalances.idr = 0;
+    if (typeof user.compoundingBalances.usdt !== 'number') user.compoundingBalances.usdt = 0;
+    if (!user.compoundingBalances.tokens) user.compoundingBalances.tokens = {};
+  }
+  if (typeof user.compoundingProfitIdr !== 'number') {
+    user.compoundingProfitIdr = 0;
+  }
+  if (!Array.isArray(user.capitalBatches)) {
+    user.capitalBatches = [];
+  }
+  if (!user.proBalances) {
+    user.proBalances = { idr: 0, usdt: 0, tokens: {} };
+  }
+  if (!user.futuresBalances) {
+    user.futuresBalances = { usdt: 0 };
+  }
+  return user;
+}
+
 function applyDatabaseState(data: any) {
-  if (Array.isArray(data.users) && data.users.length > 0) users = data.users;
+  if (Array.isArray(data.users) && data.users.length > 0) {
+    users = data.users.map(sanitizeUser);
+  }
   if (data.currentUserId) currentUserId = data.currentUserId;
   if (Array.isArray(data.markets) && data.markets.length > 0) markets = data.markets;
   if (Array.isArray(data.bankAccounts) && data.bankAccounts.length > 0) bankAccounts = data.bankAccounts;
@@ -1260,7 +1293,8 @@ function resolveUser(req: express.Request) {
   const bodyUserId = (req.body && req.body.currentUserId) || '';
   const targetId = headerUserId || queryUserId || bodyUserId || currentUserId;
   const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
-  return found || users.find((u) => u.id === currentUserId) || users[0];
+  const user = found || users.find((u) => u.id === currentUserId) || users[0];
+  return sanitizeUser(user);
 }
 
 // User & Account Management
