@@ -1353,6 +1353,54 @@ async function initDatabase() {
     }
   }
 
+  // 2.5. Ensure admin user from environment variables is in sync with the database
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@xmoney.com').trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD || 'password123';
+
+  // Find if there is an admin user (by role 'admin' or ID 'user_admin' or email match)
+  let adminUser = users.find(u => u.role === 'admin' || u.id === 'user_admin' || u.email?.toLowerCase() === adminEmail);
+
+  if (adminUser) {
+    adminUser.email = adminEmail;
+    adminUser.password = adminPassword;
+    adminUser.role = 'admin';
+    if (!adminUser.name) adminUser.name = 'Administrator';
+  } else {
+    const newAdmin = {
+      id: 'user_admin',
+      name: 'Administrator',
+      nik: '3171099999990000',
+      email: adminEmail,
+      password: adminPassword,
+      role: 'admin',
+      isDummy: false,
+      isVerified: true,
+      balances: {
+        idr: 1000000000,
+        usdt: 100000,
+        tokens: {
+          BTC: 5.0,
+          ETH: 50.0,
+          SOL: 500.0,
+        },
+      },
+      compoundingBalances: {
+        idr: 500000000,
+        usdt: 50000,
+        tokens: {},
+      },
+      proBalances: {
+        idr: 500000000,
+        usdt: 50000,
+        tokens: {},
+      },
+      futuresBalances: {
+        usdt: 50000,
+      },
+    };
+    users.push(newAdmin);
+  }
+
   // 3. Save database state (this ensures any sanitized or initialized data is stored back)
   saveDatabase();
 }
