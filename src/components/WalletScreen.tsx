@@ -125,7 +125,7 @@ export const WalletScreen: React.FC = () => {
       {/* 2. Wallet Balance Overview */}
       <div className="p-4 sm:p-5 space-y-1">
         <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
-          <span>Saldo dan Aset</span>
+          <span>Saldo Aset (Modal Compounding Aktif)</span>
           <button
             onClick={() => setShowBalance(!showBalance)}
             className="hover:text-white transition-colors p-1"
@@ -136,11 +136,11 @@ export const WalletScreen: React.FC = () => {
 
         <div className="flex items-baseline gap-2">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-            {showBalance ? formatIdr(currentDisplayTotal) : '••••••••'}
+            {showBalance ? formatIdr(compoundingCapital) : '••••••••'}
           </h1>
         </div>
         <p className="text-xs sm:text-sm text-gray-500">
-          {showBalance ? formatIdr(currentDisplayTotal) : '••••••'}
+          {showBalance ? `Profit Terkumpul: ${formatIdr(profitAmount)}` : '••••••'}
         </p>
 
         {/* 3. Green Balance Trend SVG Graphic */}
@@ -191,33 +191,27 @@ export const WalletScreen: React.FC = () => {
           </div>
         )}
 
-        {/* 3 Breakdown Cards: SALDO, ASET (Modal Pokok), PROFIT COMPOUNDING */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
-          {/* 1. SALDO KAS */}
-          <div className="bg-violet-50/90 border border-violet-200/90 rounded-2xl p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-violet-950">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-violet-900">💳 SALDO</span>
-              <span className="text-[10px] font-extrabold text-violet-950 bg-violet-200 px-2 py-0.5 rounded-full">Kas</span>
-            </div>
-            <p className="text-lg font-extrabold text-gray-900">
-              {showBalance ? formatIdr(currentUser?.balances?.idr || 0) : '••••••••'}
-            </p>
-            <p className="text-[10px] text-gray-600">Saldo tunai bebas transaksi</p>
+        {/* SALDO ASET (MODAL COMPOUNDING AKTIF) CARD */}
+        <div className="bg-gradient-to-br from-violet-50 via-white to-purple-50 border border-violet-200/90 rounded-2xl p-4 my-3 shadow-xs space-y-2 relative overflow-hidden">
+          <div className="flex items-center justify-between text-violet-950 flex-wrap gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-950 flex items-center gap-1.5">
+              <TrendingUp className="w-4 h-4 text-violet-700" />
+              SALDO ASET (MODAL COMPOUNDING AKTIF)
+            </span>
+            <span className="text-[10px] font-bold text-violet-900 bg-violet-200/80 border border-violet-300/60 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <Lock className="w-2.5 h-2.5" /> Terkunci 3 Bulan • 1.0%/hari
+            </span>
           </div>
 
-          {/* 2. ASET (Modal Pokok) */}
-          <div className="bg-violet-50/90 border border-violet-200/90 rounded-2xl p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-violet-950">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-violet-900">📈 ASET</span>
-              <span className="text-[10px] font-bold text-violet-900 bg-violet-200 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <Lock className="w-2.5 h-2.5" /> 3 Bulan
-              </span>
-            </div>
-            <p className="text-lg font-extrabold text-violet-950">
+          <div className="pt-1">
+            <p className="text-2xl font-black text-violet-950">
               {showBalance ? formatIdr(compoundingCapital) : '••••••••'}
             </p>
-            <p className="text-[10px] text-violet-800">Modal utama compounding</p>
           </div>
+
+          <p className="text-[11px] text-violet-800 leading-relaxed font-medium">
+            Modal investasi aktif yang menghasilkan bunga imbal hasil harian <b>1.0%</b> secara otomatis. Setoran top up baru yang disetujui Admin langsung masuk ke saldo aset ini.
+          </p>
         </div>
 
         {/* PROFIT COMPOUNDING CARD */}

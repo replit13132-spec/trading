@@ -255,9 +255,9 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ onRefresh }) => {
                 <th className="px-4 py-3">Nama & Identitas</th>
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3 text-center">Status KYC</th>
-                <th className="px-4 py-3 text-right">Saldo Rupiah</th>
-                <th className="px-4 py-3 text-right text-emerald-600">Saldo Aset</th>
-                <th className="px-4 py-3 text-right text-amber-600">Saldo Compounding</th>
+                <th className="px-4 py-3 text-right">Saldo Kas</th>
+                <th className="px-4 py-3 text-right text-emerald-600">Saldo Aset (Modal)</th>
+                <th className="px-4 py-3 text-right text-amber-600">Profit Compounding</th>
                 <th className="px-4 py-3 text-center">Aksi CRUD</th>
               </tr>
             </thead>

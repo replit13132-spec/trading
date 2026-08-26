@@ -20,7 +20,7 @@ interface AdminCompoundingProps {
 }
 
 export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh }) => {
-  const { allUsers, formatIdr, formatUsdt } = useApp();
+  const { allUsers, formatIdr, formatUsdt, refreshData } = useApp();
 
   const [, setLoading] = useState(false);
   const [triggering, setTriggering] = useState(false);
@@ -84,6 +84,7 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
           text: data.message || `Compounding ${dailyRate}%/hari berhasil dibagikan!`,
         });
         fetchCompoundingData();
+        refreshData();
         if (onRefresh) onRefresh();
         setTimeout(() => setStatusMsg(null), 5000);
       } else {
@@ -161,6 +162,19 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
               Sistem memberikan imbal hasil compounding harian sebesar 1.0% secara otomatis pada saldo hasil pembelian pengguna.
             </p>
           </div>
+
+          <button
+            onClick={handleTriggerPayout}
+            disabled={triggering}
+            className="px-5 py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-extrabold rounded-2xl text-xs flex items-center gap-2 transition-all active:scale-95 shadow-lg disabled:opacity-50 shrink-0 self-start md:self-auto"
+          >
+            {triggering ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Play className="w-4 h-4 fill-current text-white" />
+            )}
+            <span>Bagi Compounding Sekarang</span>
+          </button>
         </div>
       </div>
 
@@ -181,10 +195,10 @@ export const AdminCompounding: React.FC<AdminCompoundingProps> = ({ onRefresh })
             <Zap className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status Otomatis</p>
-            <p className="text-sm font-extrabold text-emerald-600 flex items-center gap-1 mt-0.5">
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Jadwal Otomatis</p>
+            <p className="text-xs font-extrabold text-emerald-600 flex items-center gap-1 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              {enabled ? 'Aktif (Berjalan)' : 'Nonaktif'}
+              {enabled ? 'Setiap Hari 00:00 WIB' : 'Nonaktif'}
             </p>
           </div>
         </div>

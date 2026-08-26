@@ -181,18 +181,18 @@ export const Navbar: React.FC = () => {
                 {currentUser && (
                   <div className="my-2.5 p-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs space-y-1.5">
                     <div className="flex justify-between items-center pb-1.5 border-b border-gray-200/60">
-                      <span className="text-[11px] text-gray-500 font-medium">💳 Saldo:</span>
-                      <span className="font-extrabold text-violet-700 text-xs">
-                        {formatIdr(currentUser.balances?.idr || 0)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-violet-900 text-[11px] pt-0.5">
-                      <span className="font-medium">📈 Aset:</span>
-                      <span className="font-extrabold text-violet-700">
+                      <span className="text-[11px] text-gray-600 font-bold">📈 Saldo Aset:</span>
+                      <span className="font-extrabold text-violet-950 text-xs">
                         {formatIdr(
                           (currentUser.compoundingBalances?.idr || 0) +
                             (currentUser.compoundingBalances?.usdt || 0) * 17584
                         )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-emerald-800 text-[11px] pt-0.5 font-bold">
+                      <span>⚡ Profit:</span>
+                      <span className="font-extrabold text-emerald-600">
+                        {formatIdr(currentUser.compoundingProfitIdr || 0)}
                       </span>
                     </div>
                   </div>

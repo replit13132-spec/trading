@@ -994,15 +994,17 @@ let announcements = [
 // Compounding / Yield Configuration State
 let compoundingSettings = {
   enabled: true,
-  dailyRate: 1.0, // Default 1.0% per day
-  payoutFrequency: 'DAILY', // 'DAILY', 'HOURLY', 'WEEKLY'
+  dailyRate: 1.0, // Fixed 1.0% per hari
+  payoutFrequency: 'DAILY', // Setiap hari pukul 00:00 WIB
   targetBalanceType: 'ALL', // 'ALL', 'IDR', 'USDT'
   minBalanceRequirement: 100000, // Minimal Rp 100.000 untuk dapat compounding
   applyToRole: 'ALL_USERS', // 'ALL_USERS', 'USER_ONLY'
   autoDistributionCron: true,
+  lastDistributedDate: '',
   lastDistributedAt: new Date(Date.now() - 24 * 3600 * 1000).toLocaleString('id-ID'),
   totalProfitDistributedIdr: 12500000,
   totalProfitDistributedUsdt: 850,
+  scheduleTime: '00:00 WIB',
 };
 
 let compoundingLogs: any[] = [
@@ -1014,8 +1016,8 @@ let compoundingLogs: any[] = [
     totalIdrDistributed: 500000,
     totalUsdtDistributed: 25,
     status: 'SUCCESS',
-    triggeredBy: 'SYSTEM_CRON',
-    note: 'Pembagian compounding otomatis 1.0% harian ke seluruh akun pengguna',
+    triggeredBy: 'SYSTEM_CRON_00_00_WIB',
+    note: 'Pembagian compounding otomatis 1.0% harian (Pukul 00:00 WIB) ke seluruh akun pengguna',
   },
 ];
 
@@ -1424,6 +1426,179 @@ app.use((req, res, next) => {
 setInterval(() => {
   saveDatabase();
 }, 30000);
+
+// Centralized Compounding Distribution Engine (1.0% / Hari)
+function distributeCompoundingYield(triggeredBy: string = 'SYSTEM_CRON_00_00_WIB') {
+  if (!compoundingSettings.enabled) {
+    return { success: false, message: 'Fitur compounding sedang dinonaktifkan', recipientsCount: 0 };
+  }
+
+  const rate = compoundingSettings.dailyRate || 1.0;
+  let totalIdrDistributed = 0;
+  let totalUsdtDistributed = 0;
+  let recipientsCount = 0;
+
+  const now = new Date();
+  const timestampStr = now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+
+  users.forEach((user) => {
+    // Check role filter
+    if (compoundingSettings.applyToRole === 'USER_ONLY' && user.role === 'admin') {
+      return;
+    }
+
+    if (!user.compoundingBalances) {
+      user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
+    }
+
+    let idrYield = 0;
+    let usdtYield = 0;
+
+    const cmpIdr = user.compoundingBalances.idr || 0;
+    const cmpUsdt = user.compoundingBalances.usdt || 0;
+
+    // Check IDR Compounding Balance (Saldo Aset Modal Aktif)
+    if (
+      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'IDR') &&
+      cmpIdr >= compoundingSettings.minBalanceRequirement
+    ) {
+      idrYield = Math.round(cmpIdr * (rate / 100));
+      user.compoundingProfitIdr = (user.compoundingProfitIdr || 0) + idrYield;
+      totalIdrDistributed += idrYield;
+    }
+
+    // Check USDT Compounding Balance
+    const minUsdt = compoundingSettings.minBalanceRequirement > 0 ? compoundingSettings.minBalanceRequirement / 15000 : 1;
+    if (
+      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'USDT') &&
+      cmpUsdt >= minUsdt
+    ) {
+      usdtYield = Number((cmpUsdt * (rate / 100)).toFixed(2));
+      user.compoundingBalances.usdt += usdtYield;
+      totalUsdtDistributed += usdtYield;
+    }
+
+    if (idrYield > 0 || usdtYield > 0) {
+      recipientsCount++;
+
+      // Create transaction record for user audit log
+      if (idrYield > 0) {
+        transactions.unshift({
+          id: 'tx_cmp_idr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          type: 'REWARD',
+          amount: idrYield,
+          currency: 'IDR',
+          status: 'COMPLETED',
+          timestamp: timestampStr,
+          method: 'Compounding 1.0%/hari (00:00 WIB)',
+          description: `Bunga Compounding Harian ${rate}% (+Rp ${idrYield.toLocaleString('id-ID')}) [Otomatis 00:00 WIB]`,
+        });
+
+        // Send direct notification to user
+        notifications.unshift({
+          id: 'notif_cmp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+          title: '⚡ Profit Compounding 1.0% Masuk!',
+          message: `Bunga compounding harian 1.0% sebesar Rp ${idrYield.toLocaleString('id-ID')} telah berhasil dikreditkan ke Saldo Profit Anda (Jadwal 00:00 WIB).`,
+          type: 'success',
+          createdAt: timestampStr,
+          target: user.id,
+        });
+      }
+
+      if (usdtYield > 0) {
+        transactions.unshift({
+          id: 'tx_cmp_usdt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          type: 'REWARD',
+          amount: usdtYield,
+          currency: 'USDT',
+          status: 'COMPLETED',
+          timestamp: timestampStr,
+          method: 'Compounding 1.0%/hari (00:00 WIB)',
+          description: `Bunga Compounding Harian ${rate}% (+${usdtYield} USDT) [Otomatis 00:00 WIB]`,
+        });
+      }
+    }
+  });
+
+  if (recipientsCount > 0 || triggeredBy === 'ADMIN_MANUAL') {
+    compoundingSettings.lastDistributedAt = timestampStr;
+    compoundingSettings.totalProfitDistributedIdr += totalIdrDistributed;
+    compoundingSettings.totalProfitDistributedUsdt += totalUsdtDistributed;
+
+    const logEntry = {
+      id: 'cmp_log_' + Date.now(),
+      timestamp: timestampStr,
+      rateApplied: rate,
+      recipientsCount,
+      totalIdrDistributed,
+      totalUsdtDistributed,
+      status: 'SUCCESS',
+      triggeredBy,
+      note: `Pembagian compounding harian 1.0% (Jadwal 00:00 WIB) berhasil dikreditkan ke ${recipientsCount} akun pengguna.`,
+    };
+
+    compoundingLogs.unshift(logEntry);
+
+    // Keep arrays bounded for memory & performance
+    if (compoundingLogs.length > 100) compoundingLogs.splice(100);
+    if (transactions.length > 500) transactions.splice(500);
+    if (notifications.length > 200) notifications.splice(200);
+
+    saveDatabase();
+    console.log(`[AutoCompounding 00:00 WIB] ${triggeredBy}: Successfully distributed 1.0% to ${recipientsCount} users.`);
+  }
+
+  return {
+    success: true,
+    recipientsCount,
+    totalIdrDistributed,
+    totalUsdtDistributed,
+    rateApplied: rate,
+    message: `Compounding 1.0%/hari berhasil dibagikan ke ${recipientsCount} akun pengguna (Total: Rp ${totalIdrDistributed.toLocaleString('id-ID')})`,
+  };
+}
+
+// Automatic Daily Compounding Cron (Runs every day at 00:00 WIB / Asia/Jakarta Time)
+setInterval(() => {
+  if (!compoundingSettings.enabled || !compoundingSettings.autoDistributionCron) {
+    return;
+  }
+
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const y = parts.find((p) => p.type === 'year')?.value;
+    const m = parts.find((p) => p.type === 'month')?.value;
+    const d = parts.find((p) => p.type === 'day')?.value;
+    const hour = parts.find((p) => p.type === 'hour')?.value;
+
+    const todayDateKey = `${y}-${m}-${d}`;
+
+    // Trigger when clock hits 00:00 WIB and hasn't run yet for todayDateKey
+    if (hour === '00' && compoundingSettings.lastDistributedDate !== todayDateKey) {
+      compoundingSettings.lastDistributedDate = todayDateKey;
+      console.log(`[AutoCompounding Cron] Triggering 00:00 WIB distribution for ${todayDateKey}...`);
+      distributeCompoundingYield('SYSTEM_CRON_00_00_WIB');
+    }
+  } catch (e) {
+    console.error('[AutoCompounding Cron Error]:', e);
+  }
+}, 15000); // Check every 15 seconds for clock boundary accuracy
 
 // Helper: generate realistic candles
 function generateCandles(basePrice: number, count: number = 40, timeframe: string = '15m') {
@@ -2819,19 +2994,19 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
         });
 
         const dateStr = unlockDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        tx.description = `Deposit Rp ${txAmount.toLocaleString('id-ID')} diverifikasi & disetujui Admin. Saldo langsung aktif (Aset Compounding 1%/hari, terkunci s/d ${dateStr})`;
+        tx.description = `Deposit Rp ${txAmount.toLocaleString('id-ID')} diverifikasi & disetujui Admin. Dana langsung masuk ke Saldo Aset (Modal Compounding Aktif 1%/hari, terkunci s/d ${dateStr})`;
       } else if (tx.currency === 'USDT') {
         user.balances.usdt = (user.balances.usdt || 0) + txAmount;
         user.walletUsdt = (user.walletUsdt || 0) + txAmount;
         user.compoundingBalances.usdt = (user.compoundingBalances.usdt || 0) + txAmount;
-        tx.description = `Deposit ${txAmount} USDT diverifikasi & disetujui Admin pada ${new Date().toLocaleTimeString('id-ID')}`;
+        tx.description = `Deposit ${txAmount} USDT diverifikasi & disetujui Admin. Dana langsung masuk ke Saldo Aset (Modal Compounding Aktif)`;
       }
 
       // Kirim Notifikasi ke User
       notifications.unshift({
         id: 'notif_' + Date.now(),
         title: '✅ Deposit Disetujui (ACC)',
-        message: `Setoran dana sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} telah diverifikasi oleh tim Admin dan berhasil ditambahkan ke saldo akun Anda!`,
+        message: `Setoran dana sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} telah diverifikasi Admin dan langsung aktif di Saldo Aset (Modal Compounding)!`,
         type: 'success',
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
         target: user.id,
@@ -3243,111 +3418,13 @@ app.put('/api/admin/compounding/settings', (req, res) => {
 });
 
 app.post('/api/admin/compounding/trigger', (req, res) => {
-  const rate = 1.0; // System Fixed 1.0% per hari
-  compoundingSettings.dailyRate = 1.0;
-  let totalIdrDistributed = 0;
-  let totalUsdtDistributed = 0;
-  let recipientsCount = 0;
-
-  users.forEach((user) => {
-    // Check role filter
-    if (compoundingSettings.applyToRole === 'USER_ONLY' && user.role === 'admin') {
-      return;
-    }
-
-    if (!user.compoundingBalances) {
-      user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
-    }
-
-    let idrYield = 0;
-    let usdtYield = 0;
-
-    const cmpIdr = user.compoundingBalances.idr || 0;
-    const cmpUsdt = user.compoundingBalances.usdt || 0;
-
-    // Check IDR Compounding Balance (Saldo Dibelikan)
-    if (
-      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'IDR') &&
-      cmpIdr >= compoundingSettings.minBalanceRequirement
-    ) {
-      idrYield = Math.round(cmpIdr * (rate / 100));
-      user.compoundingProfitIdr = (user.compoundingProfitIdr || 0) + idrYield;
-      totalIdrDistributed += idrYield;
-    }
-
-    // Check USDT Compounding Balance
-    const minUsdt = compoundingSettings.minBalanceRequirement > 0 ? compoundingSettings.minBalanceRequirement / 15000 : 1;
-    if (
-      (compoundingSettings.targetBalanceType === 'ALL' || compoundingSettings.targetBalanceType === 'USDT') &&
-      cmpUsdt >= minUsdt
-    ) {
-      usdtYield = Number((cmpUsdt * (rate / 100)).toFixed(2));
-      user.compoundingBalances.usdt += usdtYield;
-      totalUsdtDistributed += usdtYield;
-    }
-
-    if (idrYield > 0 || usdtYield > 0) {
-      recipientsCount++;
-
-      // Create transaction record for audit log
-      if (idrYield > 0) {
-        transactions.unshift({
-          id: 'tx_cmp_idr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
-          userId: user.id,
-          userName: user.name,
-          userEmail: user.email,
-          type: 'REWARD',
-          amount: idrYield,
-          currency: 'IDR',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleString('id-ID'),
-          method: 'Compounding Yield Auto',
-          description: `Bunga Compounding Harian ${rate}% (+Rp ${idrYield.toLocaleString('id-ID')})`,
-        });
-      }
-
-      if (usdtYield > 0) {
-        transactions.unshift({
-          id: 'tx_cmp_usdt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
-          userId: user.id,
-          userName: user.name,
-          userEmail: user.email,
-          type: 'REWARD',
-          amount: usdtYield,
-          currency: 'USDT',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleString('id-ID'),
-          method: 'Compounding Yield Auto',
-          description: `Bunga Compounding Harian ${rate}% (+${usdtYield} USDT)`,
-        });
-      }
-    }
-  });
-
-  const nowStr = new Date().toLocaleString('id-ID');
-  compoundingSettings.lastDistributedAt = nowStr;
-  compoundingSettings.totalProfitDistributedIdr += totalIdrDistributed;
-  compoundingSettings.totalProfitDistributedUsdt += totalUsdtDistributed;
-
-  const logEntry = {
-    id: 'cmp_log_' + Date.now(),
-    timestamp: nowStr,
-    rateApplied: rate,
-    recipientsCount,
-    totalIdrDistributed,
-    totalUsdtDistributed,
-    status: 'SUCCESS',
-    triggeredBy: req.body?.triggeredBy || 'ADMIN_MANUAL',
-    note: `Pembagian compounding ${rate}%/hari berhasil dikreditkan ke ${recipientsCount} akun pengguna.`,
-  };
-
-  compoundingLogs.unshift(logEntry);
-
+  const triggeredBy = req.body?.triggeredBy || 'ADMIN_MANUAL';
+  const result = distributeCompoundingYield(triggeredBy);
   res.json({
-    success: true,
-    data: logEntry,
+    success: result.success,
+    data: compoundingLogs[0] || null,
     settings: compoundingSettings,
-    message: `Eksekusi compounding ${rate}%/hari berhasil! Saldo telah dikreditkan ke ${recipientsCount} akun pengguna.`,
+    message: result.message,
   });
 });
 

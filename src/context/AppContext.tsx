@@ -197,7 +197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getAuthHeaders = (): Record<string, string> => {
     try {
       const storedId = localStorage.getItem('app_user_id') || currentUser?.id;
-      if (storedId) {
+      if (storedId && storedId !== 'null' && storedId !== 'undefined') {
         return { 'x-user-id': storedId };
       }
     } catch {}
@@ -243,12 +243,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       }
       if (userJson.success) {
-        setCurrentUser(userJson.currentUser);
-        setAllUsers(userJson.allUsers);
-        try {
-          localStorage.setItem('app_current_user', JSON.stringify(userJson.currentUser));
-          localStorage.setItem('app_user_id', userJson.currentUser.id);
-        } catch {}
+        if (userJson.currentUser) {
+          setCurrentUser(userJson.currentUser);
+          setAllUsers(userJson.allUsers || []);
+          try {
+            localStorage.setItem('app_current_user', JSON.stringify(userJson.currentUser));
+            localStorage.setItem('app_user_id', userJson.currentUser.id);
+          } catch {}
+        } else {
+          setCurrentUser(null);
+          setAllUsers([]);
+          try {
+            localStorage.removeItem('app_current_user');
+            localStorage.removeItem('app_user_id');
+          } catch {}
+        }
       }
       if (walletJson.success) {
         setWalletData(walletJson.data);
