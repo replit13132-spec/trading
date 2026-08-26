@@ -394,6 +394,25 @@ export const Modals: React.FC = () => {
                       💡 {activeSelectedAccount.notes}
                     </p>
                   )}
+                  {activeSelectedAccount?.imageUrl && (
+                    <div className="mt-3 border border-violet-100 bg-white rounded-xl p-3 flex flex-col items-center justify-center space-y-2">
+                      <p className="text-[10px] font-bold text-violet-900 uppercase tracking-wider flex items-center gap-1">
+                        <QrCode className="w-3.5 h-3.5" />
+                        <span>Pindai Kode QR / Lampiran Rekening</span>
+                      </p>
+                      <div className="w-48 h-48 border border-gray-100 rounded-xl overflow-hidden bg-slate-50 flex items-center justify-center p-1.5 shadow-inner">
+                        <img
+                          src={activeSelectedAccount.imageUrl}
+                          alt="QR Code Rekening"
+                          className="h-full w-full object-contain rounded-lg"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <p className="text-[9px] text-gray-400 text-center">
+                        Silakan simpan atau scan gambar di atas untuk mempermudah transfer.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Upload Bukti Transfer Section */}

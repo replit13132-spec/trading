@@ -18,6 +18,9 @@ import {
   AlertCircle,
   ToggleLeft,
   ToggleRight,
+  Upload,
+  Image as ImageIcon,
+  X,
 } from 'lucide-react';
 
 interface BankAccount {
@@ -30,6 +33,7 @@ interface BankAccount {
   isActive: boolean;
   notes: string;
   createdAt: string;
+  imageUrl?: string;
 }
 
 interface AdminAccountsProps {
@@ -120,6 +124,7 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
     category: 'Virtual Account',
     isActive: true,
     notes: '',
+    imageUrl: '',
   });
 
   const fetchAccounts = async () => {
@@ -158,6 +163,7 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
       category: 'Virtual Account',
       isActive: true,
       notes: '',
+      imageUrl: '',
     });
     setShowModal(true);
   };
@@ -173,8 +179,22 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
       category: acc.category,
       isActive: acc.isActive,
       notes: acc.notes,
+      imageUrl: acc.imageUrl || '',
     });
     setShowModal(true);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormData((prev) => ({ ...prev, imageUrl: event.target?.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -487,6 +507,13 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
               </p>
             )}
 
+            {/* Lampiran Gambar / Rekening */}
+            {acc.imageUrl && (
+              <div className="mb-3 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 h-28 flex items-center justify-center p-1.5">
+                <img src={acc.imageUrl} alt="Lampiran Rekening" className="h-full max-w-full object-contain rounded-lg" referrerPolicy="no-referrer" />
+              </div>
+            )}
+
             {/* Actions Bottom Bar */}
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
               <span className="text-[10px] text-slate-400 font-medium">
@@ -613,6 +640,52 @@ export const AdminAccounts: React.FC<AdminAccountsProps> = ({ onRefresh }) => {
                   rows={2}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-violet-500 outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <Upload className="w-3.5 h-3.5 text-violet-600" />
+                  <span>Gambar QR / File Rekening (Opsional)</span>
+                </label>
+                
+                {formData.imageUrl ? (
+                  <div className="relative border border-emerald-200 bg-emerald-50/30 rounded-xl p-2.5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-12 h-12 rounded-lg border border-emerald-200 bg-white overflow-hidden flex items-center justify-center p-0.5">
+                        <img src={formData.imageUrl} alt="QR Rekening" className="h-full w-full object-contain" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-emerald-800 text-[10px]">File gambar berhasil dipilih</p>
+                        <p className="text-[9px] text-emerald-600">Akan tampil di perangkat user saat deposit</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, imageUrl: '' })}
+                      className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors"
+                      title="Hapus gambar"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <input
+                      type="file"
+                      id="account-image-file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="account-image-file"
+                      className="flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-violet-500 hover:bg-violet-50/50 rounded-xl p-3 cursor-pointer transition-all text-slate-600 hover:text-violet-700 font-semibold"
+                    >
+                      <ImageIcon className="w-4 h-4 text-slate-400" />
+                      <span>Pilih file / upload gambar QR</span>
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-2 pt-1">

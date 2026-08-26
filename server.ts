@@ -2364,7 +2364,7 @@ app.get('/api/admin/bank-accounts', (req, res) => {
 });
 
 app.post('/api/admin/bank-accounts/create', (req, res) => {
-  const { bankName, bankCode, accountNumber, accountHolder, category, isActive, notes } = req.body;
+  const { bankName, bankCode, accountNumber, accountHolder, category, isActive, notes, imageUrl } = req.body;
   if (!bankName || !accountNumber || !accountHolder) {
     return res.status(400).json({ success: false, message: 'Nama bank, nomor rekening, dan nama pemilik wajib diisi' });
   }
@@ -2378,6 +2378,7 @@ app.post('/api/admin/bank-accounts/create', (req, res) => {
     category: category || 'Transfer Bank',
     isActive: isActive !== undefined ? Boolean(isActive) : true,
     notes: notes || '',
+    imageUrl: imageUrl || '',
     createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
   };
 
