@@ -65,16 +65,21 @@ export const Modals: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/bank-accounts')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          setBankAccountsList(data.data);
-          setDepositMethod(data.data[0].bankName);
-        }
-      })
-      .catch((e) => console.error('Failed to load bank accounts for deposit:', e));
-  }, []);
+    if (isDepositModalOpen) {
+      fetch('/api/bank-accounts')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+            setBankAccountsList(data.data);
+            // set default deposit method if not already valid
+            if (!data.data.some((b: any) => b.bankName === depositMethod)) {
+              setDepositMethod(data.data[0].bankName);
+            }
+          }
+        })
+        .catch((e) => console.error('Failed to load bank accounts for deposit:', e));
+    }
+  }, [isDepositModalOpen]);
 
   const activeSelectedAccount = bankAccountsList.find(
     (b) => b.bankName === depositMethod || b.bankCode === depositMethod
@@ -263,38 +268,6 @@ export const Modals: React.FC = () => {
                   <p className="text-xs text-gray-500 mt-0.5">Transfer dana lalu sertakan tangkapan layar / foto resi</p>
                 </div>
 
-                {/* Currency Switcher */}
-                <div className="flex bg-gray-100 p-1 rounded-xl text-xs font-bold">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDepositCurrency('IDR');
-                      setDepositAmount('500000');
-                    }}
-                    className={`flex-1 py-1.5 rounded-lg transition-all ${
-                      depositCurrency === 'IDR'
-                        ? 'bg-violet-500 text-slate-950 font-extrabold shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Rupiah (IDR)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDepositCurrency('USDT');
-                      setDepositAmount('100');
-                    }}
-                    className={`flex-1 py-1.5 rounded-lg transition-all ${
-                      depositCurrency === 'USDT'
-                        ? 'bg-violet-500 text-slate-950 font-extrabold shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Tether (USDT)
-                  </button>
-                </div>
-
                 {/* Info Card Rule Top Up */}
                 <div className="bg-violet-50 border border-violet-200/80 rounded-2xl p-3 text-[11px] text-violet-900 space-y-1">
                   <div className="font-extrabold flex items-center gap-1.5 text-violet-950">
@@ -318,25 +291,20 @@ export const Modals: React.FC = () => {
                     onChange={(e) => setDepositAmount(e.target.value)}
                     className="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-violet-500 focus:bg-white transition-all"
                     placeholder="Masukkan nominal deposit (min Rp 500.000)..."
-                    min={depositCurrency === 'IDR' ? 500000 : 10}
+                    min={500000}
                     required
                   />
                   <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1">
-                    {(depositCurrency === 'IDR'
-                      ? [500000, 1000000, 2000000, 5000000, 10000000]
-                      : [50, 100, 500, 1000, 5000]
-                    ).map((preset) => (
+                    {[500000, 1000000, 2000000, 5000000, 10000000].map((preset) => (
                       <button
                         key={preset}
                         type="button"
                         onClick={() => setDepositAmount(preset.toString())}
                         className="flex-1 min-w-[65px] bg-gray-50 border border-gray-200 hover:bg-violet-50 hover:border-violet-300 text-[10px] font-bold py-1.5 rounded-lg text-gray-700 transition-all text-center"
                       >
-                        {depositCurrency === 'IDR' 
-                          ? preset >= 1000000 
-                            ? `Rp ${(preset / 1000000).toFixed(0)}Jt` 
-                            : `Rp ${(preset / 1000).toFixed(0)}Rb`
-                          : `$${preset}`}
+                        {preset >= 1000000 
+                          ? `Rp ${(preset / 1000000).toFixed(0)}Jt` 
+                          : `Rp ${(preset / 1000).toFixed(0)}Rb`}
                       </button>
                     ))}
                   </div>
