@@ -1553,10 +1553,14 @@ function resolveUser(req: express.Request) {
   const headerUserId = (req.headers['x-user-id'] as string) || '';
   const queryUserId = (req.query.userId as string) || '';
   const bodyUserId = (req.body && req.body.currentUserId) || '';
-  const targetId = headerUserId || queryUserId || bodyUserId || currentUserId;
+  const targetId = headerUserId || queryUserId || bodyUserId;
+  
+  if (!targetId) {
+    return null;
+  }
+  
   const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
-  const user = found || users.find((u) => u.id === currentUserId) || users[0];
-  return sanitizeUser(user);
+  return found ? sanitizeUser(found) : null;
 }
 
 // User & Account Management
@@ -1567,8 +1571,8 @@ app.get('/api/users', (req, res) => {
   }
   res.json({
     success: true,
-    currentUser: user,
-    allUsers: users,
+    currentUser: user || null,
+    allUsers: (user && user.role === 'admin') ? users : [],
   });
 });
 
@@ -1781,6 +1785,9 @@ app.post('/api/users/reset-balance', (req, res) => {
 // Wallet Operations
 app.get('/api/user/wallet', (req, res) => {
   const user = resolveUser(req);
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
   
   if (!user.compoundingBalances) {
     user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
@@ -2284,12 +2291,14 @@ app.post('/api/trade/futures/close/:id', (req, res) => {
 
 app.get('/api/user/positions', (req, res) => {
   const user = resolveUser(req);
+  if (!user) return res.json({ success: true, data: [] });
   const userPositions = futuresPositions.filter((p) => p.userId === user.id);
   res.json({ success: true, data: userPositions });
 });
 
 app.get('/api/user/orders', (req, res) => {
   const user = resolveUser(req);
+  if (!user) return res.json({ success: true, spotOrders: [], transactions: [] });
   const userOrders = spotOrders.filter((o) => o.userId === user.id);
   const userTxs = transactions.filter((t) => t.userId === user.id);
   res.json({ success: true, spotOrders: userOrders, transactions: userTxs });

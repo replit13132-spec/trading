@@ -12,6 +12,36 @@ import { OnboardingScreen } from './components/OnboardingScreen';
 import { LoginScreen } from './components/LoginScreen';
 import { RegisterScreen } from './components/RegisterScreen';
 import { Modals } from './components/Modals';
+import { LogIn } from 'lucide-react';
+
+const LoginPromptScreen: React.FC<{ tabName: string }> = ({ tabName }) => {
+  const { setAuthScreen } = useApp();
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center max-w-md mx-auto py-12">
+      <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center text-violet-600 mb-4 animate-bounce">
+        <LogIn className="w-8 h-8" />
+      </div>
+      <h3 className="text-xl font-extrabold text-slate-900 mb-2">Masuk ke Akun Anda</h3>
+      <p className="text-xs text-gray-500 mb-6 leading-relaxed">
+        Untuk mengakses halaman <span className="font-bold text-violet-600">{tabName}</span>, silakan masuk ke akun Anda atau daftar jika belum memiliki akun.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <button
+          onClick={() => setAuthScreen('login')}
+          className="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg transition-all active:scale-95 text-xs"
+        >
+          Masuk / Login
+        </button>
+        <button
+          onClick={() => setAuthScreen('register')}
+          className="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-extrabold py-3.5 px-4 rounded-xl shadow-sm transition-all active:scale-95 text-xs"
+        >
+          Daftar Akun Baru
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const MainContent: React.FC = () => {
   const { activeTab, isOnboarded, authScreen, currentUser } = useApp();
@@ -53,11 +83,11 @@ const MainContent: React.FC = () => {
         ) : activeTab === 'market' ? (
           <MarketScreen />
         ) : activeTab === 'trade' ? (
-          <TradeScreen />
+          currentUser ? <TradeScreen /> : <LoginPromptScreen tabName="Trade" />
         ) : activeTab === 'transaksi' ? (
-          <TransactionScreen />
+          currentUser ? <TransactionScreen /> : <LoginPromptScreen tabName="Transaksi" />
         ) : activeTab === 'wallet' ? (
-          <WalletScreen />
+          currentUser ? <WalletScreen /> : <LoginPromptScreen tabName="Wallet" />
         ) : (
           <HomeScreen />
         )}
