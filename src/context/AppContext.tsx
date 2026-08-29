@@ -54,6 +54,8 @@ interface AppContextType {
   updateUserRole: (userId: string, role: 'user' | 'admin') => Promise<boolean>;
   formatIdr: (amount: number) => string;
   formatUsdt: (amount: number) => string;
+  getAuthHeaders: () => Record<string, string>;
+  userTransactions: Transaction[];
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -98,6 +100,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedMarket, setSelectedMarket] = useState<Asset | null>(null);
   const [futuresPositions, setFuturesPositions] = useState<FuturesPosition[]>([]);
   const [walletData, setWalletData] = useState<any>(null);
+  const [userTransactions, setUserTransactions] = useState<Transaction[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [newsList, setNewsList] = useState<NewsArticle[]>([]);
   const [academyList, setAcademyList] = useState<AcademyItem[]>([]);
@@ -249,7 +252,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const refreshData = useCallback(async () => {
     try {
       const authHdrs = getAuthHeaders();
-      const [mkRes, userRes, walletRes, posRes, newsRes, acadRes, annRes] = await Promise.all([
+      const currentActiveId = localStorage.getItem('app_user_id') || '';
+      const [mkRes, userRes, walletRes, posRes, newsRes, acadRes, annRes, ordersRes] = await Promise.all([
         fetch('/api/markets'),
         fetch('/api/users', { headers: authHdrs }),
         fetch('/api/user/wallet', { headers: authHdrs }),
@@ -257,9 +261,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch('/api/content/news'),
         fetch('/api/content/academy'),
         fetch('/api/announcements'),
+        fetch(`/api/user/orders?userId=${encodeURIComponent(currentActiveId)}`, { headers: authHdrs }),
       ]);
 
-      const [mkJson, userJson, walletJson, posJson, newsJson, acadJson, annJson] = await Promise.all([
+      const [mkJson, userJson, walletJson, posJson, newsJson, acadJson, annJson, ordersJson] = await Promise.all([
         safeParseResponse(mkRes),
         safeParseResponse(userRes),
         safeParseResponse(walletRes),
@@ -267,6 +272,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         safeParseResponse(newsRes),
         safeParseResponse(acadRes),
         safeParseResponse(annRes),
+        safeParseResponse(ordersRes),
       ]);
 
       if (mkJson.success) {
@@ -297,6 +303,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
       if (posJson.success) {
         setFuturesPositions(posJson.data);
+      }
+      if (ordersJson.success && Array.isArray(ordersJson.transactions)) {
+        const activeUserId = (userJson.success && userJson.currentUser?.id) || currentActiveId;
+        const strictlyUserTxs = ordersJson.transactions.filter((t: any) => t.userId === activeUserId);
+        setUserTransactions(strictlyUserTxs);
       }
       if (newsJson.success) setNewsList(newsJson.data);
       if (acadJson.success) setAcademyList(acadJson.data);
@@ -747,6 +758,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateUserRole,
         formatIdr,
         formatUsdt,
+        getAuthHeaders,
+        userTransactions,
       }}
     >
       {children}

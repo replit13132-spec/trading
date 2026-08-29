@@ -1751,9 +1751,10 @@ function resolveUser(req: express.Request) {
   if (targetId) {
     const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
     if (found) return sanitizeUser(found);
+    return null; // Target ID was provided but user was not found - do not fallback to wrong user
   }
   
-  // Safe fallback to current active user or first user
+  // Safe fallback to current active user or first user only when no specific ID requested
   const fallback = users.find((u) => u.id === currentUserId) || users[0];
   return fallback ? sanitizeUser(fallback) : null;
 }

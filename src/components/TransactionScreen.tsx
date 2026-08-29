@@ -18,22 +18,62 @@ import {
 } from 'lucide-react';
 
 export const TransactionScreen: React.FC = () => {
-  const { currentUser, walletData, formatIdr } = useApp();
+  const { currentUser, walletData, formatIdr, getAuthHeaders, userTransactions, refreshData } = useApp();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState<'all' | 'topup' | 'compounding' | 'profit' | 'withdraw'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchTransactions = async () => {
+    if (!currentUser?.id) {
+      setTransactions([]);
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const authHdrs = getAuthHeaders ? getAuthHeaders() : { 'x-user-id': currentUser.id };
+      const res = await fetch(`/api/user/orders?userId=${encodeURIComponent(currentUser.id)}`, {
+        headers: {
+          ...authHdrs,
+          'x-user-id': currentUser.id,
+        },
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.transactions)) {
+        // Enforce strict user isolation: only keep transactions belonging to this specific user
+        const strictlyUserTxs = data.transactions.filter((t: any) => t.userId === currentUser.id);
+        setTransactions(strictlyUserTxs);
+      } else {
+        setTransactions([]);
+      }
+    } catch (e) {
+      console.error('Failed to load user transactions:', e);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/user/orders')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.transactions) {
-          setTransactions(data.transactions);
-        }
-        setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
-  }, []);
+    setIsLoading(true);
+    fetchTransactions();
+  }, [currentUser?.id]);
+
+  // If userTransactions in context updates, keep in sync
+  useEffect(() => {
+    if (userTransactions && currentUser?.id) {
+      const strictlyUserTxs = userTransactions.filter((t: any) => t.userId === currentUser.id);
+      if (strictlyUserTxs.length > 0) {
+        setTransactions(strictlyUserTxs);
+      }
+    }
+  }, [userTransactions, currentUser?.id]);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    if (refreshData) await refreshData();
+    await fetchTransactions();
+  };
 
   const capitalBatches = walletData?.capitalBatches || currentUser?.capitalBatches || [];
   const compoundingProfit = walletData?.compoundingProfitIdr ?? currentUser?.compoundingProfitIdr ?? 0;
@@ -84,13 +124,29 @@ export const TransactionScreen: React.FC = () => {
             <span className="bg-violet-500/20 text-violet-400 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 border border-violet-500/30">
               <History className="w-3.5 h-3.5 text-violet-400" /> Pusat Transaksi & Compounding
             </span>
-            <span className="text-xs text-slate-400 font-medium">Real-Time Sync</span>
+            <button
+              onClick={handleManualRefresh}
+              disabled={isRefreshing || isLoading}
+              className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700 transition-all font-semibold active:scale-95"
+              title="Perbarui data transaksi Anda"
+            >
+              <RefreshCw className={`w-3 h-3 text-violet-400 ${isRefreshing || isLoading ? 'animate-spin' : ''}`} />
+              <span>{isRefreshing ? 'Sinkronisasi...' : 'Segarkan'}</span>
+            </button>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Riwayat Transaksi
-          </h1>
+          <div className="flex items-baseline justify-between flex-wrap gap-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Riwayat Transaksi
+            </h1>
+            {currentUser && (
+              <span className="text-[11px] bg-slate-900 border border-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Akun: <strong className="text-white">{currentUser.name || currentUser.email}</strong></span>
+              </span>
+            )}
+          </div>
           <p className="text-xs text-slate-300 max-w-md">
-            Pantau rincian top-up modal, tanggal modal awal bisa ditarik (lock 3 bulan), penyimpanan compounding, profit 1%/hari, dan penarikan dana.
+            Pantau rincian riwayat khusus akun Anda: top-up modal, tanggal modal awal bisa ditarik (lock 3 bulan), compounding, profit 1%/hari, dan penarikan dana.
           </p>
         </div>
       </div>
