@@ -11,6 +11,24 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Custom middleware to ensure any JSON body parser or entity size errors return JSON instead of HTML
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err) {
+    console.error('[Middleware Error Handler]:', err?.message || err);
+    if (err.type === 'entity.too.large' || err.status === 413) {
+      return res.status(413).json({
+        success: false,
+        message: 'Ukuran foto bukti transfer terlalu besar. Harap gunakan foto dengan resolusi lebih kecil.',
+      });
+    }
+    return res.status(err.status || 400).json({
+      success: false,
+      message: err.message || 'Format data request tidak valid.',
+    });
+  }
+  next();
+});
+
 // Persistent Database Configuration
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
@@ -1730,12 +1748,14 @@ function resolveUser(req: express.Request) {
   const bodyUserId = (req.body && req.body.currentUserId) || '';
   const targetId = headerUserId || queryUserId || bodyUserId;
   
-  if (!targetId) {
-    return null;
+  if (targetId) {
+    const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
+    if (found) return sanitizeUser(found);
   }
   
-  const found = users.find((u) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase());
-  return found ? sanitizeUser(found) : null;
+  // Safe fallback to current active user or first user
+  const fallback = users.find((u) => u.id === currentUserId) || users[0];
+  return fallback ? sanitizeUser(fallback) : null;
 }
 
 // User & Account Management
@@ -2023,45 +2043,54 @@ app.get('/api/user/wallet', (req, res) => {
 });
 
 app.post('/api/user/deposit', (req, res) => {
-  const { amount, currency, method, proofImage, note } = req.body;
-  const user = resolveUser(req);
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+  try {
+    const { amount, currency, method, proofImage, note } = req.body || {};
+    const user = resolveUser(req);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-  const depositAmount = Number(amount);
-  if (isNaN(depositAmount) || depositAmount <= 0) {
-    return res.status(400).json({ success: false, message: 'Jumlah deposit tidak valid' });
-  }
+    const depositAmount = Number(amount);
+    if (isNaN(depositAmount) || depositAmount <= 0) {
+      return res.status(400).json({ success: false, message: 'Jumlah deposit tidak valid' });
+    }
 
-  if ((currency === 'IDR' || !currency) && depositAmount < 500000) {
-    return res.status(400).json({
+    if ((currency === 'IDR' || !currency) && depositAmount < 500000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Minimal setoran awal (Top Up) Rupiah adalah Rp 500.000',
+      });
+    }
+
+    const imageToUse = proofImage || DEFAULT_RECEIPT_SVG;
+
+    const newTx = {
+      id: 'tx_' + Date.now(),
+      userId: user.id,
+      type: 'DEPOSIT',
+      amount: depositAmount,
+      currency: currency || 'IDR',
+      method: method || 'BCA Virtual Account',
+      status: 'PENDING',
+      proofImage: imageToUse,
+      note: note || 'Transfer deposit diajukan pengguna',
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+      description: `Setoran Top Up ${currency || 'IDR'} Rp ${depositAmount.toLocaleString('id-ID')} via ${method || 'VA Bank'} (Menunggu Verifikasi Admin). Setelah disetujui, modal langsung masuk ke ASET (Compounding 1%/hari, terkunci 3 bulan).`,
+    };
+    transactions.unshift(newTx);
+    saveDatabase();
+
+    res.json({
+      success: true,
+      data: newTx,
+      user,
+      message: 'Bukti transfer berhasil diunggah! Top up Anda sedang diverifikasi oleh Admin.',
+    });
+  } catch (err: any) {
+    console.error('[API Deposit Error]:', err?.message || err);
+    res.status(500).json({
       success: false,
-      message: 'Minimal setoran awal (Top Up) Rupiah adalah Rp 500.000',
+      message: 'Terjadi kesalahan pada sistem saat memproses deposit. Silakan coba kembali.',
     });
   }
-
-  const imageToUse = proofImage || DEFAULT_RECEIPT_SVG;
-
-  const newTx = {
-    id: 'tx_' + Date.now(),
-    userId: user.id,
-    type: 'DEPOSIT',
-    amount: depositAmount,
-    currency: currency || 'IDR',
-    method: method || 'BCA Virtual Account',
-    status: 'PENDING',
-    proofImage: imageToUse,
-    note: note || 'Transfer deposit diajukan pengguna',
-    timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    description: `Setoran Top Up ${currency || 'IDR'} Rp ${depositAmount.toLocaleString('id-ID')} via ${method || 'VA Bank'} (Menunggu Verifikasi Admin). Setelah disetujui, modal langsung masuk ke ASET (Compounding 1%/hari, terkunci 3 bulan).`,
-  };
-  transactions.unshift(newTx);
-
-  res.json({
-    success: true,
-    data: newTx,
-    user,
-    message: 'Bukti transfer berhasil diunggah! Top up Anda sedang diverifikasi oleh Admin.',
-  });
 });
 
 // Penarikan Profit Compounding (Min Rp 100.000, kapan saja)

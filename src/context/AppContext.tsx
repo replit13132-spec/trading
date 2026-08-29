@@ -204,6 +204,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return {};
   };
 
+  const safeParseResponse = async (res: Response): Promise<{ success: boolean; [key: string]: any }> => {
+    try {
+      const text = await res.text();
+      try {
+        const parsed = JSON.parse(text);
+        if (typeof parsed === 'object' && parsed !== null) {
+          return parsed;
+        }
+      } catch {
+        // Non-JSON response (e.g. 413, 502, 500 HTML from reverse proxy or server)
+      }
+
+      if (res.status === 413) {
+        return {
+          success: false,
+          message: 'Ukuran foto bukti transfer terlalu besar. Foto akan dikompresi otomatis, silakan coba kirim ulang.',
+        };
+      }
+      if (res.status === 401 || res.status === 403) {
+        return {
+          success: false,
+          message: 'Sesi login Anda telah berakhir. Silakan masuk kembali.',
+        };
+      }
+      if (res.status >= 500) {
+        return {
+          success: false,
+          message: 'Server sedang sibuk atau dalam pemeliharaan. Silakan coba sesaat lagi.',
+        };
+      }
+      return {
+        success: false,
+        message: `Gagal memproses data (Status: ${res.status}).`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || 'Gangguan koneksi jaringan.',
+      };
+    }
+  };
+
   const refreshData = useCallback(async () => {
     try {
       const authHdrs = getAuthHeaders();
@@ -217,23 +259,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch('/api/announcements'),
       ]);
 
-      const parseRes = async (res: Response) => {
-        const text = await res.text();
-        try {
-          return JSON.parse(text);
-        } catch {
-          return { success: false, raw: text };
-        }
-      };
-
       const [mkJson, userJson, walletJson, posJson, newsJson, acadJson, annJson] = await Promise.all([
-        parseRes(mkRes),
-        parseRes(userRes),
-        parseRes(walletRes),
-        parseRes(posRes),
-        parseRes(newsRes),
-        parseRes(acadRes),
-        parseRes(annRes),
+        safeParseResponse(mkRes),
+        safeParseResponse(userRes),
+        safeParseResponse(walletRes),
+        safeParseResponse(posRes),
+        safeParseResponse(newsRes),
+        safeParseResponse(acadRes),
+        safeParseResponse(annRes),
       ]);
 
       if (mkJson.success) {
@@ -317,7 +350,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ email, identifier: email, password }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         try {
           localStorage.setItem('app_user_id', data.currentUser.id);
@@ -348,7 +381,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ name, nik, email, password, referralCode }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         // Do not auto-login registered user; let them log in manually.
         await refreshData();
@@ -369,7 +402,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ provider, name, email }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         try {
           localStorage.setItem('app_user_id', data.currentUser.id);
@@ -381,7 +414,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await refreshData();
         return { success: true };
       }
-      return { success: false, message: 'Gagal autentikasi sosial' };
+      return { success: false, message: data.message || 'Gagal autentikasi sosial' };
     } catch (e: any) {
       return { success: false, message: e.message || 'Gagal autentikasi sosial' };
     }
@@ -390,7 +423,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const resetBalance = async () => {
     try {
       const res = await fetch('/api/users/reset-balance', { method: 'POST' });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
       }
@@ -406,7 +439,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, role, initialIdr: idr, initialUsdt: usdt }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
       }
@@ -422,7 +455,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ symbol, side, type, amount, price }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true };
@@ -440,7 +473,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(params),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true };
@@ -457,7 +490,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         method: 'POST',
         headers: { ...getAuthHeaders() },
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true };
@@ -481,7 +514,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, currency, method, proofImage, note }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true, message: data.message, transaction: data.data };
@@ -500,7 +533,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, currency, destination }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true };
@@ -518,7 +551,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, destination }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true, message: data.message };
@@ -536,7 +569,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true, message: data.message };
@@ -554,7 +587,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ amount, destination }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true, message: data.message };
@@ -572,7 +605,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ from, to, amount, currency }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return { success: true };
@@ -590,7 +623,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symbol, newPriceUsdt, change24h }),
       });
-      const data = await res.json();
+      const data = await safeParseResponse(res);
       if (data.success) {
         await refreshData();
         return true;

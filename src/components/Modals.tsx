@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { CryptoIcon } from './CryptoIcon';
+import { compressImageFile } from '../utils/imageCompressor';
 
 const SAMPLE_RECEIPT_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='550' viewBox='0 0 400 550'%3E%3Crect width='400' height='550' fill='%23ffffff' rx='16'/%3E%3Crect x='0' y='0' width='400' height='90' fill='%23f59e0b'/%3E%3Ctext x='200' y='42' font-family='sans-serif' font-size='20' font-weight='bold' fill='%230f172a' text-anchor='middle'%3EBUKTI TRANSFER BERHASIL%3C/text%3E%3Ctext x='200' y='68' font-family='sans-serif' font-size='12' fill='%23451a03' text-anchor='middle'%3EBank Transfer / Virtual Account%3C/text%3E%3Ccircle cx='200' cy='140' r='30' fill='%23ecfdf5'/%3E%3Cpath d='M188 140l8 8 16-16' stroke='%2310b981' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ctext x='200' y='195' font-family='sans-serif' font-size='13' fill='%2364748b' text-anchor='middle'%3ENominal Transfer%3C/text%3E%3Ctext x='200' y='225' font-family='sans-serif' font-size='22' font-weight='bold' fill='%230f172a' text-anchor='middle'%3ERp 1.000.000%3C/text%3E%3Cline x1='40' y1='255' x2='360' y2='255' stroke='%23e2e8f0' stroke-dasharray='4'/%3E%3Ctext x='40' y='290' font-family='sans-serif' font-size='12' fill='%2364748b'%3ERekening Tujuan%3C/text%3E%3Ctext x='360' y='290' font-family='sans-serif' font-size='12' font-weight='bold' fill='%230f172a' text-anchor='end'%3E8820 1948 2109 0012%3C/text%3E%3Ctext x='40' y='325' font-family='sans-serif' font-size='12' fill='%2364748b'%3EPenerima%3C/text%3E%3Ctext x='360' y='325' font-family='sans-serif' font-size='12' font-weight='bold' fill='%230f172a' text-anchor='end'%3EPT PINTU REKSA DIGITAL%3C/text%3E%3Ctext x='40' y='360' font-family='sans-serif' font-size='12' fill='%2364748b'%3EBank Pengirim%3C/text%3E%3Ctext x='360' y='360' font-family='sans-serif' font-size='12' font-weight='bold' fill='%230f172a' text-anchor='end'%3EBCA Mobile / VA%3C/text%3E%3Ctext x='40' y='395' font-family='sans-serif' font-size='12' fill='%2364748b'%3EStatus%3C/text%3E%3Ctext x='360' y='395' font-family='sans-serif' font-size='12' font-weight='bold' fill='%2310b981' text-anchor='end'%3EBERHASIL / SUKSES%3C/text%3E%3Cline x1='40' y1='430' x2='360' y2='430' stroke='%23e2e8f0' stroke-dasharray='4'/%3E%3Ctext x='200' y='475' font-family='sans-serif' font-size='11' fill='%2394a3b8' text-anchor='middle'%3ESimpan struk ini sebagai bukti transaksi yang sah.%3C/text%3E%3Ctext x='200' y='495' font-family='sans-serif' font-size='10' fill='%23cbd5e1' text-anchor='middle'%3ERef: TRX-AUTO-VERIFIED-PINTU%3C/text%3E%3C/svg%3E";
 import {
@@ -24,6 +25,7 @@ import {
   RefreshCw,
   Clock,
   AlertCircle,
+  Loader2,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -61,11 +63,15 @@ export const Modals: React.FC = () => {
   const [depositProof, setDepositProof] = useState<string>('');
   const [depositNote, setDepositNote] = useState('');
   const [depositSuccess, setDepositSuccess] = useState(false);
+  const [depositError, setDepositError] = useState<string | null>(null);
+  const [isCompressingImage, setIsCompressingImage] = useState(false);
+  const [isSubmittingDeposit, setIsSubmittingDeposit] = useState(false);
   const [copiedVa, setCopiedVa] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isDepositModalOpen) {
+      setDepositError(null);
       fetch('/api/bank-accounts')
         .then((res) => res.json())
         .then((data) => {
@@ -104,16 +110,26 @@ export const Modals: React.FC = () => {
   const [transferCurrency, setTransferCurrency] = useState<'IDR' | 'USDT'>('USDT');
   const [transferMsg, setTransferMsg] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setDepositProof(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      setIsCompressingImage(true);
+      setDepositError(null);
+      try {
+        const compressedBase64 = await compressImageFile(file, 1024, 1024, 0.75);
+        setDepositProof(compressedBase64);
+      } catch (err: any) {
+        console.error('Failed to compress image:', err);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setDepositProof(event.target.result as string);
+          }
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsCompressingImage(false);
+      }
     }
   };
 
@@ -126,19 +142,27 @@ export const Modals: React.FC = () => {
   // Handle Deposit
   const handleDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const proofToSubmit = depositProof || SAMPLE_RECEIPT_SVG;
-    const res = await depositFunds(
-      Number(depositAmount),
-      depositCurrency,
-      depositMethod,
-      proofToSubmit,
-      depositNote || `Transfer deposit ${depositCurrency} via ${depositMethod}`
-    );
-    if (res.success) {
-      confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
-      setDepositSuccess(true);
-    } else {
-      alert(res.message || 'Gagal mengajukan deposit');
+    setDepositError(null);
+    setIsSubmittingDeposit(true);
+    try {
+      const proofToSubmit = depositProof || SAMPLE_RECEIPT_SVG;
+      const res = await depositFunds(
+        Number(depositAmount),
+        depositCurrency,
+        depositMethod,
+        proofToSubmit,
+        depositNote || `Transfer deposit ${depositCurrency} via ${depositMethod}`
+      );
+      if (res.success) {
+        confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+        setDepositSuccess(true);
+      } else {
+        setDepositError(res.message || 'Gagal mengajukan deposit');
+      }
+    } catch (err: any) {
+      setDepositError(err?.message || 'Terjadi gangguan saat memproses deposit');
+    } finally {
+      setIsSubmittingDeposit(false);
     }
   };
 
@@ -392,7 +416,10 @@ export const Modals: React.FC = () => {
                     </label>
                     <button
                       type="button"
-                      onClick={() => setDepositProof(SAMPLE_RECEIPT_SVG)}
+                      onClick={() => {
+                        setDepositProof(SAMPLE_RECEIPT_SVG);
+                        setDepositError(null);
+                      }}
                       className="text-[10px] font-bold text-violet-900 hover:underline flex items-center gap-1"
                     >
                       <Sparkles className="w-3 h-3 text-violet-500" />
@@ -408,7 +435,13 @@ export const Modals: React.FC = () => {
                     className="hidden"
                   />
 
-                  {depositProof ? (
+                  {isCompressingImage ? (
+                    <div className="border-2 border-dashed border-violet-300 bg-violet-50/50 rounded-2xl p-4 text-center space-y-2">
+                      <Loader2 className="w-6 h-6 text-violet-600 animate-spin mx-auto" />
+                      <p className="text-xs font-bold text-violet-900">Mengoptimalkan & Mengompresi Foto Bukti...</p>
+                      <p className="text-[10px] text-violet-600">Menyesuaikan resolusi agar upload instan dan stabil</p>
+                    </div>
+                  ) : depositProof ? (
                     <div className="relative border-2 border-emerald-300 bg-emerald-50/40 rounded-2xl p-2.5 space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
@@ -437,10 +470,21 @@ export const Modals: React.FC = () => {
                         <Upload className="w-5 h-5" />
                       </div>
                       <p className="text-xs font-bold text-gray-800">Klik di sini untuk memilih foto bukti transfer</p>
-                      <p className="text-[10px] text-gray-400">Format JPG, PNG, atau tangkapan layar m-Banking</p>
+                      <p className="text-[10px] text-gray-400">Format JPG, PNG, atau tangkapan layar m-Banking (Otomatis dikompres)</p>
                     </div>
                   )}
                 </div>
+
+                {/* Error Banner */}
+                {depositError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-rose-800 animate-fadeIn">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5 text-xs">
+                      <p className="font-bold">Gagal Mengajukan Deposit</p>
+                      <p className="text-[11px] text-rose-700 leading-relaxed">{depositError}</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Catatan Tambahan */}
                 <div>
@@ -456,10 +500,20 @@ export const Modals: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-violet-500 hover:bg-violet-400 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg shadow-violet-500/25 text-xs transition-all flex items-center justify-center gap-2"
+                  disabled={isSubmittingDeposit || isCompressingImage}
+                  className="w-full bg-violet-500 hover:bg-violet-400 disabled:opacity-50 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg shadow-violet-500/25 text-xs transition-all flex items-center justify-center gap-2"
                 >
-                  <FileCheck className="w-4 h-4" />
-                  <span>Kirim Bukti Transfer & Ajukan Top Up</span>
+                  {isSubmittingDeposit ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                      <span>Mengirim Pengajuan Top Up...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileCheck className="w-4 h-4" />
+                      <span>Kirim Bukti Transfer & Ajukan Top Up</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}
