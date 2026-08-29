@@ -18,6 +18,7 @@ import {
   X,
   Percent,
   Bell,
+  Gift,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -25,6 +26,7 @@ export type AdminTab =
   | 'overview'
   | 'markets'
   | 'users'
+  | 'referrals'
   | 'accounts'
   | 'finance'
   | 'compounding'
@@ -75,6 +77,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       shortLabel: 'User',
       icon: Users,
       badge: allUsers.length,
+      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+    },
+    {
+      id: 'referrals' as AdminTab,
+      label: 'Sistem Referral & Afiliasi',
+      shortLabel: 'Referral',
+      icon: Gift,
+      badge: '5% Komisi',
       badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
     },
     {

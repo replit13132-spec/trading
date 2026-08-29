@@ -121,6 +121,11 @@ export interface UserAccount {
   futuresBalances: {
     usdt: number;
   };
+  referralCode?: string;
+  referredBy?: string;
+  referredByCode?: string;
+  totalReferralCommissionIdr?: number;
+  invitedUsersCount?: number;
 }
 
 export interface NewsArticle {

@@ -66,6 +66,10 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
       title: 'Manajemen Pengguna & Saldo',
       subtitle: 'Kelola akun trader, status KYC, ubah saldo IDR/USDT, dan hak akses admin.',
     },
+    referrals: {
+      title: 'Sistem Referral & Afiliasi Pengguna',
+      subtitle: 'Pantau kode referral unik setiap akun, hubungan pengajak/downline, dan komisi deposit 5%.',
+    },
     accounts: {
       title: 'Manajemen Rekening Deposit & Pembayaran',
       subtitle: 'Kelola daftar rekening bank tujuan transfer deposit, virtual account, dan QRIS.',

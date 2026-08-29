@@ -16,6 +16,11 @@ import {
   TrendingUp,
   CheckCircle2,
   Send,
+  Gift,
+  Copy,
+  Check,
+  Share2,
+  Users,
 } from 'lucide-react';
 
 export const WalletScreen: React.FC = () => {
@@ -35,6 +40,23 @@ export const WalletScreen: React.FC = () => {
   const [searchAsset, setSearchAsset] = useState('');
   const [isRecompounding, setIsRecompounding] = useState(false);
   const [recompoundMsg, setRecompoundMsg] = useState('');
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyCode = () => {
+    if (!currentUser?.referralCode) return;
+    navigator.clipboard.writeText(currentUser.referralCode);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyLink = () => {
+    if (!currentUser?.referralCode) return;
+    const url = `${window.location.origin}?ref=${encodeURIComponent(currentUser.referralCode)}`;
+    navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   const profitAmount = walletData?.compoundingProfitIdr ?? currentUser?.compoundingProfitIdr ?? 0;
   const compoundingCapital = (walletData?.compoundingBalances?.idr ?? currentUser?.compoundingBalances?.idr ?? 0);
@@ -232,7 +254,7 @@ export const WalletScreen: React.FC = () => {
                 {showBalance ? formatIdr(profitAmount) : '••••••••'}
               </p>
               <p className="text-[11px] text-violet-200/90 mt-0.5">
-                Minimal penarikan: Rp 100.000
+                Minimal penarikan: Rp 100.000 (Hasil profit harian 1% & bonus referral 5%)
               </p>
             </div>
 
@@ -277,6 +299,77 @@ export const WalletScreen: React.FC = () => {
             <span className="text-xs sm:text-sm font-bold text-gray-800">Tarik</span>
           </button>
         </div>
+
+        {/* Program Referral 5% Card */}
+        {currentUser && (
+          <div className="mt-4 p-4 bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-950 text-white rounded-2xl shadow-md border border-violet-700/50 space-y-3 relative overflow-hidden">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-white/10 text-violet-200">
+                  <Gift className="w-4 h-4 text-violet-300" />
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-white">Program Afiliasi & Referral 5%</h4>
+                  <p className="text-[10px] text-violet-200">Undang teman & dapatkan komisi 5% otomatis</p>
+                </div>
+              </div>
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
+                Bonus 5% Depo
+              </span>
+            </div>
+
+            <div className="bg-black/25 backdrop-blur-xs rounded-xl p-2.5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-bold text-violet-300 tracking-wider">Kode Anda:</span>
+                <span className="font-mono font-black text-sm text-yellow-300 tracking-wider">
+                  {currentUser.referralCode || 'XM-BUDI2026'}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="px-3 py-1.5 bg-violet-600 hover:bg-violet-500 active:scale-95 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all shadow-xs"
+                >
+                  {copiedCode ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-300" />
+                      <span>Tersalin</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin Kode</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="px-3 py-1.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all border border-white/10"
+                >
+                  {copiedLink ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-300" />
+                      <span>Link Tersalin</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>Bagikan Link</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-violet-200/90 leading-relaxed">
+              Setiap teman yang mendaftar dengan kode Anda dan melakukan deposit (contoh: Rp 1.000.000), Anda otomatis mendapatkan komisi <strong>5% (Rp 50.000)</strong> yang langsung masuk ke saldo <strong>Profit Compounding</strong> di atas.
+            </p>
+          </div>
+        )}
 
         {/* Telegram Support Component Banner */}
         <div className="mt-4">

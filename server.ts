@@ -85,6 +85,9 @@ let users: any[] = [
     futuresBalances: {
       usdt: 1300,
     },
+    referralCode: 'XM-BUDI2026',
+    totalReferralCommissionIdr: 0,
+    invitedUsersCount: 0,
   },
   {
     id: 'user_admin',
@@ -95,6 +98,9 @@ let users: any[] = [
     role: 'admin',
     isDummy: false,
     isVerified: true,
+    referralCode: 'XM-ADMIN99',
+    totalReferralCommissionIdr: 0,
+    invitedUsersCount: 0,
     balances: {
       idr: 1000000000,
       usdt: 100000,
@@ -1148,6 +1154,26 @@ function initPgPool(): Pool | null {
   }
 }
 
+function generateUniqueReferralCode(name: string = ''): string {
+  const cleanName = (name || 'USER')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .toUpperCase()
+    .substring(0, 6) || 'XM';
+  let code = '';
+  let exists = true;
+  let attempts = 0;
+  while (exists && attempts < 200) {
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    code = `XM-${cleanName}${rand}`;
+    exists = users.some((u) => u.referralCode === code);
+    attempts++;
+  }
+  if (exists) {
+    code = `XM-${Date.now().toString(36).toUpperCase()}`;
+  }
+  return code;
+}
+
 function sanitizeUser(user: any) {
   if (!user) return user;
   if (!user.balances) {
@@ -1175,6 +1201,17 @@ function sanitizeUser(user: any) {
   }
   if (!user.futuresBalances) {
     user.futuresBalances = { usdt: 0 };
+  }
+  if (!user.referralCode || typeof user.referralCode !== 'string') {
+    if (user.id === 'user_dummy_1') user.referralCode = 'XM-BUDI2026';
+    else if (user.id === 'user_admin') user.referralCode = 'XM-ADMIN99';
+    else user.referralCode = generateUniqueReferralCode(user.name);
+  }
+  if (typeof user.totalReferralCommissionIdr !== 'number') {
+    user.totalReferralCommissionIdr = 0;
+  }
+  if (typeof user.invitedUsersCount !== 'number') {
+    user.invitedUsersCount = 0;
   }
   return user;
 }
@@ -1852,6 +1889,39 @@ app.post('/api/auth/register', (req, res) => {
     return res.status(400).json({ success: false, message: 'NIK ini sudah terdaftar dalam sistem.' });
   }
 
+  let referredBy: string | undefined = undefined;
+  let referredByCode: string | undefined = undefined;
+  const trimmedRefCode = referralCode ? String(referralCode).trim().toUpperCase() : '';
+
+  if (trimmedRefCode) {
+    const referrer = users.find(
+      (u) => u.referralCode && u.referralCode.toUpperCase() === trimmedRefCode
+    );
+
+    if (referrer) {
+      referredBy = referrer.id;
+      referredByCode = referrer.referralCode;
+      referrer.invitedUsersCount = (referrer.invitedUsersCount || 0) + 1;
+
+      // Send notification to the referrer
+      notifications.unshift({
+        id: 'notif_' + Date.now(),
+        title: '👥 Teman Baru Mendaftar via Referral!',
+        message: `${name.trim()} telah berhasil mendaftar menggunakan Kode Referral Anda (${referrer.referralCode}). Anda akan mendapatkan bonus komisi 5% otomatis masuk ke Profit Compounding dari setiap deposit modal mereka!`,
+        type: 'info',
+        createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        target: referrer.id,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: `Kode referral "${trimmedRefCode}" tidak ditemukan atau tidak valid. Silakan periksa kembali atau kosongkan jika tidak memiliki kode.`,
+      });
+    }
+  }
+
+  const generatedCode = generateUniqueReferralCode(name.trim());
+
   const newUser = {
     id: 'user_' + Date.now(),
     name: name.trim(),
@@ -1861,6 +1931,11 @@ app.post('/api/auth/register', (req, res) => {
     role: 'user',
     isDummy: false,
     isVerified: true,
+    referralCode: generatedCode,
+    referredBy,
+    referredByCode,
+    totalReferralCommissionIdr: 0,
+    invitedUsersCount: 0,
     balances: {
       idr: 0,
       usdt: 0,
@@ -1885,7 +1960,14 @@ app.post('/api/auth/register', (req, res) => {
 
   users.push(newUser);
   currentUserId = newUser.id;
-  res.json({ success: true, currentUser: newUser, message: 'Pendaftaran akun baru berhasil!' });
+  saveDatabase();
+  res.json({
+    success: true,
+    currentUser: sanitizeUser(newUser),
+    message: referredByCode
+      ? `Pendaftaran berhasil! Terhubung dengan Referral ${referredByCode}. Silakan masuk.`
+      : 'Pendaftaran akun baru berhasil! Silakan masuk.',
+  });
 });
 
 app.post('/api/auth/login', (req, res) => {
@@ -3041,6 +3123,55 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
         target: user.id,
       });
+
+      // 5% Referral Commission Handling:
+      // user-1 invites user-2 -> user-2 deposits -> user-1 gets 5% into "Profit Compounding"
+      if (user.referredBy || user.referredByCode) {
+        const referrer = users.find(
+          (u) =>
+            (user.referredBy && u.id === user.referredBy) ||
+            (user.referredByCode && u.referralCode?.toUpperCase() === user.referredByCode?.toUpperCase())
+        );
+
+        if (referrer && referrer.id !== user.id) {
+          const depositValueIdr = tx.currency === 'USDT' ? Math.round(txAmount * 17584) : txAmount;
+          const commissionIdr = Math.round(depositValueIdr * 0.05);
+
+          if (commissionIdr > 0) {
+            // Funds received go directly to referrer's "Profit Compounding" (compoundingProfitIdr)
+            if (typeof referrer.compoundingProfitIdr !== 'number') referrer.compoundingProfitIdr = 0;
+            referrer.compoundingProfitIdr += commissionIdr;
+
+            if (typeof referrer.totalReferralCommissionIdr !== 'number') referrer.totalReferralCommissionIdr = 0;
+            referrer.totalReferralCommissionIdr += commissionIdr;
+
+            const refTxId = 'tx_ref_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+            const refTx = {
+              id: refTxId,
+              userId: referrer.id,
+              userName: referrer.name,
+              userEmail: referrer.email,
+              type: 'REWARD',
+              amount: commissionIdr,
+              currency: 'IDR',
+              method: 'Bonus Referral 5%',
+              status: 'COMPLETED',
+              timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+              description: `Bonus Komisi Referral 5% dari deposit modal Rp ${depositValueIdr.toLocaleString('id-ID')} (${user.name}). Dana otomatis masuk ke Saldo Profit Compounding.`,
+            };
+            transactions.unshift(refTx);
+
+            notifications.unshift({
+              id: 'notif_' + Date.now() + '_ref',
+              title: '🎁 Bonus Referral 5% Diterima!',
+              message: `Teman yang Anda undang (${user.name}) telah berhasil deposit Rp ${depositValueIdr.toLocaleString('id-ID')}. Anda mendapatkan bonus komisi 5% sebesar Rp ${commissionIdr.toLocaleString('id-ID')} yang langsung masuk ke Saldo Profit Compounding!`,
+              type: 'success',
+              createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+              target: referrer.id,
+            });
+          }
+        }
+      }
     }
   }
 
@@ -3123,6 +3254,140 @@ app.delete('/api/admin/transactions/:id', (req, res) => {
 
   const deleted = transactions.splice(idx, 1)[0];
   res.json({ success: true, data: deleted, message: 'Log transaksi berhasil dihapus' });
+});
+
+// 7.1. Referral & Affiliates Admin Endpoint
+app.get('/api/admin/referrals', (req, res) => {
+  let totalReferrers = 0;
+  let totalInvitedUsers = 0;
+  let totalCommissionsDistributed = 0;
+
+  const referralUsersList = users.map((u) => {
+    // Find all users who were invited by this user (by ID or referral code)
+    const invitedMembers = users
+      .filter(
+        (inv) =>
+          inv.id !== u.id &&
+          (inv.referredBy === u.id ||
+            (inv.referredByCode &&
+              u.referralCode &&
+              inv.referredByCode.toUpperCase() === u.referralCode.toUpperCase()))
+      )
+      .map((inv) => {
+        // Calculate total approved deposits made by this invited member
+        const memberApprovedDeposits = transactions
+          .filter((t) => t.userId === inv.id && t.type === 'DEPOSIT' && t.status === 'COMPLETED')
+          .reduce(
+            (acc, t) =>
+              acc + (t.currency === 'USDT' ? Number(t.amount) * 17584 : Number(t.amount)),
+            0
+          );
+
+        const commissionGenerated = Math.round(memberApprovedDeposits * 0.05);
+
+        return {
+          id: inv.id,
+          name: inv.name,
+          email: inv.email,
+          nik: inv.nik || '-',
+          role: inv.role,
+          registeredAt: inv.createdAt || 'Aktif',
+          totalDepositsIdr: memberApprovedDeposits,
+          commissionGeneratedIdr: commissionGenerated,
+        };
+      });
+
+    // Find who invited this user
+    const inviter = users.find(
+      (ref) =>
+        ref.id !== u.id &&
+        ((u.referredBy && ref.id === u.referredBy) ||
+          (u.referredByCode &&
+            ref.referralCode &&
+            ref.referralCode.toUpperCase() === u.referredByCode.toUpperCase()))
+    );
+
+    const calculatedEarned = invitedMembers.reduce((sum, m) => sum + m.commissionGeneratedIdr, 0);
+    const totalEarned = Math.max(u.totalReferralCommissionIdr || 0, calculatedEarned);
+
+    if (invitedMembers.length > 0) {
+      totalReferrers++;
+      totalInvitedUsers += invitedMembers.length;
+    }
+    totalCommissionsDistributed += totalEarned;
+
+    return {
+      userId: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      referralCode: u.referralCode || 'BELUM_ADA',
+      referredBy: inviter
+        ? {
+            id: inviter.id,
+            name: inviter.name,
+            email: inviter.email,
+            referralCode: inviter.referralCode,
+          }
+        : null,
+      referredByCode: u.referredByCode || (inviter ? inviter.referralCode : null),
+      invitedCount: invitedMembers.length,
+      invitedMembers,
+      totalCommissionEarnedIdr: totalEarned,
+    };
+  });
+
+  // Recent referral reward transactions
+  const referralTransactions = transactions
+    .filter(
+      (t) =>
+        t.type === 'REWARD' ||
+        t.method?.includes('Referral') ||
+        t.description?.toLowerCase().includes('referral')
+    )
+    .map((t) => {
+      const u = users.find((user) => user.id === t.userId);
+      return {
+        ...t,
+        userName: u ? u.name : t.userName || 'Pengguna',
+        userEmail: u ? u.email : t.userEmail || '-',
+      };
+    });
+
+  res.json({
+    success: true,
+    data: {
+      stats: {
+        totalUsers: users.length,
+        totalReferrers,
+        totalInvitedUsers,
+        totalCommissionsDistributedIdr: totalCommissionsDistributed,
+        commissionRatePercent: 5,
+      },
+      referralUsers: referralUsersList,
+      recentCommissions: referralTransactions,
+    },
+  });
+});
+
+app.put('/api/admin/users/:id/referral-code', (req, res) => {
+  const user = users.find((u) => u.id === req.params.id);
+  if (!user) return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan' });
+
+  const { referralCode } = req.body;
+  if (!referralCode || !referralCode.trim()) {
+    return res.status(400).json({ success: false, message: 'Kode referral tidak boleh kosong' });
+  }
+
+  const cleanCode = referralCode.trim().toUpperCase();
+  const existing = users.find((u) => u.id !== user.id && u.referralCode?.toUpperCase() === cleanCode);
+  if (existing) {
+    return res.status(400).json({ success: false, message: `Kode referral "${cleanCode}" sudah digunakan oleh pengguna lain` });
+  }
+
+  user.referralCode = cleanCode;
+  saveDatabase();
+  res.json({ success: true, data: user, message: `Kode referral ${user.name} berhasil diubah menjadi ${cleanCode}` });
 });
 
 // 8. CMS: News Articles CRUD

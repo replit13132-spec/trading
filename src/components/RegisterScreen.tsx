@@ -38,13 +38,25 @@ export const RegisterScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [referralCode, setReferralCode] = useState('XMONEY2026');
-  const [showReferralInput, setShowReferralInput] = useState(false);
+  const [referralCode, setReferralCode] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Auto-detect referral code from URL query params (e.g. ?ref=XM-BUDI2026)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const refParam = params.get('ref') || params.get('referral');
+      if (refParam) {
+        setReferralCode(refParam.trim().toUpperCase());
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   // Face Scan State (Formalitas Biometrik)
   const [faceScanDone, setFaceScanDone] = useState(false);
@@ -546,6 +558,32 @@ export const RegisterScreen: React.FC = () => {
             {confirmPassword && !passwordsMatch && (
               <p className="text-[10px] text-red-500 mt-1">Kata sandi tidak sesuai</p>
             )}
+          </div>
+
+          {/* 4. Kode Referral (Opsional) */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-gray-700">
+                Kode Referral
+              </label>
+              <span className="text-[10px] text-gray-400 font-medium">Opsional</span>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-violet-500">
+                <Tag className="w-4 h-4" />
+              </div>
+              <input
+                id="register-referral"
+                type="text"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                placeholder="Contoh: XM-BUDI2026"
+                className="w-full bg-white border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 rounded-xl py-2.5 pl-10 pr-4 text-xs font-mono font-bold text-gray-900 outline-none transition-all uppercase placeholder:normal-case placeholder:font-normal"
+              />
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1">
+              Masukkan kode teman yang mengundang Anda (jika ada).
+            </p>
           </div>
 
           {/* Terms Checkbox */}

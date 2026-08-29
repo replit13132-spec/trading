@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Mail, User as UserIcon, Shield, RefreshCw, ChevronDown, Check, LogIn, UserPlus, LogOut, Bell, Clock } from 'lucide-react';
+import {
+  Mail,
+  User as UserIcon,
+  Shield,
+  RefreshCw,
+  ChevronDown,
+  Check,
+  LogIn,
+  UserPlus,
+  LogOut,
+  Bell,
+  Clock,
+  Gift,
+  Copy,
+  Share2,
+  Users,
+  Sparkles,
+} from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const {
@@ -21,6 +38,8 @@ export const Navbar: React.FC = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notificationsList, setNotificationsList] = useState<any[]>([]);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     fetch('/api/notifications')
@@ -32,6 +51,21 @@ export const Navbar: React.FC = () => {
       })
       .catch(() => {});
   }, [showNotifications]);
+
+  const handleCopyReferralCode = () => {
+    if (!currentUser?.referralCode) return;
+    navigator.clipboard.writeText(currentUser.referralCode);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyReferralLink = () => {
+    if (!currentUser?.referralCode) return;
+    const url = `${window.location.origin}?ref=${encodeURIComponent(currentUser.referralCode)}`;
+    navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   const spotTotalIdr = walletData?.totalIdr || 0;
   const compoundingTotalIdr = walletData?.totalCompoundingIdr || 0;
@@ -179,7 +213,7 @@ export const Navbar: React.FC = () => {
 
                 {/* Account Balances Summary (Synchronized with Wallet Screen) */}
                 {currentUser && (
-                  <div className="my-2.5 p-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs space-y-1.5">
+                  <div className="my-2 p-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs space-y-1.5">
                     <div className="flex justify-between items-center pb-1.5 border-b border-gray-200/60">
                       <span className="text-[11px] text-gray-600 font-bold">📈 Saldo Aset:</span>
                       <span className="font-extrabold text-violet-950 text-xs">
@@ -190,11 +224,64 @@ export const Navbar: React.FC = () => {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-emerald-800 text-[11px] pt-0.5 font-bold">
-                      <span>⚡ Profit:</span>
+                      <span>⚡ Profit Compounding:</span>
                       <span className="font-extrabold text-emerald-600">
                         {formatIdr(currentUser.compoundingProfitIdr || 0)}
                       </span>
                     </div>
+                  </div>
+                )}
+
+                {/* Unique Referral Code Section in User Menu */}
+                {currentUser && (
+                  <div className="my-2 p-2.5 bg-gradient-to-br from-violet-50 to-indigo-50/50 border border-violet-100/80 rounded-xl text-xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-violet-900 font-bold text-[11px]">
+                        <Gift className="w-3.5 h-3.5 text-violet-600" />
+                        <span>Kode Referral Saya</span>
+                      </div>
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 bg-violet-200/80 text-violet-900 rounded-full">
+                        Bonus 5%
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-white border border-violet-200 rounded-lg p-1.5 shadow-xs">
+                      <span className="font-mono font-extrabold text-xs text-violet-950 tracking-wider pl-1">
+                        {currentUser.referralCode || 'XM-BUDI2026'}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={handleCopyReferralCode}
+                          title="Salin Kode Referral"
+                          className="px-2 py-1 bg-violet-600 hover:bg-violet-700 active:scale-95 text-white rounded text-[10px] font-bold flex items-center gap-1 transition-all"
+                        >
+                          {copiedCode ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-300" />
+                              <span>Tersalin</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Salin</span>
+                            </>
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCopyReferralLink}
+                          title="Salin Link Pendaftaran"
+                          className="p-1 text-gray-500 hover:text-violet-700 hover:bg-violet-50 rounded transition-colors"
+                        >
+                          {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-[10px] text-gray-500 leading-tight">
+                      Dapatkan <strong className="text-violet-900 font-bold">5% komisi</strong> dari setiap deposit modal teman, langsung masuk ke Saldo <strong className="text-emerald-700 font-bold">Profit Compounding</strong>.
+                    </p>
                   </div>
                 )}
 
