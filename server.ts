@@ -2176,9 +2176,9 @@ app.post('/api/user/deposit', (req, res) => {
   }
 });
 
-// Penarikan Profit Compounding (Min Rp 100.000, kapan saja)
+// Penarikan Profit Compounding (Min Rp 100.000, kapan saja, verifikasi Admin)
 app.post('/api/user/withdraw-profit', (req, res) => {
-  const { amount, destination } = req.body;
+  const { amount, destination, bankName, accountNumber, accountHolder } = req.body;
   const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
@@ -2198,26 +2198,46 @@ app.post('/api/user/withdraw-profit', (req, res) => {
     });
   }
 
+  // Tahan / potong saldo sementara menunggu verifikasi Admin
   user.compoundingProfitIdr -= numAmount;
+
+  const destStr = destination || (bankName ? `${bankName} - ${accountNumber} (a/n ${accountHolder})` : 'Rekening Bank');
 
   const newTx = {
     id: 'tx_pft_' + Date.now(),
     userId: user.id,
+    userName: user.name,
+    userEmail: user.email,
+    userNik: user.nik,
     type: 'WITHDRAW_PROFIT',
     amount: numAmount,
     currency: 'IDR',
-    method: destination || 'Rekening Bank',
-    status: 'COMPLETED',
+    method: destStr,
+    bankName: bankName || '',
+    accountNumber: accountNumber || '',
+    accountHolder: accountHolder || '',
+    status: 'PENDING',
     timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    description: `Penarikan Profit Compounding Rp ${numAmount.toLocaleString('id-ID')} ke ${destination || 'Rekening Bank'}`,
+    description: `Pengajuan Penarikan Profit Compounding Rp ${numAmount.toLocaleString('id-ID')} ke ${destStr} (Menunggu Verifikasi & Transfer Admin)`,
   };
   transactions.unshift(newTx);
+  saveDatabase();
+
+  // Kirim notifikasi ke user
+  notifications.unshift({
+    id: 'notif_' + Date.now(),
+    title: '⏳ Pengajuan Penarikan Profit Diproses',
+    message: `Pengajuan penarikan profit sebesar Rp ${numAmount.toLocaleString('id-ID')} ke ${destStr} berhasil diajukan dan sedang menunggu verifikasi & transfer Admin.`,
+    type: 'info',
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+    target: user.id,
+  });
 
   res.json({
     success: true,
     data: newTx,
     user,
-    message: `Penarikan profit sebesar Rp ${numAmount.toLocaleString('id-ID')} berhasil diproses!`,
+    message: `Pengajuan penarikan profit sebesar Rp ${numAmount.toLocaleString('id-ID')} berhasil dikirim! Menunggu verifikasi & transfer dari Admin.`,
   });
 });
 
@@ -2268,6 +2288,7 @@ app.post('/api/user/recompound-profit', (req, res) => {
     description: `Profit Rp ${recompoundAmount.toLocaleString('id-ID')} digabungkan kembali ke Modal Awal (ASET). Sekarang ikut compounding 1%/hari.`,
   };
   transactions.unshift(newTx);
+  saveDatabase();
 
   res.json({
     success: true,
@@ -2277,9 +2298,9 @@ app.post('/api/user/recompound-profit', (req, res) => {
   });
 });
 
-// Penarikan Modal Pokok (ASET) - Terkunci 3 Bulan sejak tanggal setor
+// Penarikan Modal Pokok (ASET) - Terkunci 3 Bulan sejak tanggal setor (Verifikasi Admin)
 app.post('/api/user/withdraw-capital', (req, res) => {
-  const { amount, destination } = req.body;
+  const { amount, destination, bankName, accountNumber, accountHolder } = req.body;
   const user = resolveUser(req);
   if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
@@ -2311,7 +2332,7 @@ app.post('/api/user/withdraw-capital', (req, res) => {
     }
   }
 
-  if (unlockedCapital < numAmount) {
+  if (unlockedCapital < numAmount && batches.length > 0) {
     lockedBatches.sort((a, b) => new Date(a.unlockDate).getTime() - new Date(b.unlockDate).getTime());
     const earliestUnlock = lockedBatches.length > 0 ? new Date(lockedBatches[0].unlockDate) : new Date(now.getTime() + 90*24*60*60*1000);
     const dateFormatted = earliestUnlock.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -2322,26 +2343,49 @@ app.post('/api/user/withdraw-capital', (req, res) => {
     });
   }
 
+  // Tahan / potong saldo modal pokok sementara menunggu verifikasi Admin
   user.compoundingBalances.idr -= numAmount;
+  if (user.compoundCapital !== undefined) {
+    user.compoundCapital = Math.max(0, user.compoundCapital - numAmount);
+  }
+
+  const destStr = destination || (bankName ? `${bankName} - ${accountNumber} (a/n ${accountHolder})` : 'Rekening Bank');
 
   const newTx = {
     id: 'tx_cap_' + Date.now(),
     userId: user.id,
+    userName: user.name,
+    userEmail: user.email,
+    userNik: user.nik,
     type: 'WITHDRAW_CAPITAL',
     amount: numAmount,
     currency: 'IDR',
-    method: destination || 'Rekening Bank',
-    status: 'COMPLETED',
+    method: destStr,
+    bankName: bankName || '',
+    accountNumber: accountNumber || '',
+    accountHolder: accountHolder || '',
+    status: 'PENDING',
     timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    description: `Penarikan Modal Pokok (ASET) Rp ${numAmount.toLocaleString('id-ID')} ke ${destination || 'Rekening Bank'}`,
+    description: `Pengajuan Penarikan Modal Pokok (ASET) Rp ${numAmount.toLocaleString('id-ID')} ke ${destStr} (Menunggu Verifikasi & Transfer Admin)`,
   };
   transactions.unshift(newTx);
+  saveDatabase();
+
+  // Kirim notifikasi ke user
+  notifications.unshift({
+    id: 'notif_' + Date.now(),
+    title: '⏳ Pengajuan Penarikan Modal Pokok Diproses',
+    message: `Pengajuan penarikan modal pokok sebesar Rp ${numAmount.toLocaleString('id-ID')} ke ${destStr} berhasil diajukan dan sedang menunggu verifikasi & transfer Admin.`,
+    type: 'info',
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+    target: user.id,
+  });
 
   res.json({
     success: true,
     data: newTx,
     user,
-    message: `Penarikan modal pokok Rp ${numAmount.toLocaleString('id-ID')} berhasil diproses!`,
+    message: `Pengajuan penarikan modal pokok sebesar Rp ${numAmount.toLocaleString('id-ID')} berhasil diajukan! Menunggu verifikasi & transfer dari Admin.`,
   });
 });
 
@@ -3388,6 +3432,67 @@ app.put('/api/admin/users/:id/referral-code', (req, res) => {
   user.referralCode = cleanCode;
   saveDatabase();
   res.json({ success: true, data: user, message: `Kode referral ${user.name} berhasil diubah menjadi ${cleanCode}` });
+});
+
+// 7.2. Admin Withdrawals Management Endpoint
+app.get('/api/admin/withdrawals', (req, res) => {
+  const withdrawalTxs = transactions.filter(
+    (t) => t.type === 'WITHDRAW' || t.type === 'WITHDRAW_PROFIT' || t.type === 'WITHDRAW_CAPITAL'
+  );
+
+  const enrichedWithdrawals = withdrawalTxs.map((t) => {
+    const user = users.find((u) => u.id === t.userId);
+    return {
+      ...t,
+      userName: user ? user.name : t.userName || 'Pengguna',
+      userEmail: user ? user.email : t.userEmail || '-',
+      userPhone: user?.phone || '-',
+      userNik: user?.nik || t.userNik || '-',
+      userCurrentProfitIdr: user?.compoundingProfitIdr || 0,
+      userCurrentCapitalIdr: user?.compoundingBalances?.idr || 0,
+      userCurrentBalances: user?.balances || { idr: 0, usdt: 0 },
+      capitalBatches: user?.capitalBatches || [],
+    };
+  });
+
+  const pendingList = enrichedWithdrawals.filter((t) => t.status === 'PENDING');
+  const completedList = enrichedWithdrawals.filter((t) => t.status === 'COMPLETED');
+  const rejectedList = enrichedWithdrawals.filter((t) => t.status === 'REJECTED');
+
+  const totalPendingAmountIdr = pendingList.reduce(
+    (acc, t) => acc + (t.currency === 'USDT' ? Number(t.amount) * 17584 : Number(t.amount)),
+    0
+  );
+
+  const totalProfitWithdrawnIdr = completedList
+    .filter((t) => t.type === 'WITHDRAW_PROFIT')
+    .reduce((acc, t) => acc + Number(t.amount), 0);
+
+  const totalCapitalWithdrawnIdr = completedList
+    .filter((t) => t.type === 'WITHDRAW_CAPITAL')
+    .reduce((acc, t) => acc + Number(t.amount), 0);
+
+  const totalCompletedAmountIdr = completedList.reduce(
+    (acc, t) => acc + (t.currency === 'USDT' ? Number(t.amount) * 17584 : Number(t.amount)),
+    0
+  );
+
+  res.json({
+    success: true,
+    data: {
+      stats: {
+        totalPendingCount: pendingList.length,
+        totalPendingAmountIdr,
+        totalProfitWithdrawnIdr,
+        totalCapitalWithdrawnIdr,
+        totalCompletedAmountIdr,
+        totalCompletedCount: completedList.length,
+        totalRejectedCount: rejectedList.length,
+        totalAllCount: enrichedWithdrawals.length,
+      },
+      withdrawals: enrichedWithdrawals,
+    },
+  });
 });
 
 // 8. CMS: News Articles CRUD

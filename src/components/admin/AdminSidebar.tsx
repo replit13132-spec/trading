@@ -29,6 +29,7 @@ export type AdminTab =
   | 'referrals'
   | 'accounts'
   | 'finance'
+  | 'withdrawals'
   | 'compounding'
   | 'cms'
   | 'notifications'
@@ -97,11 +98,19 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     },
     {
       id: 'finance' as AdminTab,
-      label: 'Keuangan & Bukti Transfer',
-      shortLabel: 'Keuangan',
+      label: 'Deposit & Bukti Transfer',
+      shortLabel: 'Deposit',
       icon: CreditCard,
-      badge: stats?.pendingDeposits ? `${stats.pendingDeposits} Verifikasi` : null,
+      badge: stats?.pendingDeposits ? `${stats.pendingDeposits} Deposit` : null,
       badgeColor: 'bg-violet-500/20 text-violet-400 border border-violet-500/30 animate-pulse',
+    },
+    {
+      id: 'withdrawals' as AdminTab,
+      label: 'Verifikasi Penarikan (WD)',
+      shortLabel: 'Penarikan',
+      icon: ArrowUpRight,
+      badge: 'Profit & Aset',
+      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
     },
     {
       id: 'compounding' as AdminTab,

@@ -44,9 +44,9 @@ interface AppContextType {
   closeFuturesPosition: (id: string) => Promise<{ success: boolean; message?: string }>;
   depositFunds: (amount: number, currency: 'IDR' | 'USDT', method: string, proofImage?: string, note?: string) => Promise<{ success: boolean; message?: string; transaction?: any }>;
   withdrawFunds: (amount: number, currency: 'IDR' | 'USDT', destination: string) => Promise<{ success: boolean; message?: string }>;
-  withdrawProfit: (amount: number, destination: string) => Promise<{ success: boolean; message?: string }>;
+  withdrawProfit: (amount: number, destination: string, bankDetails?: { bankName?: string; accountNumber?: string; accountHolder?: string }) => Promise<{ success: boolean; message?: string }>;
   recompoundProfit: (amount?: number) => Promise<{ success: boolean; message?: string }>;
-  withdrawCapital: (amount: number, destination: string) => Promise<{ success: boolean; message?: string }>;
+  withdrawCapital: (amount: number, destination: string, bankDetails?: { bankName?: string; accountNumber?: string; accountHolder?: string }) => Promise<{ success: boolean; message?: string }>;
   transferFunds: (from: string, to: string, amount: number, currency: string) => Promise<{ success: boolean; message?: string }>;
   updateMarketPrice: (symbol: string, newPriceUsdt: number, change24h?: number) => Promise<boolean>;
   createMarketAsset: (asset: any) => Promise<boolean>;
@@ -555,12 +555,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const withdrawProfit = async (amount: number, destination: string) => {
+  const withdrawProfit = async (
+    amount: number,
+    destination: string,
+    bankDetails?: { bankName?: string; accountNumber?: string; accountHolder?: string }
+  ) => {
     try {
       const res = await fetch('/api/user/withdraw-profit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-        body: JSON.stringify({ amount, destination }),
+        body: JSON.stringify({
+          amount,
+          destination,
+          bankName: bankDetails?.bankName,
+          accountNumber: bankDetails?.accountNumber,
+          accountHolder: bankDetails?.accountHolder,
+        }),
       });
       const data = await safeParseResponse(res);
       if (data.success) {
@@ -591,12 +601,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const withdrawCapital = async (amount: number, destination: string) => {
+  const withdrawCapital = async (
+    amount: number,
+    destination: string,
+    bankDetails?: { bankName?: string; accountNumber?: string; accountHolder?: string }
+  ) => {
     try {
       const res = await fetch('/api/user/withdraw-capital', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-        body: JSON.stringify({ amount, destination }),
+        body: JSON.stringify({
+          amount,
+          destination,
+          bankName: bankDetails?.bankName,
+          accountNumber: bankDetails?.accountNumber,
+          accountHolder: bankDetails?.accountHolder,
+        }),
       });
       const data = await safeParseResponse(res);
       if (data.success) {

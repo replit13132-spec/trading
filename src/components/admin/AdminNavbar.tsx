@@ -75,8 +75,12 @@ export const AdminNavbar: React.FC<AdminNavbarProps> = ({
       subtitle: 'Kelola daftar rekening bank tujuan transfer deposit, virtual account, dan QRIS.',
     },
     finance: {
-      title: 'Audit Keuangan & Transaksi',
-      subtitle: 'Verifikasi deposit masuk, persetujuan penarikan rupiah/kripto, dan mutasi saldo.',
+      title: 'Deposit & Bukti Transfer Pengguna',
+      subtitle: 'Verifikasi bukti transfer deposit masuk, ACC top up saldo, dan mutasi saldo.',
+    },
+    withdrawals: {
+      title: 'Verifikasi Penarikan Dana (Withdrawal)',
+      subtitle: 'Verifikasi rekening bank pemohon, persetujuan penarikan profit & modal pokok (Aset), dan eksekusi transfer.',
     },
     compounding: {
       title: 'Compounding & Bunga Harian',

@@ -8,6 +8,7 @@ import { AdminUsers } from './admin/AdminUsers';
 import { AdminReferrals } from './admin/AdminReferrals';
 import { AdminAccounts } from './admin/AdminAccounts';
 import { AdminFinance } from './admin/AdminFinance';
+import { AdminWithdrawals } from './admin/AdminWithdrawals';
 import { AdminCompounding } from './admin/AdminCompounding';
 import { AdminCMS } from './admin/AdminCMS';
 import { AdminNotifications } from './admin/AdminNotifications';
@@ -88,6 +89,8 @@ export const AdminDashboard: React.FC = () => {
           {activeTab === 'accounts' && <AdminAccounts onRefresh={fetchStats} />}
 
           {activeTab === 'finance' && <AdminFinance onRefresh={fetchStats} />}
+
+          {activeTab === 'withdrawals' && <AdminWithdrawals onRefresh={fetchStats} />}
 
           {activeTab === 'compounding' && <AdminCompounding onRefresh={fetchStats} />}
 
