@@ -19,6 +19,7 @@ import {
   Clock,
   Sparkles,
   Percent,
+  Share2,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -76,6 +77,7 @@ export const AdminReferrals: React.FC<AdminReferralsProps> = ({ onRefresh }) => 
   const [filterType, setFilterType] = useState<'ALL' | 'HAS_DOWNLINES' | 'HAS_UPLINE'>('ALL');
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   // Edit Referral Code Modal State
   const [editingUser, setEditingUser] = useState<ReferralUser | null>(null);
@@ -108,6 +110,14 @@ export const AdminReferrals: React.FC<AdminReferralsProps> = ({ onRefresh }) => 
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  const handleCopyLink = (code: string) => {
+    if (!code) return;
+    const url = `https://www.xmoney.web.id/?ref=${encodeURIComponent(code)}`;
+    navigator.clipboard.writeText(url);
+    setCopiedLink(code);
+    setTimeout(() => setCopiedLink(null), 2000);
   };
 
   const handleOpenEditModal = (user: ReferralUser) => {
@@ -378,13 +388,25 @@ export const AdminReferrals: React.FC<AdminReferralsProps> = ({ onRefresh }) => 
                         <button
                           type="button"
                           onClick={() => handleCopy(user.referralCode)}
-                          title="Salin Kode"
+                          title="Salin Kode Referral"
                           className="p-1 hover:bg-violet-200/60 rounded text-violet-700 transition-colors ml-0.5"
                         >
                           {copiedCode === user.referralCode ? (
                             <Check className="w-3.5 h-3.5 text-emerald-600" />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyLink(user.referralCode)}
+                          title="Salin Link Landing Page (https://www.xmoney.web.id/?ref=...)"
+                          className="p-1 hover:bg-violet-200/60 rounded text-violet-700 transition-colors"
+                        >
+                          {copiedLink === user.referralCode ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          ) : (
+                            <Share2 className="w-3.5 h-3.5" />
                           )}
                         </button>
                       </div>

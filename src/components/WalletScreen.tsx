@@ -52,7 +52,7 @@ export const WalletScreen: React.FC = () => {
 
   const handleCopyLink = () => {
     if (!currentUser?.referralCode) return;
-    const url = `${window.location.origin}?ref=${encodeURIComponent(currentUser.referralCode)}`;
+    const url = `https://www.xmoney.web.id/?ref=${encodeURIComponent(currentUser.referralCode)}`;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);

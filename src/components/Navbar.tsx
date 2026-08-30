@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
 
   const handleCopyReferralLink = () => {
     if (!currentUser?.referralCode) return;
-    const url = `${window.location.origin}?ref=${encodeURIComponent(currentUser.referralCode)}`;
+    const url = `https://www.xmoney.web.id/?ref=${encodeURIComponent(currentUser.referralCode)}`;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
@@ -271,7 +271,7 @@ export const Navbar: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleCopyReferralLink}
-                          title="Salin Link Pendaftaran"
+                          title="Salin Link Landing Page (https://www.xmoney.web.id/?ref=...)"
                           className="p-1 text-gray-500 hover:text-violet-700 hover:bg-violet-50 rounded transition-colors"
                         >
                           {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
