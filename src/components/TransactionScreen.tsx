@@ -79,27 +79,73 @@ export const TransactionScreen: React.FC = () => {
   const compoundingProfit = walletData?.compoundingProfitIdr ?? currentUser?.compoundingProfitIdr ?? 0;
   const compoundingCapital = walletData?.compoundingBalances?.idr ?? currentUser?.compoundingBalances?.idr ?? 0;
 
-  // Helper date formatter in Indonesian
-  const formatDateTimeIndo = (dateStr: string) => {
-    try {
-      const d = new Date(dateStr);
-      if (isNaN(d.getTime())) {
-        return { date: '24', day: 'Senin', month: 'Agustus 2026', time: '12:00', full: '24 Agustus 2026 12:00' };
-      }
-      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-      const months = [
-        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-      ];
+  // Helper date formatter in Indonesian with robust multi-format parsing
+  const formatDateTimeIndo = (dateStr: any) => {
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    const formatFromDate = (d: Date) => {
+      const date = String(d.getDate()).padStart(2, '0');
+      const day = days[d.getDay()];
+      const month = `${months[d.getMonth()]} ${d.getFullYear()}`;
+      const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      const full = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} ${time}`;
       return {
-        date: String(d.getDate()).padStart(2, '0'),
-        day: days[d.getDay()],
-        month: `${months[d.getMonth()]} ${d.getFullYear()}`,
-        full: `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+        date,
+        day,
+        month,
+        time,
+        full,
         year: d.getFullYear(),
       };
+    };
+
+    try {
+      if (!dateStr) {
+        return formatFromDate(new Date());
+      }
+
+      // 1. Check if numeric or timestamp number
+      if (typeof dateStr === 'number' || (/^\d+$/.test(String(dateStr)) && String(dateStr).length >= 10)) {
+        const d = new Date(Number(dateStr));
+        if (!isNaN(d.getTime())) return formatFromDate(d);
+      }
+
+      const str = String(dateStr).trim();
+
+      // 2. Direct Date constructor attempt
+      let d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        return formatFromDate(d);
+      }
+
+      // 3. Try replacing space with T for ISO-like "YYYY-MM-DD HH:mm:ss"
+      d = new Date(str.replace(' ', 'T'));
+      if (!isNaN(d.getTime())) {
+        return formatFromDate(d);
+      }
+
+      // 4. Try parsing Indonesian format: "DD/MM/YYYY, HH:mm:ss" or "DD/MM/YYYY HH.mm.ss" or "DD-MM-YYYY"
+      const idMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:[,\s]+(\d{1,2})[.:](\d{1,2})(?:[.:](\d{1,2}))?)?/);
+      if (idMatch) {
+        const day = parseInt(idMatch[1], 10);
+        const month = parseInt(idMatch[2], 10) - 1;
+        const year = parseInt(idMatch[3], 10);
+        const hour = idMatch[4] ? parseInt(idMatch[4], 10) : 0;
+        const minute = idMatch[5] ? parseInt(idMatch[5], 10) : 0;
+        const second = idMatch[6] ? parseInt(idMatch[6], 10) : 0;
+        d = new Date(year, month, day, hour, minute, second);
+        if (!isNaN(d.getTime())) {
+          return formatFromDate(d);
+        }
+      }
+
+      return formatFromDate(new Date());
     } catch {
-      return { date: '24', day: 'Senin', month: 'Agustus 2026', time: '12:00', full: '24 Agustus 2026 12:00' };
+      return formatFromDate(new Date());
     }
   };
 

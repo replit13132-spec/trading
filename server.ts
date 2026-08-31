@@ -1494,7 +1494,7 @@ function distributeCompoundingYield(triggeredBy: string = 'SYSTEM_CRON_00_00_WIB
   let recipientsCount = 0;
 
   const now = new Date();
-  const timestampStr = now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+  const timestampStr = now.toISOString().replace('T', ' ').substring(0, 19);
 
   users.forEach((user) => {
     // Check role filter
