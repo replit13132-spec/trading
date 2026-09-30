@@ -3171,20 +3171,48 @@ app.post('/api/admin/transactions/create', (req, res) => {
 
 // Handler for Transaction Status Update (ACC/Reject Deposit & Withdrawal)
 const handleTransactionStatusUpdate = (req: any, res: any) => {
-  const txId = req.params?.id || req.body?.id || req.query?.id;
-  if (!txId) {
-    return res.status(400).json({ success: false, message: 'ID transaksi wajib disertakan' });
+  let txId =
+    req.params?.id ||
+    req.params?.txId ||
+    req.body?.id ||
+    req.body?.txId ||
+    req.body?.transactionId ||
+    req.body?.data?.id ||
+    req.query?.id ||
+    req.query?.txId;
+
+  let tx: any = null;
+  if (txId) {
+    tx = transactions.find(
+      (t) => String(t.id).toLowerCase() === String(txId).toLowerCase()
+    );
   }
 
-  const tx = transactions.find((t) => String(t.id) === String(txId));
+  // If not found by param/body, inspect URL path segments to see if any segment matches an existing transaction ID
   if (!tx) {
-    return res.status(404).json({ success: false, message: `Transaksi dengan ID ${txId} tidak ditemukan` });
+    const rawUrl = req.originalUrl || req.url || req.path || '';
+    const segments = rawUrl.split(/[/?#]/).filter(Boolean);
+    for (const segment of segments) {
+      const found = transactions.find(
+        (t) => String(t.id).toLowerCase() === String(segment).toLowerCase()
+      );
+      if (found) {
+        tx = found;
+        txId = tx.id;
+        break;
+      }
+    }
   }
 
-  const { status, adminNote } = req.body;
-  if (!status) {
-    return res.status(400).json({ success: false, message: 'Status baru wajib disertakan' });
+  if (!tx) {
+    return res.status(404).json({
+      success: false,
+      message: `Transaksi dengan ID ${txId || 'tidak dikenal'} tidak ditemukan`,
+    });
   }
+
+  const status = req.body?.status || req.query?.status || 'COMPLETED';
+  const adminNote = req.body?.adminNote || req.query?.adminNote || '';
 
   const previousStatus = tx.status;
   tx.status = status;
@@ -3375,13 +3403,42 @@ const handleTransactionStatusUpdate = (req: any, res: any) => {
   });
 };
 
-// Wire both URL param and body/query based routes to guarantee zero 404s
-app.put('/api/admin/transactions/:id/status', handleTransactionStatusUpdate);
-app.post('/api/admin/transactions/:id/status', handleTransactionStatusUpdate);
-app.put('/api/admin/transactions/status', handleTransactionStatusUpdate);
-app.post('/api/admin/transactions/status', handleTransactionStatusUpdate);
-app.put('/api/admin/transactions/update-status', handleTransactionStatusUpdate);
-app.post('/api/admin/transactions/update-status', handleTransactionStatusUpdate);
+// Wire all URL param, body, and query based routes to guarantee zero 404s
+const txStatusRoutes = [
+  '/api/admin/transactions/:id/status',
+  '/api/admin/transactions/status/:id',
+  '/api/admin/transactions/status',
+  '/api/admin/transactions/:id',
+  '/api/admin/transactions',
+  '/api/admin/transactions/update-status',
+  '/api/admin/withdrawals/:id/status',
+  '/api/admin/withdrawals/status/:id',
+  '/api/admin/withdrawals/status',
+  '/api/admin/withdrawals/:id',
+  '/api/admin/withdrawals',
+  '/api/transactions/:id/status',
+  '/api/transactions/status/:id',
+  '/api/transactions/status',
+  '/api/transactions/:id',
+  '/api/transactions',
+  // Non-/api aliases (for custom Nginx proxy without path rewrite)
+  '/admin/transactions/:id/status',
+  '/admin/transactions/status/:id',
+  '/admin/transactions/status',
+  '/admin/transactions/:id',
+  '/admin/transactions',
+  '/admin/withdrawals/:id/status',
+  '/admin/withdrawals/status/:id',
+  '/admin/withdrawals/status',
+  '/admin/withdrawals/:id',
+  '/admin/withdrawals',
+];
+
+txStatusRoutes.forEach((route) => {
+  app.put(route, handleTransactionStatusUpdate);
+  app.post(route, handleTransactionStatusUpdate);
+  app.patch(route, handleTransactionStatusUpdate);
+});
 
 app.delete('/api/admin/transactions/:id', (req, res) => {
   const idx = transactions.findIndex((t) => t.id === req.params.id);

@@ -97,25 +97,53 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
   const handleStatusUpdate = async (txId: string, newStatus: 'COMPLETED' | 'REJECTED') => {
     setIsProcessingAction(true);
     try {
-      const res = await fetch(`/api/admin/transactions/${encodeURIComponent(txId)}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: txId,
-          status: newStatus,
-          adminNote: adminNote.trim() || undefined,
-        }),
-      });
+      const payload = {
+        id: txId,
+        txId: txId,
+        status: newStatus,
+        adminNote: adminNote.trim() || undefined,
+      };
 
-      let data: any = {};
-      try {
-        data = await res.json();
-      } catch (err) {
-        // Fallback if not json
-        data = { success: res.ok, message: res.statusText };
+      const candidateUrls = [
+        `/api/admin/transactions/${encodeURIComponent(txId)}/status`,
+        `/api/admin/transactions/status`,
+        `/api/admin/transactions/${encodeURIComponent(txId)}`,
+        `/api/admin/transactions`,
+        `/api/admin/withdrawals/${encodeURIComponent(txId)}/status`,
+        `/api/admin/withdrawals/status`,
+      ];
+
+      let lastError = '';
+      let isSuccess = false;
+
+      for (const url of candidateUrls) {
+        try {
+          const res = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json().catch(() => null);
+
+          if (res.ok && data?.success) {
+            isSuccess = true;
+            break;
+          } else if (res.status === 404) {
+            // If 404, try next candidate route
+            lastError = data?.message || `404 Not Found pada ${url}`;
+            continue;
+          } else {
+            // Other status code (e.g. 400 validation error)
+            lastError = data?.message || `Error status ${res.status}`;
+            break;
+          }
+        } catch (fetchErr: any) {
+          lastError = fetchErr?.message || 'Gagal menghubungi server';
+        }
       }
 
-      if (res.ok && data.success) {
+      if (isSuccess) {
         setToastMessage({
           text:
             newStatus === 'COMPLETED'
@@ -130,7 +158,7 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
         if (onRefresh) onRefresh();
         setTimeout(() => setToastMessage(null), 4500);
       } else {
-        alert(data.message || 'Gagal memperbarui status penarikan');
+        alert(lastError || 'Gagal memperbarui status penarikan');
       }
     } catch (e: any) {
       alert(e.message || 'Terjadi kesalahan sistem saat memproses transaksi');
