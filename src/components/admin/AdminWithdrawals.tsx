@@ -76,7 +76,20 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
   }, []);
 
   const handleCopyText = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
+    try {
+      if (navigator?.clipboard?.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+    } catch (e) {
+      console.warn('Failed to copy to clipboard', e);
+    }
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -84,7 +97,7 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
   const handleStatusUpdate = async (txId: string, newStatus: 'COMPLETED' | 'REJECTED') => {
     setIsProcessingAction(true);
     try {
-      const res = await fetch('/api/admin/transactions/status', {
+      const res = await fetch(`/api/admin/transactions/${encodeURIComponent(txId)}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -93,9 +106,16 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
           adminNote: adminNote.trim() || undefined,
         }),
       });
-      const data = await res.json();
 
-      if (data.success) {
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (err) {
+        // Fallback if not json
+        data = { success: res.ok, message: res.statusText };
+      }
+
+      if (res.ok && data.success) {
         setToastMessage({
           text:
             newStatus === 'COMPLETED'
@@ -106,14 +126,14 @@ export const AdminWithdrawals: React.FC<AdminWithdrawalsProps> = ({ onRefresh })
         setSelectedWd(null);
         setActionType(null);
         setAdminNote('');
-        fetchWithdrawals();
-        onRefresh();
+        await fetchWithdrawals();
+        if (onRefresh) onRefresh();
         setTimeout(() => setToastMessage(null), 4500);
       } else {
         alert(data.message || 'Gagal memperbarui status penarikan');
       }
     } catch (e: any) {
-      alert(e.message || 'Terjadi kesalahan');
+      alert(e.message || 'Terjadi kesalahan sistem saat memproses transaksi');
     } finally {
       setIsProcessingAction(false);
     }

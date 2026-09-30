@@ -6,7 +6,7 @@ import { Pool } from 'pg';
 import { createServer as createViteServer } from 'vite';
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -1456,6 +1456,61 @@ async function initDatabase() {
       },
     };
     users.push(newAdmin);
+  }
+
+  // 2.6. Seed sample pending withdrawals if transactions list is empty so Admin has queue to verify
+  if (transactions.length === 0) {
+    const regularUser = users.find((u) => u.role !== 'admin') || users[0];
+    const now = new Date();
+    transactions = [
+      {
+        id: 'tx_wd_sample_1',
+        userId: regularUser.id,
+        userName: regularUser.name,
+        userEmail: regularUser.email,
+        userNik: regularUser.nik || '3171012345670001',
+        type: 'WITHDRAW_PROFIT',
+        amount: 750000,
+        currency: 'IDR',
+        method: 'BCA - 8830192819 (a/n ' + regularUser.name + ')',
+        bankName: 'BCA',
+        accountNumber: '8830192819',
+        accountHolder: regularUser.name,
+        status: 'PENDING',
+        timestamp: now.toISOString().replace('T', ' ').substring(0, 19),
+        description: `Pengajuan Penarikan Profit Compounding Rp 750.000 ke BCA - 8830192819 (Menunggu Verifikasi & Transfer Admin)`,
+      },
+      {
+        id: 'tx_wd_sample_2',
+        userId: regularUser.id,
+        userName: regularUser.name,
+        userEmail: regularUser.email,
+        userNik: regularUser.nik || '3171012345670001',
+        type: 'WITHDRAW_CAPITAL',
+        amount: 5000000,
+        currency: 'IDR',
+        method: 'Mandiri - 1370019283741 (a/n ' + regularUser.name + ')',
+        bankName: 'Mandiri',
+        accountNumber: '1370019283741',
+        accountHolder: regularUser.name,
+        status: 'PENDING',
+        timestamp: new Date(now.getTime() - 3600 * 1000).toISOString().replace('T', ' ').substring(0, 19),
+        description: `Pengajuan Penarikan Modal Pokok (ASET) Rp 5.000.000 ke Mandiri - 1370019283741 (Menunggu Verifikasi & Transfer Admin)`,
+      },
+      {
+        id: 'tx_dep_sample_1',
+        userId: regularUser.id,
+        userName: regularUser.name,
+        userEmail: regularUser.email,
+        type: 'DEPOSIT',
+        amount: 10000000,
+        currency: 'IDR',
+        method: 'BCA Virtual Account',
+        status: 'COMPLETED',
+        timestamp: new Date(now.getTime() - 86400 * 1000 * 10).toISOString().replace('T', ' ').substring(0, 19),
+        description: 'Deposit Rp 10.000.000 diverifikasi & disetujui Admin. Dana langsung masuk ke Saldo Aset',
+      },
+    ];
   }
 
   // 3. Save database state (this ensures any sanitized or initialized data is stored back)
@@ -3114,13 +3169,29 @@ app.post('/api/admin/transactions/create', (req, res) => {
   res.json({ success: true, data: newTx, message: 'Transaksi manual berhasil dicatat!' });
 });
 
-app.put('/api/admin/transactions/:id/status', (req, res) => {
-  const tx = transactions.find((t) => t.id === req.params.id);
-  if (!tx) return res.status(404).json({ success: false, message: 'Transaksi tidak ditemukan' });
+// Handler for Transaction Status Update (ACC/Reject Deposit & Withdrawal)
+const handleTransactionStatusUpdate = (req: any, res: any) => {
+  const txId = req.params?.id || req.body?.id || req.query?.id;
+  if (!txId) {
+    return res.status(400).json({ success: false, message: 'ID transaksi wajib disertakan' });
+  }
 
-  const { status } = req.body;
+  const tx = transactions.find((t) => String(t.id) === String(txId));
+  if (!tx) {
+    return res.status(404).json({ success: false, message: `Transaksi dengan ID ${txId} tidak ditemukan` });
+  }
+
+  const { status, adminNote } = req.body;
+  if (!status) {
+    return res.status(400).json({ success: false, message: 'Status baru wajib disertakan' });
+  }
+
   const previousStatus = tx.status;
-  if (status) tx.status = status;
+  tx.status = status;
+  if (adminNote) {
+    tx.adminNote = adminNote;
+  }
+  tx.updatedAt = new Date().toISOString();
 
   const user = users.find((u) => u.id === tx.userId);
 
@@ -3133,7 +3204,7 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
 
       const now = new Date();
       const unlockDate = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000); // 3 bulan (90 hari)
-      const txAmount = Number(tx.amount);
+      const txAmount = Number(tx.amount) || 0;
 
       if (tx.currency === 'IDR' || !tx.currency) {
         user.balances.idr = (user.balances.idr || 0) + txAmount;
@@ -3225,7 +3296,7 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
       notifications.unshift({
         id: 'notif_' + Date.now(),
         title: '❌ Deposit Ditolak',
-        message: `Setoran dana sebesar ${tx.currency === 'USDT' ? tx.amount + ' USDT' : 'Rp ' + Number(tx.amount).toLocaleString('id-ID')} ditolak Admin. Pastikan bukti transfer valid dan nomor rekening sesuai.`,
+        message: `Setoran dana sebesar ${tx.currency === 'USDT' ? tx.amount + ' USDT' : 'Rp ' + Number(tx.amount).toLocaleString('id-ID')} ditolak Admin.${adminNote ? ` Alasan: ${adminNote}.` : ''} Pastikan bukti transfer valid dan nomor rekening sesuai.`,
         type: 'error',
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
         target: user.id,
@@ -3234,13 +3305,19 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
   }
 
   // 3. APPROVING A PENDING WITHDRAWAL -> Status selesai & notifikasi
-  if ((tx.type === 'WITHDRAW' || tx.type === 'WITHDRAW_PROFIT' || tx.type === 'WITHDRAW_CAPITAL') && previousStatus === 'PENDING' && status === 'COMPLETED') {
-    if (user) {
-      const txAmount = Number(tx.amount);
+  const isWithdrawalType =
+    tx.type === 'WITHDRAW' ||
+    tx.type === 'WITHDRAW_PROFIT' ||
+    tx.type === 'WITHDRAW_CAPITAL' ||
+    (typeof tx.type === 'string' && tx.type.includes('WITHDRAW'));
+
+  if (isWithdrawalType && status === 'COMPLETED') {
+    if (user && previousStatus !== 'COMPLETED') {
+      const txAmount = Number(tx.amount) || 0;
       notifications.unshift({
         id: 'notif_' + Date.now(),
         title: '💸 Penarikan Dana Berhasil',
-        message: `Penarikan dana sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} telah disetujui Admin dan telah ditransfer ke rekening bank / wallet tujuan Anda.`,
+        message: `Penarikan dana sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} telah disetujui Admin dan telah ditransfer ke rekening bank / wallet tujuan Anda.${adminNote ? ` (Catatan Admin: ${adminNote})` : ''}`,
         type: 'success',
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
         target: user.id,
@@ -3249,11 +3326,12 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
   }
 
   // 4. REJECTING A PENDING WITHDRAWAL -> Otomatis REFUND saldo kembali ke akun user!
-  if ((tx.type === 'WITHDRAW' || tx.type === 'WITHDRAW_PROFIT' || tx.type === 'WITHDRAW_CAPITAL') && previousStatus === 'PENDING' && status === 'REJECTED') {
+  if (isWithdrawalType && previousStatus === 'PENDING' && status === 'REJECTED') {
     if (user) {
-      const txAmount = Number(tx.amount);
+      const txAmount = Number(tx.amount) || 0;
 
       if (tx.type === 'WITHDRAW') {
+        if (!user.balances) user.balances = { idr: 0, usdt: 0 };
         if (tx.currency === 'IDR' || !tx.currency) {
           user.balances.idr = (user.balances.idr || 0) + txAmount;
           user.walletCash = (user.walletCash || 0) + txAmount;
@@ -3266,18 +3344,23 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
       } else if (tx.type === 'WITHDRAW_CAPITAL') {
         if (!user.compoundingBalances) user.compoundingBalances = { idr: 0, usdt: 0, tokens: {} };
         user.compoundingBalances.idr = (user.compoundingBalances.idr || 0) + txAmount;
+        if (user.compoundCapital !== undefined) {
+          user.compoundCapital = (user.compoundCapital || 0) + txAmount;
+        }
       }
 
       notifications.unshift({
         id: 'notif_' + Date.now(),
         title: '⚠️ Penarikan Ditolak (Saldo Dikembalikan)',
-        message: `Pengajuan penarikan sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} ditolak Admin. Saldo telah dikembalikan secara utuh ke akun Anda.`,
+        message: `Pengajuan penarikan sebesar ${tx.currency === 'USDT' ? txAmount + ' USDT' : 'Rp ' + txAmount.toLocaleString('id-ID')} ditolak Admin.${adminNote ? ` Alasan: ${adminNote}.` : ''} Saldo telah dikembalikan secara utuh ke akun Anda.`,
         type: 'warning',
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
         target: user.id,
       });
     }
   }
+
+  saveDatabase();
 
   res.json({
     success: true,
@@ -3290,7 +3373,15 @@ app.put('/api/admin/transactions/:id/status', (req, res) => {
     } : null,
     message: `Status transaksi berhasil diubah ke ${status}. Saldo pengguna telah otomatis disinkronkan.`,
   });
-});
+};
+
+// Wire both URL param and body/query based routes to guarantee zero 404s
+app.put('/api/admin/transactions/:id/status', handleTransactionStatusUpdate);
+app.post('/api/admin/transactions/:id/status', handleTransactionStatusUpdate);
+app.put('/api/admin/transactions/status', handleTransactionStatusUpdate);
+app.post('/api/admin/transactions/status', handleTransactionStatusUpdate);
+app.put('/api/admin/transactions/update-status', handleTransactionStatusUpdate);
+app.post('/api/admin/transactions/update-status', handleTransactionStatusUpdate);
 
 app.delete('/api/admin/transactions/:id', (req, res) => {
   const idx = transactions.findIndex((t) => t.id === req.params.id);
